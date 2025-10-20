@@ -9088,7 +9088,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3)
 					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
-					. "loadUserById(\$item->checked_out ?? 0);";
+					. "loadUserById((int) (\$item->checked_out ?? 0));";
 
 				$allowSortingWhen = "<?php if (!\$this->isModal && \$canDo->get('"
 					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')): ?>";
@@ -9603,7 +9603,7 @@ class Interpretation extends Fields
 			{
 				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
+					. 'loadUserById((int) ($item->' . $item['code'] . ' ?? 0))->name';
 			}
 		}
 		// check if custom user
@@ -9620,7 +9620,7 @@ class Interpretation extends Fields
 			{
 				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) $item->' . $item['id_code'] . ' ?? 0)->name';
+					. 'loadUserById((int) ($item->' . $item['id_code'] . ' ?? 0))->name';
 			}
 		}
 		// check if translated value is used
@@ -9641,7 +9641,7 @@ class Interpretation extends Fields
 			{
 				return 'Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getContainer()->'
 					. 'get(Joomla__'.'_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->'
-					. 'loadUserById((int) $item->' . $item['code'] . ' ?? 0)->name';
+					. 'loadUserById((int) ($item->' . $item['code'] . ' ?? 0))->name';
 			}
 		}
 		elseif ($doNotEscape)
@@ -9767,7 +9767,7 @@ class Interpretation extends Fields
 			// return the authority to category
 			return $isModal . $user . "->authorise('core.edit', 'com_"
 				. CFactory::_('Config')->component_code_name . "." . $otherView
-				. ".category.' . (int)\$item->" . $item['code'] . ")";
+				. ".category.' . (int) (\$item->" . $item['code'] . " ?? 0))";
 		}
 		elseif ($item['type'] === 'user' && !$item['title'])
 		{
@@ -9787,13 +9787,13 @@ class Interpretation extends Fields
 			{
 				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
 					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . "_id)";
+					. $item['custom']['view'] . ".' . (int) (\$item->" . $item['id_code'] . "_id ?? 0))";
 			}
 			else
 			{
 				return $isModal . $user . "->authorise('" . CFactory::_('Compiler.Creator.Permission')->getAction($item['custom']['view'], 'core.edit')
 					. "', 'com_" . CFactory::_('Config')->component_code_name . "."
-					. $item['custom']['view'] . ".' . (int) \$item->" . $item['id_code'] . ")";
+					. $item['custom']['view'] . ".' . (int) (\$item->" . $item['id_code'] . " ?? 0))";
 			}
 		}
 		elseif (isset($item['custom'])
@@ -11530,6 +11530,21 @@ class Interpretation extends Fields
 		if (StringHelper::check($name_single_code)
 			&& StringHelper::check($name_list_code))
 		{
+			if (strpos((string) $parentKey, '-R>') !== false
+				|| strpos((string) $parentKey, '-A>') !== false)
+			{
+				list($parent_key) = explode('-', (string) $parentKey);
+			}
+			elseif (strpos((string) $parentKey, '-OR>') !== false)
+			{
+				// this is not good... (TODO)
+				$parent_keys = explode('-OR>', (string) $parentKey);
+			}
+			else
+			{
+				$parent_key = $parentKey;
+			}
+
 			$head         = $this->setListHeadLinked(
 				$name_single_code, $name_list_code, $addNewButon,
 				$nameSingleCode
@@ -11565,23 +11580,48 @@ class Interpretation extends Fields
 			$headerscript .= PHP_EOL . Indent::_(1)
 				. '$return .= "&return=" . $_return;';
 			$headerscript .= PHP_EOL . '}';
-			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
-				. ' check if return value was set';
-			$headerscript .= PHP_EOL . 'if ('
-				. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
-			$headerscript .= PHP_EOL . '{';
-			$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
-					__LINE__,__CLASS__
-				) . ' set the referral values';
-			$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
-				. $nameSingleCode
-				. '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
-			$headerscript .= PHP_EOL . '}';
-			$headerscript .= PHP_EOL . 'else';
-			$headerscript .= PHP_EOL . '{';
-			$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
-				. $nameSingleCode . '&refid=" . $id : "";';
-			$headerscript .= PHP_EOL . '}';
+			if ($parent_key === 'guid' && CFactory::_('Config')->get('joomla_version', 3) > 4) // only for 5+
+			{
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' get the GUID value';
+				$headerscript .= PHP_EOL . '$guid = $displayData->item->guid ?? null;';
+
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' check if return value was set';
+				$headerscript .= PHP_EOL . 'if ('
+					. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
+				$headerscript .= PHP_EOL . '{';
+				$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
+						__LINE__,__CLASS__
+					) . ' set the referral values';
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = $guid ? "&init_defaults=" . urlencode(\'{"' . $nameSingleCode . '":"\' . $guid . \'"}\') . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
+				$headerscript .= PHP_EOL . '}';
+				$headerscript .= PHP_EOL . 'else';
+				$headerscript .= PHP_EOL . '{';
+
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = $guid ? "&init_defaults=" . urlencode(\'{"' . $nameSingleCode . '":"\' . $guid . \'"}\') : "";';
+				$headerscript .= PHP_EOL . '}';
+			}
+			else
+			{
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' check if return value was set';
+				$headerscript .= PHP_EOL . 'if ('
+					. 'Super' . '___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($return))';
+				$headerscript .= PHP_EOL . '{';
+				$headerscript .= PHP_EOL . Indent::_(1) . '//' . Line::_(
+						__LINE__,__CLASS__
+					) . ' set the referral values';
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
+					. $nameSingleCode
+					. '&refid=" . $id . "&return=" . urlencode(base64_encode($return)) : "&return=" . urlencode(base64_encode($return));';
+				$headerscript .= PHP_EOL . '}';
+				$headerscript .= PHP_EOL . 'else';
+				$headerscript .= PHP_EOL . '{';
+				$headerscript .= PHP_EOL . Indent::_(1) . '$ref = ($id) ? "&ref='
+					. $nameSingleCode . '&refid=" . $id : "";';
+				$headerscript .= PHP_EOL . '}';
+			}
 			if ($addNewButon > 0)
 			{
 				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
@@ -11633,20 +11673,6 @@ class Interpretation extends Fields
 			);
 			// LINKEDVIEWTABLESCRIPTS <<<DYNAMIC>>>
 			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|LINKEDVIEWTABLESCRIPTS', $this->setFootableScripts());
-			if (strpos((string) $parentKey, '-R>') !== false
-				|| strpos((string) $parentKey, '-A>') !== false)
-			{
-				list($parent_key) = explode('-', (string) $parentKey);
-			}
-			elseif (strpos((string) $parentKey, '-OR>') !== false)
-			{
-				// this is not good... (TODO)
-				$parent_keys = explode('-OR>', (string) $parentKey);
-			}
-			else
-			{
-				$parent_key = $parentKey;
-			}
 
 			if (strpos((string) $key, '-R>') !== false || strpos((string) $key, '-A>') !== false)
 			{
@@ -11867,7 +11893,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(3)
 					. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 				$body .= PHP_EOL . Indent::_(4)
-					. "loadUserById(\$item->checked_out ?? 0);";
+					. "loadUserById((int) (\$item->checked_out ?? 0));";
 			}
 			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
 				. "::getActions('" . $nameSingleCode . "',\$item,'"
@@ -16067,7 +16093,7 @@ class Interpretation extends Fields
 								$function[] = Indent::_(5)
 									. "get(Joomla__"."_c2980d12_c3ef_4e23_b4a2_e6af1f5900a9___Power::class)->";
 								$function[] = Indent::_(5)
-									. "loadUserById(\$" . $filter['code'] . " ?? 0)->name";
+									. "loadUserById((int) (\$" . $filter['code'] . " ?? 0))->name";
 								$function[] = Indent::_(5) . ");";
 							}
 					}
@@ -16853,181 +16879,63 @@ class Interpretation extends Fields
 		$getForm[] = Indent::_(2) . "{";
 		$getForm[] = Indent::_(3) . "return false;";
 		$getForm[] = Indent::_(2) . "}";
-		// load license locker
-		if (CFactory::_('Component')->get('add_license') && CFactory::_('Component')->get('license_type') == 3
-			&& CFactory::_('Compiler.Builder.Content.Multi')->exists($nameSingleCode . '|BOOLMETHOD'))
+		$getForm[] = PHP_EOL . Indent::_(2)
+			. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
+		$getForm[] = PHP_EOL . Indent::_(2)
+			. "\$jinput = method_exists(\$app, 'getInput') ? \$app->getInput() : \$app->input;";
+		$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
+				__LINE__,__CLASS__
+			)
+			. " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
+		$getForm[] = Indent::_(2) . "if (\$jinput->get('a_id'))";
+		$getForm[] = Indent::_(2) . "{";
+		$getForm[] = Indent::_(3)
+			. "\$id = \$jinput->get('a_id', 0, 'INT');";
+		$getForm[] = Indent::_(2) . "}";
+		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " The back end uses id so we use that the rest of the time and set it to 0 by default.";
+		$getForm[] = Indent::_(2) . "else";
+		$getForm[] = Indent::_(2) . "{";
+		$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
+		$getForm[] = Indent::_(2) . "}";
+		if (CFactory::_('Config')->get('joomla_version', 3) == 3)
 		{
-			$getForm[] = $this->checkStatmentLicenseLocked(
-				CFactory::_('Compiler.Builder.Content.Multi')->get($nameSingleCode . '|BOOLMETHOD', '')
-			);
-		}
-		if (0) //CFactory::_('Compiler.Builder.Category')->exists("{$nameListCode}"))  <-- remove category from check
-		{
-			// check if category has another name
-			$otherViews = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.views', $nameListCode);
-			$otherView  = CFactory::_('Compiler.Builder.Category.Other.Name')->
-				get($nameListCode . '.view', $nameSingleCode);
-			// setup the category script
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;";
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
-			$getForm[] = Indent::_(2) . "if (\$jinput->get('a_id'))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3)
-				. "\$id = \$jinput->get('a_id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " The back end uses id so we use that the rest of the time and set it to 0 by default.";
-			$getForm[] = Indent::_(2) . "else";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Determine correct permissions to check.";
-			$getForm[] = Indent::_(2) . "if (\$this->getState('"
-				. $nameSingleCode . ".id'))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "\$id = \$this->getState('"
-				. $nameSingleCode . ".id');";
-			$getForm[] = PHP_EOL . Indent::_(3) . "\$catid = 0;";
-			$getForm[] = Indent::_(3)
-				. "if (isset(\$this->getItem(\$id)->catid))";
-			$getForm[] = Indent::_(3) . "{";
-			$getForm[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " set category id";
-			$getForm[] = Indent::_(4)
-				. "\$catid = \$this->getItem(\$id)->catid;";
-			$getForm[] = PHP_EOL . Indent::_(4) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Existing record. Can only edit in selected categories.";
-			$getForm[] = Indent::_(4)
-				. "\$form->setFieldAttribute('catid', 'action', 'core.edit');";
-			$getForm[] = PHP_EOL . Indent::_(4) . "//" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " Existing record. Can only edit own items in selected categories.";
-			$getForm[] = Indent::_(4)
-				. "\$form->setFieldAttribute('catid', 'action', 'core.edit.own');";
-			$getForm[] = Indent::_(3) . "}";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "else";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " New record. Can only create in selected categories.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('catid', 'action', 'core.create');";
-			$getForm[] = Indent::_(2) . "}";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-			}
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Check for existing item.";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Modify the form based on Edit State access controls.";
-			// get the other view
-			$otherView = CFactory::_('Compiler.Builder.Category.Code')->getString("{$nameSingleCode}.view", 'error');
-			// check if the item has permissions.
-			$getForm[] = Indent::_(2)
-				. "if (\$id != 0 && (!\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
-				. "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
-			$getForm[] = Indent::_(3)
-				. "|| (isset(\$catid) && \$catid != 0 && !\$user->authorise('core.edit.state', 'com_"
-				. $component . "." . $otherView
-				. ".category.' . (int) \$catid))";
-			$getForm[] = Indent::_(3)
-				. "|| (\$id == 0 && !\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state')
-				. "', 'com_" . $component . "')))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$getForm[] = PHP_EOL . Indent::_(3) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Disable fields while saving.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'filter', 'unset');";
-			$getForm[] = Indent::_(2) . "}";
+				. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
 		}
 		else
 		{
 			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$app = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();";
-			$getForm[] = PHP_EOL . Indent::_(2)
-				. "\$jinput = method_exists(\$app, 'getInput') ? \$app->getInput() : \$app->input;";
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				)
-				. " The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.";
-			$getForm[] = Indent::_(2) . "if (\$jinput->get('a_id'))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3)
-				. "\$id = \$jinput->get('a_id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " The back end uses id so we use that the rest of the time and set it to 0 by default.";
-			$getForm[] = Indent::_(2) . "else";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "\$id = \$jinput->get('id', 0, 'INT');";
-			$getForm[] = Indent::_(2) . "}";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				$getForm[] = PHP_EOL . Indent::_(2)
-					. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-			}
-			$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
-					__LINE__,__CLASS__
-				) . " Check for existing item.";
-			$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Modify the form based on Edit State access controls.";
-			// check if the item has permissions.
-			$getForm[] = Indent::_(2)
-				. "if (\$id != 0 && (!\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
-				. $nameSingleCode . ".' . (int) \$id))";
-			$getForm[] = Indent::_(3)
-				. "|| (\$id == 0 && !\$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
-				. "')))";
-			$getForm[] = Indent::_(2) . "{";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'disabled', 'true');";
-			$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields while saving.";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
-			$getForm[] = Indent::_(3)
-				. "\$form->setFieldAttribute('published', 'filter', 'unset');";
-			$getForm[] = Indent::_(2) . "}";
+				. "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
 		}
+		$getForm[] = PHP_EOL . Indent::_(2) . "//" . Line::_(
+				__LINE__,__CLASS__
+			) . " Check for existing item.";
+		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
+			. " Modify the form based on Edit State access controls.";
+		// check if the item has permissions.
+		$getForm[] = Indent::_(2)
+			. "if (\$id != 0 && (!\$user->authorise('"
+			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component . "."
+			. $nameSingleCode . ".' . (int) \$id))";
+		$getForm[] = Indent::_(3)
+			. "|| (\$id == 0 && !\$user->authorise('"
+			. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit.state') . "', 'com_" . $component
+			. "')))";
+		$getForm[] = Indent::_(2) . "{";
+		$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+			. " Disable fields for display.";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('ordering', 'disabled', 'true');";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('published', 'disabled', 'true');";
+		$getForm[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+			. " Disable fields while saving.";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('ordering', 'filter', 'unset');";
+		$getForm[] = Indent::_(3)
+			. "\$form->setFieldAttribute('published', 'filter', 'unset');";
+		$getForm[] = Indent::_(2) . "}";
 		$getForm[] = Indent::_(2) . "//" . Line::_(__Line__, __Class__)
 			. " If this is a new item insure the greated by is set.";
 		$getForm[] = Indent::_(2) . "if (0 == \$id)";
@@ -17213,9 +17121,7 @@ class Interpretation extends Fields
 		return implode(PHP_EOL, $getForm);
 	}
 
-	protected function setPermissionEditFields(&$allow, $nameSingleCode,
-	                                           $fieldName, $fieldType, $component
-	)
+	protected function setPermissionEditFields(&$allow, $nameSingleCode, $fieldName, $fieldType, $component)
 	{
 		// only for fields that can be edited
 		if (!CFactory::_('Field.Groups')->check($fieldType, 'spacer'))
@@ -17231,37 +17137,50 @@ class Interpretation extends Fields
 				. $nameSingleCode . ".edit." . $fieldName . "', 'com_"
 				. $component . "')))";
 			$allow[] = Indent::_(2) . "{";
+
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
+				. " Disable field on display.";
 			$allow[] = Indent::_(3) . "\$form->setFieldAttribute('" . $fieldName
 				. "', 'disabled', 'true');";
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields for display.";
+				. " Make field readonly on display.";
 			$allow[] = Indent::_(3) . "\$form->setFieldAttribute('" . $fieldName
 				. "', 'readonly', 'true');";
-			if ('radio' === $fieldType || 'repeatable' === $fieldType)
+
+			if ('radio' === $fieldType || 'repeatable' === $fieldType || 'subform' === $fieldType)
 			{
 				$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-					. " Disable radio button for display.";
+					. " Disable the buttons form being clickable.";
 				$allow[] = Indent::_(3)
 					. "\$class = \$form->getFieldAttribute('" . $fieldName
 					. "', 'class', '');";
 				$allow[] = Indent::_(3) . "\$form->setFieldAttribute('"
-					. $fieldName . "', 'class', \$class.' disabled no-click');";
+					. $fieldName . "', 'class', \$class . ' disabled no-click');";
 			}
+
 			$allow[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " If there is no value continue.";
-			$allow[] = Indent::_(3) . "if (!\$form->getValue('" . $fieldName
-				. "'))";
+			$allow[] = Indent::_(3) . "if (!\$form->getValue('" . $fieldName . "'))";
 			$allow[] = Indent::_(3) . "{";
-			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields while saving.";
-			$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
-				. "', 'filter', 'unset');";
-			$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
-				. " Disable fields while saving.";
-			$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
-				. "', 'required', 'false');";
+				
+			if ('repeatable' === $fieldType || 'subform' === $fieldType)
+			{
+				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+					. " Remove the field";
+				$allow[] = Indent::_(4) . "\$form->removeField('" . $fieldName . "');";
+			}
+			else
+			{
+				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+					. " Disable field while saving.";
+				$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
+					. "', 'filter', 'unset');";
+				$allow[] = Indent::_(4) . "//" . Line::_(__Line__, __Class__)
+					. " Disable field while saving.";
+				$allow[] = Indent::_(4) . "\$form->setFieldAttribute('" . $fieldName
+					. "', 'required', 'false');";
+			}
+
 			$allow[] = Indent::_(3) . "}";
 			$allow[] = Indent::_(2) . "}";
 		}

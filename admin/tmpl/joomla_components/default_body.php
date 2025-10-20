@@ -29,7 +29,7 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
+				loadUserById((int) ($item->checked_out ?? 0));
 		$canDo = ComponentbuilderHelper::getActions('joomla_component',$item,'joomla_components');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
@@ -218,19 +218,19 @@ $edit = "index.php?option=com_componentbuilder&view=joomla_components&task=jooml
 			</div>
 		</td>
 		<td class="hidden-phone">
-			<div><b><?php echo $this->escape($item->companyname); ?></b><br />
+			<div><b><?php echo $this->escape($item->companyname, true, 26); ?></b><br />
 			<?php if (StringHelper::check($item->author)) : ?>
-				<em><?php echo $this->escape($item->author); ?><em><br />
+				<em><?php echo $this->escape($item->author, true, 26); ?><em><br />
 			<?php endif; ?>
 			<?php if (StringHelper::check($item->email) && StringHelper::check($item->author)) : ?>
-				<a href="mailto:<?php echo $this->escape($item->email); ?>" title="<?php echo Text::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $item->author); ?>" target="_blank">
-					<?php echo $this->escape($item->email); ?>
+				<a href="mailto:<?php echo $this->escape($item->email, false); ?>" title="<?php echo Text::sprintf('COM_COMPONENTBUILDER_EMAIL_S', $item->author); ?>" target="_blank">
+					<?php echo $this->escape($item->email, true, 26); ?>
 				</a>
 				<br />
 			<?php endif; ?>
 			<?php if (StringHelper::check($item->website) && StringHelper::check($item->author)) : ?>
-				<a href="<?php echo $this->escape($item->website); ?>" title="<?php echo Text::sprintf('COM_COMPONENTBUILDER_WEBSITE_OF_S', $item->companyname); ?>" target="_blank">
-					<?php echo $this->escape($item->website); ?>
+				<a href="<?php echo $this->escape($item->website, false); ?>" title="<?php echo Text::sprintf('COM_COMPONENTBUILDER_WEBSITE_OF_S', $item->companyname); ?>" target="_blank">
+					<?php echo $this->escape($item->website, true, 26); ?>
 				</a>
 			<?php endif; ?>
 			</div>

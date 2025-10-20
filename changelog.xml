@@ -383,4 +383,81 @@
       <item>Add an alert to the Compiler view when no Components exist. #1263</item>
     </addition>
   </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>5.1.4-alpha1</version>
+    <fix>
+      <item>Fix the linked [new] button to use the correct init_default params.</item>
+      <item>Fix the Components list view to better display long website urls.</item>
+      <item>Fix language text area css. #1264</item>
+      <item>Add fix for empty currentFullPath in the Structuresingle class.</item>
+      <item>Fix the buildSelectPart method to not access an empty select value in the Queries class.</item>
+      <item>Fix that ensure that we always load and int into loadUserById.</item>
+      <item>Fix the subform permission behaviour to use removeField.</item>
+    </fix>
+    <addition>
+      <item>Add version 6 to the version 5 update server, for easier upgrade path.</item>
+    </addition>
+    <change>
+      <item>Refactor the JS selText method.</item>
+    </change>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>6.1.3</version>
+    <security>
+      <item>Fix a security vulnerability in custom code redirect URL validation.</item>
+    </security>
+    <fix>
+      <item>Fix the template and layout linker for packages.</item>
+      <item>Fix auto-check(in) method for Joomla 4/5 compatibility</item>
+      <item>Fix Custom Rule Validation Bug</item>
+      <item>Fix issues in the site view HtmlView caused by the refactor, including missing class calls and outdated function references.</item>
+      <item>Fix issue where the DatabaseSchemaCheckAll pulled all Component Builder tables into DB on install. #1253</item>
+      <item>Fix issue in the Dynamic Get when the value key is 0 it wouldn't add the 'WHERE' statement to the generated code. #1254</item>
+      <item>Fix issue where custom powers was not added to PowerloaderHelper. #1256</item>
+      <item>Fix normalization issue when compiling on Windows systems. #1219</item>
+      <item>Fix installer issue on Joomla 6 where components containing multiple plugins failed during installation.</item>
+    </fix>
+    <addition>
+      <item>Add Joomla 6 build option</item>
+      <item>Add native module builder for Joomla 4/5</item>
+      <item>Add Joomla 6 build option :)</item>
+      <item>Adds check to ensure expert mode subforms in the Demo Component remain set and unchanged when user lacks edit permissions</item>
+      <item>Add functionality to add component changelog into the package if configured.</item>
+      <item>Add extra xml details to Modules built with JCB that adds advance options to the module. #1248</item>
+      <item>Add a default VARCHAR(36) length to easily create fields intended to store GUID values.</item>
+      <item>Stability update addressing a post-release field issue. #1262</item>
+      <item>Add an alert to the Compiler view when no Components exist. #1263</item>
+    </addition>
+    <change>
+      <item>Refactor dynamic get methods into dedicated classes</item>
+      <item>Refactores event handling (contentPrepare, titlePrepare, contentBeforeDisplay, contentAfterDisplay) to use Joomla 5's native event dispatcher via the model's new getDispatcher() method.</item>
+      <item>Updates table classes to properly support NULL values, both in the store() method and in table variable definitions. #1245</item>
+      <item>Refactors the Compiler Model by dropping deprecated calls and adopting Joomla 5+ conventions</item>
+      <item>Refactors Compiler Controller to remove deprecated usage and follow Joomla 5+ best practices</item>
+      <item>Refactor PHP classes for building HTML view files in admin and site views to align with Joomla 5+ standards.</item>
+      <item>Change radio buttons with a empty option to save Datatype CHAR instead of TINYINT as other radio buttons. #1252</item>
+      <item>Refactor compiler Move file update to classes.</item>
+      <item>Refactor compiler Move plugin and module fields and rules files mover to classes.</item>
+      <item>Completely refactors the Compiler Dashboard to align with Joomla 5+ architecture and Bootstrap 5 standards.</item>
+      <item>Update the file uploader in the Demo Component for more dynamic file display and naming.</item>
+      <item>Update the SQL file dump generator to handle large SQL dumps in batches, ensuring safe and reliable database imports.</item>
+      <item>Update example hints in the field expert mode options.</item>
+    </change>
+    <remove>
+      <item>Remove setDocumentTitle method from the admin view since it is not being used by Joomla. #1255</item>
+    </remove>
+    <note>
+      <item>Move Joomla DB handling into compiler injector flow</item>
+      <item>Migrates view HTML classes to use getModel() directly instead of the deprecated magic get() calls to model methods.</item>
+      <item>Extractes the setAutoCheckIn() and setCheckInCall() logic into a dedicated CheckInNow class for cleaner design.</item>
+      <item>Replace all direct $app-&gt;input property calls with the recommended $app-&gt;getInput() method across the entire codebase.</item>
+      <item>Unpublish Joomla 6 Backward Compatibility Plugin</item>
+      <item>Improves validation handling of Fields by ensuring field validation rules are properly registered</item>
+      <item>Replace StringHelper with the correct Super Power key so it loads in the Compiler Controller</item>
+    </note>
+  </changelog>
 </changelogs>

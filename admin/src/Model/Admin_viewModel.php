@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -1054,6 +1055,7 @@ class Admin_viewModel extends AdminModel
 		// we must also update all linked tables
 		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
+			Helper::setOption('com_componentbuilder');
 			foreach($_tables_array as $_delete_table => $_field_name)
 			{
 				// get the admin_view guid's
@@ -1077,7 +1079,7 @@ class Admin_viewModel extends AdminModel
 				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_delete_table);
+					$_Model = Helper::getModel($_delete_table);
 
 					// change publish state to trash (in-case the state was not changed in sync with the parent)
 					$_Model->publish($_pks, -2);
@@ -1118,6 +1120,7 @@ class Admin_viewModel extends AdminModel
 		// we must also update all linked tables
 		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
+			Helper::setOption('com_componentbuilder');
 			foreach($_tables_array as $_update_table => $_field_name)
 			{
 				// get the admin guid's
@@ -1141,7 +1144,7 @@ class Admin_viewModel extends AdminModel
 				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_update_table);
+					$_Model = Helper::getModel($_update_table);
 
 					// change publish state
 					$_Model->publish($_pks, $value);

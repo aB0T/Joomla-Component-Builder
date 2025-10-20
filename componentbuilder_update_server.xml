@@ -17,6 +17,7 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="3.*"/>
+		<sha512>f592b05f2c569d9b403a46c82c8e7a09cd4e2772f471f9a4eba56b2c69a6baf13244f2e4c4da5c4989d2393cfce4074696266820811c4b08b22b26373ac29deb</sha512>
 	</update>
 	<update>
 		<name>Component Builder</name>
@@ -35,6 +36,7 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="4\.[01234]"/>
+		<sha512>40cae9c936d713875e84f102df379f8dce3bc89a46fe6b8af04234837887984917e3ccfcb53503543c0b461f50aa5ee6eb51a5db530c395d38df62a64bb7c78a</sha512>
 	</update>
 	<update>
 		<name>Component Builder</name>
@@ -53,6 +55,7 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="5\.[01234]"/>
+		<sha512>7f1a6e7d0914d3be8dcd8c7783f0b61ceeca7f400602753e2f2e77b628711b2fd5193a76b65bb528b7ddaf6a5d8c2d9677603d182f160586e798e7b76b2c715b</sha512>
 	</update>
 	<update>
 		<name>Component Builder</name>
@@ -71,6 +74,7 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="6\.0"/>
+		<sha512>987a41234f52a9e632825445039b6feb8ca5d2c2118f570a0777d78603efe7ad6bd31547a2d2fe31421d5105e04799b31dc86c55f77a3d53e1a60d7a174c4f45</sha512>
 	</update>
 	<update>
 		<name>Component Builder</name>
@@ -89,6 +93,7 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="6\.0"/>
+		<sha512>987a41234f52a9e632825445039b6feb8ca5d2c2118f570a0777d78603efe7ad6bd31547a2d2fe31421d5105e04799b31dc86c55f77a3d53e1a60d7a174c4f45</sha512>
 	</update>
 	<update>
 		<name>Component Builder</name>
@@ -107,5 +112,6 @@
 		<maintainer>Llewellyn van der Merwe</maintainer>
 		<maintainerurl>https://dev.vdm.io</maintainerurl>
 		<targetplatform name="joomla" version="6\.0"/>
+		<sha512>6ee5545a7645ad36d988d988bc883b538ba0a437e8097cea1221b88ae7b03ee911760be8becc9af2b62637f21cbd75fc3c8471f786a6bbc564898cb6ce8b2e6b</sha512>
 	</update>
 </updates>

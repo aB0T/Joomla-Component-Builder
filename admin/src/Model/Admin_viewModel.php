@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -256,6 +257,14 @@ class Admin_viewModel extends AdminModel
 
 
 	/**
+	 * The VDM view key
+	 *
+	 * @var    string
+	 * @since   3.0.13
+	 */
+	protected string $vastDevMod;
+
+	/**
 	 * Retrieves or generates a Vast Development Method (VDM) key for the current item.
 	 *
 	 * This function performs the following operations:
@@ -268,8 +277,9 @@ class Admin_viewModel extends AdminModel
 	 * 7. Returns the VDM key.
 	 *
 	 * @return string The VDM key for the current item.
+	 * @since   3.0.13
 	 */
-	public function getVDM()
+	public function getVDM(): string
 	{
 		if (!isset($this->vastDevMod))
 		{
@@ -284,7 +294,7 @@ class Admin_viewModel extends AdminModel
 				$id = $_id;
 			}
 			// set the id and view name to session
-			if (($vdm = SessionHelper::get('admin_view__'.$id)) !== null)
+			if (($vdm = SessionHelper::get('admin_view__' . $id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -292,10 +302,10 @@ class Admin_viewModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				SessionHelper::set($this->vastDevMod, 'admin_view__'.$id);
-				SessionHelper::set('admin_view__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'admin_view__' . $id);
+				SessionHelper::set('admin_view__' . $id, $this->vastDevMod);
 				// set a return value if found
-				$app = Factory::getApplication();
+				$app = $this->app ?? Factory::getApplication();
 				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
@@ -307,9 +317,9 @@ class Admin_viewModel extends AdminModel
 				}
 			}
 		}
+
 		return $this->vastDevMod;
 	}
-
 
 	/**
 	 * Method to get a single record.
@@ -591,7 +601,7 @@ class Admin_viewModel extends AdminModel
 				$id = $item->id;
 			}
 			// set the id and view name to session
-			if (($vdm = SessionHelper::get('admin_view__'.$id)) !== null)
+			if (($vdm = SessionHelper::get('admin_view__' . $id)) !== null)
 			{
 				$this->vastDevMod = $vdm;
 			}
@@ -599,10 +609,10 @@ class Admin_viewModel extends AdminModel
 			{
 				// set the vast development method key
 				$this->vastDevMod = UtilitiesStringHelper::random(50);
-				SessionHelper::set($this->vastDevMod, 'admin_view__'.$id);
-				SessionHelper::set('admin_view__'.$id, $this->vastDevMod);
+				SessionHelper::set($this->vastDevMod, 'admin_view__' . $id);
+				SessionHelper::set('admin_view__' . $id, $this->vastDevMod);
 				// set a return value if found
-				$app = Factory::getApplication();
+				$app = $this->app ?? Factory::getApplication();
 				$input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 				$return = $input->get('return', null, 'base64');
 				SessionHelper::set($this->vastDevMod . '__return', $return);
@@ -1045,6 +1055,7 @@ class Admin_viewModel extends AdminModel
 		// we must also update all linked tables
 		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
+			Helper::setOption('com_componentbuilder');
 			foreach($_tables_array as $_delete_table => $_field_name)
 			{
 				// get the admin_view guid's
@@ -1068,7 +1079,7 @@ class Admin_viewModel extends AdminModel
 				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_delete_table);
+					$_Model = Helper::getModel($_delete_table);
 
 					// change publish state to trash (in-case the state was not changed in sync with the parent)
 					$_Model->publish($_pks, -2);
@@ -1109,6 +1120,7 @@ class Admin_viewModel extends AdminModel
 		// we must also update all linked tables
 		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
+			Helper::setOption('com_componentbuilder');
 			foreach($_tables_array as $_update_table => $_field_name)
 			{
 				// get the admin guid's
@@ -1132,7 +1144,7 @@ class Admin_viewModel extends AdminModel
 				if ($_pks !== null)
 				{
 					// load the model
-					$_Model = ComponentbuilderHelper::getModel($_update_table);
+					$_Model = Helper::getModel($_update_table);
 
 					// change publish state
 					$_Model->publish($_pks, $value);

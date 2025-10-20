@@ -38,6 +38,7 @@ use Joomla\Archive\Archive;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
 use VDM\Joomla\Openai\Factory as OpenaiFactory;
+use VDM\Joomla\Componentbuilder\Markdown\Html;
 use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -100,6 +101,7 @@ abstract class ComponentbuilderHelper
 	/**
 	* Just to Add the OPEN AI api to JCB (soon)
 	* OpenaiFactory
+	* Html
 	**/
 
 	/**
@@ -1773,7 +1775,7 @@ abstract class ComponentbuilderHelper
 	public static function getFieldTypeProperties($value, $type, $settings = [], $xml = null, bool $dbDefaults = false): ?array
 	{
 		// Get a db connection.
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
@@ -1937,7 +1939,6 @@ abstract class ComponentbuilderHelper
 		return FieldHelper::getValue($xml, $get, $confirmation);
 	}
 
-
 	/**
 	 * Retrieves field type properties from the database.
 	 *
@@ -1968,7 +1969,7 @@ abstract class ComponentbuilderHelper
 		string $operator = 'IN'
 	) {
 		// Get a database connection
-		$db = Factory::getDbo();
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		try {
 			// Create a new query object
@@ -3753,7 +3754,7 @@ abstract class ComponentbuilderHelper
 		if (is_int($serverID) && is_int($protocol))
 		{
 			// Get a db connection
-			$db = Factory::getDbo();
+			$db = Factory::getContainer()->get(DatabaseInterface::class);
 			// start the query
 			$query = $db->getQuery(true);
 			// select based to protocol

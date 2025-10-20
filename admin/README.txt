@@ -9,7 +9,7 @@ This is a professional-grade [Joomla 6.x](https://extensions.joomla.org/extensio
 
 JCB generates native Joomla components, plugins, and modules for Joomla 3.x, 4.x, and 5.x - and is already prepared for Joomla 6. Every compiled project is tailored for the specific version without needing backward compatibility plugins. With integrated version-aware compiling, smart boilerplating, and Git-powered project syncing, JCB is much more than a code generator-it's a **full-stack development pipeline for Joomla extensions**.
 
-You can install this component easily. The latest release (**6.1.3**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
+You can install this component easily. The latest release (**6.1.4-alpha1**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
 
 Upgrades are seamless through Joomla's built-in extension update mechanism.
 
@@ -229,17 +229,17 @@ JCB is developed by developers for developers. Its purpose is to democratize hig
 * **Company:** [Vast Development Method](https://dev.vdm.io)
 * **Author:** [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 * **Component:** [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
-* **Created:** 30th April, 2015 · **Last Build:** 17th October, 2025 · **Version:** 6.1.3
+* **Created:** 30th April, 2015 · **Last Build:** 20th October, 2025 · **Version:** 6.1.4-alpha1
 * **License:** GNU General Public License version 2 or later; see LICENSE.txt · **Copyright:** Copyright (C) 2015 Vast Development Method. All rights reserved.
-* **Lines:** 1205152 · **Fields:** 2098 · **Files:** 8075 · **Folders:** 753
+* **Lines:** 1206139 · **Fields:** 2098 · **Files:** 8082 · **Folders:** 754
 
 > Generated with [JCB](https://www.joomlacomponentbuilder.com) — The Smartest Way to Build Joomla Extensions.
 
 
 ## Contributors
-This project exists thanks to all the people who contribute to the [Joomla Component Builder Project](https://github.com/vdm-io/Joomla-Component-Builder).
+This project exists thanks to all the people who contribute to the [Joomla Component Builder Project](https://github.com/joomengine/Joomla-Component-Builder).
 
-[![Contributors](https://opencollective.com/Joomla-Component-Builder/contributors.svg?width=890&button=false)](https://github.com/vdm-io/Joomla-Component-Builder/graphs/contributors)
+[![Contributors](https://opencollective.com/Joomla-Component-Builder/contributors.svg?width=890&button=false)](https://github.com/joomengine/Joomla-Component-Builder/graphs/contributors)
 
 ### Backers
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/Joomla-Component-Builder#backer)]

@@ -26,7 +26,7 @@ $edit = "index.php?option=com_componentbuilder&view=admins_fields_relations&task
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
+				loadUserById((int) ($item->checked_out ?? 0));
 		$canDo = ComponentbuilderHelper::getActions('admin_fields_relations',$item,'admins_fields_relations');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">

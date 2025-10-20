@@ -26,7 +26,7 @@ $edit = "index.php?option=com_componentbuilder&view=custom_codes&task=custom_cod
 		$canCheckin = $this->user->authorise('core.manage', 'com_checkin') || $item->checked_out == $this->user->id || $item->checked_out == 0;
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
-				loadUserById($item->checked_out ?? 0);
+				loadUserById((int) ($item->checked_out ?? 0));
 		$canDo = ComponentbuilderHelper::getActions('custom_code',$item,'custom_codes');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">

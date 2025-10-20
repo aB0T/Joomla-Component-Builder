@@ -1,3 +1,15 @@
+# v6.1.4-alpha1
+
+- Fix the linked [new] button to use the correct init_default params.
+- Fix the Components list view to better display long website urls.
+- Fix language text area css. #1264
+- Refactor the JS selText method.
+- Add fix for empty currentFullPath in the Structuresingle class.
+- Fix the buildSelectPart method to not access an empty select value in the Queries class.
+- Fix that ensure that we always load and int into loadUserById.
+- Fix the subform permission behaviour to use removeField.
+- Add version 6 to the version 5 update server, for easier upgrade path.
+
 # v6.1.3
 
 - Stability update addressing a post-release field issue. #1262

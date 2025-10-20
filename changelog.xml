@@ -200,4 +200,24 @@
       <item>Add an alert to the Compiler view when no Components exist. #1263</item>
     </addition>
   </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>6.1.4-alpha1</version>
+    <fix>
+      <item>Fix the linked [new] button to use the correct init_default params.</item>
+      <item>Fix the Components list view to better display long website urls.</item>
+      <item>Fix language text area css. #1264</item>
+      <item>Add fix for empty currentFullPath in the Structuresingle class.</item>
+      <item>Fix the buildSelectPart method to not access an empty select value in the Queries class.</item>
+      <item>Fix that ensure that we always load and int into loadUserById.</item>
+      <item>Fix the subform permission behaviour to use removeField.</item>
+    </fix>
+    <addition>
+      <item>Add version 6 to the version 5 update server, for easier upgrade path.</item>
+    </addition>
+    <change>
+      <item>Refactor the JS selText method.</item>
+    </change>
+  </changelog>
 </changelogs>

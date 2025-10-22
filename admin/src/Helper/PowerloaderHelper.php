@@ -13,12 +13,12 @@
 defined('_JEXEC') or die;
 
 // add the autoloaders for the composer classes
-$composer_autoloader = JPATH_LIBRARIES . '/phpseclib3/vendor/autoload.php';
+$composer_autoloader = JPATH_LIBRARIES . '/phpspreadsheet/vendor/autoload.php';
 if (file_exists($composer_autoloader))
 {
 	require_once $composer_autoloader;
 }
-$composer_autoloader = JPATH_LIBRARIES . '/phpspreadsheet/vendor/autoload.php';
+$composer_autoloader = JPATH_LIBRARIES . '/phpseclib3/vendor/autoload.php';
 if (file_exists($composer_autoloader))
 {
 	require_once $composer_autoloader;
@@ -28,8 +28,8 @@ if (file_exists($composer_autoloader))
 spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
-		'libraries/vendor_jcb/VDM.Joomla.Github' => 'VDM\\Joomla\\Github',
 		'libraries/vendor_jcb/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
+		'libraries/vendor_jcb/VDM.Joomla.Github' => 'VDM\\Joomla\\Github',
 		'libraries/vendor_jcb/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',
 		'libraries/vendor_jcb/VDM.Joomla.FOF' => 'VDM\\Joomla\\FOF',
 		'libraries/vendor_jcb/VDM.Joomla.Git' => 'VDM\\Joomla\\Git',

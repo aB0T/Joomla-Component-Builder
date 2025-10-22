@@ -11572,8 +11572,18 @@ class Interpretation extends Fields
 				. '&layout=edit&id=" . $id : "";';
 			$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 				. ' check for a return value';
-			$headerscript .= PHP_EOL
-				. '$jinput = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;';
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$headerscript .= PHP_EOL
+					. '$jinput = Joomla__'.'_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->input;';
+			}
+			else
+			{
+				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
+					. ' check for a return value';
+				$headerscript .= PHP_EOL
+					. '$jinput = $displayData->input ?? (method_exists($app, \'getInput\') ? $app->getInput() : $app->input);';
+			}
 			$headerscript .= PHP_EOL
 				. "if (\$_return = \$jinput->get('return', null, 'base64'))";
 			$headerscript .= PHP_EOL . '{';

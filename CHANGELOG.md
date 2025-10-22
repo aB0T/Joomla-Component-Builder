@@ -40,7 +40,13 @@
 - Fix a security vulnerability in custom code redirect URL validation.
 - Add an alert to the Compiler view when no Components exist. #1263
 
-# v4.1.3-alpha1
+# v4.1.3-alpha2
+
+- Fixed linked admin views with New and New & Close buttons to correctly initialize fields using global unique IDs and default conventions.
+- Resolved missing language strings when linked admin views are also configured as site edit views.
+- Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.
+
+# v4.1.3-alpha
 
 - Fix the linked [new] button to use the correct init_default params.
 - Fix the Components list view to better display long website urls.

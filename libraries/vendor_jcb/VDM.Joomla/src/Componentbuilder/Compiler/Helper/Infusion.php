@@ -738,6 +738,13 @@ class Infusion extends Interpretation
 					&& $view['settings']->name_list != 'null')
 				{
 					CFactory::_('Config')->lang_target = 'admin';
+					// ensure the language strings array also added to the site view
+					if (isset($view['edit_create_site_view'])
+						&& is_numeric($view['edit_create_site_view'])
+						&& $view['edit_create_site_view'] > 0)
+					{
+						CFactory::_('Config')->lang_target = 'both';
+					}
 
 					// ICOMOON <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ICOMOON', $view['icomoon']);

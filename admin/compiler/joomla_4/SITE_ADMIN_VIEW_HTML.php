@@ -132,6 +132,14 @@ class HtmlView extends BaseHtmlView
 	public string $referral;
 
 	/**
+	 * The modal state
+	 *
+	 * @var    bool
+	 * @since  5.2.1
+	 */
+	public bool $isModal;
+
+	/**
 	 * ###View### view display method
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -150,6 +158,7 @@ class HtmlView extends BaseHtmlView
 			? $this->app->getParams()
 			: Joomla___aeb8e463_291f_4445_9ac4_34b637c12dbd___Power::getParams('com_###component###');
 		$this->useCoreUI = true;
+		$this->isModal = false; // no modal support yet
 		// Load module values
 		$model = $this->getModel();
 		$this->form ??= $model->getForm();

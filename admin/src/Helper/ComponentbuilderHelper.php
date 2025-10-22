@@ -37,8 +37,6 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Archive\Archive;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
-use VDM\Joomla\Openai\Factory as OpenaiFactory;
-use VDM\Joomla\Componentbuilder\Markdown\Html;
 use VDM\Joomla\Data\Factory as DataFactory;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -97,12 +95,6 @@ abstract class ComponentbuilderHelper
 
 	}
 
-
-	/**
-	* Just to Add the OPEN AI api to JCB (soon)
-	* OpenaiFactory
-	* Html
-	**/
 
 	/**
 	* Locked Libraries (we can not have these change)

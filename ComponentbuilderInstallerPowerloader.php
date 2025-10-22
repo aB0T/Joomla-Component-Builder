@@ -16,8 +16,8 @@ defined('_JEXEC') or die;
 spl_autoload_register(function ($class) {
 	// project-specific base directories and namespace prefix
 	$search = [
-		'libraries/vendor_jcb/VDM.Joomla.Github' => 'VDM\\Joomla\\Github',
 		'libraries/vendor_jcb/VDM.Joomla.Openai' => 'VDM\\Joomla\\Openai',
+		'libraries/vendor_jcb/VDM.Joomla.Github' => 'VDM\\Joomla\\Github',
 		'libraries/vendor_jcb/VDM.Joomla.Gitea' => 'VDM\\Joomla\\Gitea',
 		'libraries/vendor_jcb/VDM.Joomla.FOF' => 'VDM\\Joomla\\FOF',
 		'libraries/vendor_jcb/VDM.Joomla.Git' => 'VDM\\Joomla\\Git',

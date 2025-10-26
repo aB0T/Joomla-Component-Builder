@@ -17291,73 +17291,18 @@ class Interpretation extends Fields
 		}
 	}
 
+	/**
+	 * Get Allow Edit Function Code
+	 *
+	 * @param string   $nameSingleCode  The single code name of the view.
+	 * @param string   $nameListCode  The list code name of the view.
+	 *
+	 * @return  string   The can edit state method code
+	 * @deprecated 3.3 Use CFactory::_('Architecture.Model.AllowEdit')->get($nameSingleCode, $nameListCode);
+	 */
 	public function setJmodelAdminAllowEdit($nameSingleCode, $nameListCode)
 	{
-		$allow = [];
-		// set component name
-		$component = CFactory::_('Config')->component_code_name;
-		// prepare custom permission script
-		$customAllow = CFactory::_('Customcode.Dispenser')->get(
-			'php_allowedit', $nameSingleCode, Indent::_(2)
-			. "\$recordId = (int) isset(\$data[\$key]) ? \$data[\$key] : 0;"
-			. PHP_EOL
-		);
-		// check if the item has permissions.
-		if (CFactory::_('Compiler.Creator.Permission')->actionExist($nameSingleCode, 'core.edit'))
-		{
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Check specific edit permission then general edit permission.";
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-			}
-			else
-			{
-				$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-			}
-			// load custom permission script
-			$allow[] = $customAllow;
-			$allow[] = Indent::_(2) . "return \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit')
-				. "', 'com_" . $component . "." . $nameSingleCode
-				. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or \$user->authorise('"
-				. CFactory::_('Compiler.Creator.Permission')->getAction($nameSingleCode, 'core.edit')
-				. "',  'com_" . $component . "');";
-		}
-		else
-		{
-			$allow[] = PHP_EOL . Indent::_(2) . "//" . Line::_(__Line__, __Class__)
-				. " Check specific edit permission then general edit permission.";
-			if (StringHelper::check($customAllow))
-			{
-				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-				{
-					$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser();";
-				}
-				else
-				{
-					$allow[] = Indent::_(2) . "\$user = Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity();";
-				}
-			}
-			// load custom permission script
-			$allow[] = $customAllow;
-			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
-			{
-				$allow[] = Indent::_(2)
-					. "return Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getUser()->authorise('core.edit', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
-			}
-			else
-			{
-				$allow[] = Indent::_(2)
-					. "return Joomla__"."_39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getIdentity()->authorise('core.edit', 'com_"
-					. $component . "." . $nameSingleCode
-					. ".'. ((int) isset(\$data[\$key]) ? \$data[\$key] : 0)) or parent::allowEdit(\$data, \$key);";
-			}
-		}
-
-		return implode(PHP_EOL, $allow);
+		return CFactory::_('Architecture.Model.AllowEdit')->get($nameSingleCode, $nameListCode);
 	}
 
 	/**

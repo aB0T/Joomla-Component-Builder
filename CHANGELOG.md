@@ -1,8 +1,13 @@
-# v6.1.4-alpha2
+# v6.1.4-alpha3
 
-- Fixed linked admin views with New and New & Close buttons to correctly initialize fields using global unique IDs and default conventions.
-- Resolved missing language strings when linked admin views are also configured as site edit views.
-- Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.
+- Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.
+- Added user access verification logic in the model to prevent unauthorized direct item loading.
+- Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.
+- Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.
+- Improved initialization handling in the view to reduce dependency errors during rendering.
+- Fixed a bug caused by missing option settings in the model configuration.
+- Updated and refined the site view class for greater consistency with backend view logic.
+- Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.
 
 # v6.1.4-alpha
 
@@ -15,6 +20,9 @@
 - Fix that ensure that we always load and int into loadUserById.
 - Fix the subform permission behaviour to use removeField.
 - Add version 6 to the version 5 update server, for easier upgrade path.
+- Fixed linked admin views with New and New & Close buttons to correctly initialize fields using global unique IDs and default conventions.
+- Resolved missing language strings when linked admin views are also configured as site edit views.
+- Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.
 
 # v6.1.3
 

@@ -1195,7 +1195,7 @@ class Infusion extends Interpretation
 
 				// JMODELADMIN_ALLOWEDIT <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|JMODELADMIN_ALLOWEDIT',
-					$this->setJmodelAdminAllowEdit(
+					CFactory::_('Architecture.Model.AllowEdit')->get(
 						$nameSingleCode,
 						$nameListCode
 					)

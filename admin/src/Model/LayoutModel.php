@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -581,8 +582,8 @@ class LayoutModel extends AdminModel
 				return false;
 			}
 		}
-		// Since there is no permission given, block access.
-		return false;
+		// Since there is no permission given, core edit must be checked.
+		return $user->authorise('core.edit', $this->option);
 	}
 
 	/**
@@ -826,7 +827,7 @@ class LayoutModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('layout');
+			$this->canDo		= Actions::get('layout');
 		}
 
 		if (!$this->canDo->get('core.create') && !$this->canDo->get('layout.batch'))
@@ -964,7 +965,7 @@ class LayoutModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('layout');
+			$this->canDo		= Actions::get('layout');
 		}
 
 		if (!$this->canDo->get('core.edit') && !$this->canDo->get('layout.batch'))

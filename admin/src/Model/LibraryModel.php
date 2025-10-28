@@ -36,6 +36,7 @@ use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -969,7 +970,7 @@ class LibraryModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('library');
+			$this->canDo		= Actions::get('library');
 		}
 
 		if (!$this->canDo->get('library.create') && !$this->canDo->get('library.batch'))
@@ -1112,7 +1113,7 @@ class LibraryModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('library');
+			$this->canDo		= Actions::get('library');
 		}
 
 		if (!$this->canDo->get('library.edit') && !$this->canDo->get('library.batch'))

@@ -6993,8 +6993,7 @@ class Interpretation extends Fields
 			. "\$this->table		= \$this->getTable();";
 		$batchmove[] = Indent::_(3)
 			. "\$this->tableClassName	= get_class(\$this->table);";
-		$batchmove[] = Indent::_(3) . "\$this->canDo		= " . $Helper
-			. "::getActions('" . $nameSingleCode . "');";
+		$batchmove[] = Indent::_(3) . "\$this->canDo		= Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "');";
 		$batchmove[] = Indent::_(2) . "}";
 
 		$batchmove[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
@@ -7219,8 +7218,7 @@ class Interpretation extends Fields
 			. "\$this->table 		= \$this->getTable();";
 		$batchcopy[] = Indent::_(3)
 			. "\$this->tableClassName	= get_class(\$this->table);";
-		$batchcopy[] = Indent::_(3) . "\$this->canDo		= " . $Helper
-			. "::getActions('" . $nameSingleCode . "');";
+		$batchcopy[] = Indent::_(3) . "\$this->canDo		= Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "');";
 		$batchcopy[] = Indent::_(2) . "}";
 		$batchcopy[] = PHP_EOL . Indent::_(2) . "if (!\$this->canDo->get('"
 			. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.create') . "') && !\$this->canDo->get('"
@@ -9097,9 +9095,7 @@ class Interpretation extends Fields
 				$allowPublishedWhen =  "<?php if (!\$this->isModal && \$canDo->get('"
 					. CFactory::_('Compiler.Creator.Permission')->getGlobal($nameSingleCode, 'core.edit.state') . "')) : ?>";
 			}
-			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
-				. "::getActions('" . $nameSingleCode . "',\$item,'"
-				. $nameListCode . "');";
+			$body .= PHP_EOL . Indent::_(2) . "\$canDo = Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "', \$item, '" . $nameListCode . "');";
 			$body .= PHP_EOL . Indent::_(1) . "?>";
 			$body .= PHP_EOL . Indent::_(1)
 				. '<tr class="row<?php echo $i % 2; ?>">';
@@ -11665,10 +11661,7 @@ class Interpretation extends Fields
 				}
 				$headerscript .= PHP_EOL . '//' . Line::_(__Line__, __Class__)
 					. ' load the action object';
-				$headerscript .= PHP_EOL . '$can = '
-					. CFactory::_('Compiler.Builder.Content.One')->get('Component') . 'Helper::getActions(' . "'"
-					. $name_single_code . "'"
-					. ');';
+				$headerscript .= PHP_EOL . '$can = Super__' . '_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get(' . "'" . $name_single_code . "'" . ');';
 			}
 			CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '_' . $layoutCodeName . '|LAYOUTITEMSHEADER',
 				$headerscript
@@ -11905,9 +11898,7 @@ class Interpretation extends Fields
 				$body .= PHP_EOL . Indent::_(4)
 					. "loadUserById((int) (\$item->checked_out ?? 0));";
 			}
-			$body .= PHP_EOL . Indent::_(2) . "\$canDo = " . $Helper
-				. "::getActions('" . $nameSingleCode . "',\$item,'"
-				. $nameListCode . "');";
+			$body .= PHP_EOL . Indent::_(2) . "\$canDo = Super__" . "_7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('" . $nameSingleCode . "', \$item, '" . $nameListCode . "');";
 			$body .= PHP_EOL . Indent::_(1) . "?>";
 			$body .= PHP_EOL . Indent::_(1) . '<tr>';
 			// check if this view has fields that should not be escaped

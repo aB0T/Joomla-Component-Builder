@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -840,7 +841,7 @@ class Custom_codeModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('custom_code');
+			$this->canDo		= Actions::get('custom_code');
 		}
 
 		if (!$this->canDo->get('custom_code.create') && !$this->canDo->get('custom_code.batch'))
@@ -983,7 +984,7 @@ class Custom_codeModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('custom_code');
+			$this->canDo		= Actions::get('custom_code');
 		}
 
 		if (!$this->canDo->get('custom_code.edit') && !$this->canDo->get('custom_code.batch'))

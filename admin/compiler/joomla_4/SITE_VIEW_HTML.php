@@ -84,6 +84,14 @@ class HtmlView extends BaseHtmlView
 	protected array $scripts;
 
 	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -105,6 +113,7 @@ class HtmlView extends BaseHtmlView
 		$this->menu = $this->app->getMenu()->getActive();
 		// get the user object
 		$this->user ??= $this->getCurrentUser();
+
 		// Load module values
 		$model = $this->getModel();
 		$this->styles = $model->getStyles() ?? [];
@@ -120,17 +129,16 @@ class HtmlView extends BaseHtmlView
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
-	{###SITE_CUSTOM_BUTTONS###
+	{
+		// add the toolbar if it's not already loaded
+		$this->toolbar ??= $this->getDocument()->getToolbar();###SITE_CUSTOM_BUTTONS###
 
 		// set help url for this view if found
 		$this->help_url = ###Component###Helper::getHelpUrl('###sview###');
 		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
 		{
-			Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
+			$this->toolbar->help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
 		}
-
-		// add the toolbar if it's not already loaded
-		$this->toolbar ??= $this->getDocument()->getToolbar();
 	}
 
 	/**

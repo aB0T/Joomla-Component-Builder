@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
@@ -690,7 +691,7 @@ class Admin_fields_conditionsModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_conditions');
+			$this->canDo		= Actions::get('admin_fields_conditions');
 		}
 
 		if (!$this->canDo->get('admin_fields_conditions.create') && !$this->canDo->get('admin_fields_conditions.batch'))
@@ -833,7 +834,7 @@ class Admin_fields_conditionsModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_conditions');
+			$this->canDo		= Actions::get('admin_fields_conditions');
 		}
 
 		if (!$this->canDo->get('admin_fields_conditions.edit') && !$this->canDo->get('admin_fields_conditions.batch'))

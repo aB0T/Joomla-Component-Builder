@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
@@ -669,7 +670,7 @@ class Admin_custom_tabsModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_custom_tabs');
+			$this->canDo		= Actions::get('admin_custom_tabs');
 		}
 
 		if (!$this->canDo->get('admin_custom_tabs.create') && !$this->canDo->get('admin_custom_tabs.batch'))
@@ -812,7 +813,7 @@ class Admin_custom_tabsModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_custom_tabs');
+			$this->canDo		= Actions::get('admin_custom_tabs');
 		}
 
 		if (!$this->canDo->get('admin_custom_tabs.edit') && !$this->canDo->get('admin_custom_tabs.batch'))

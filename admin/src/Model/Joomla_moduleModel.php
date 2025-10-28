@@ -36,6 +36,7 @@ use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -1084,7 +1085,7 @@ class Joomla_moduleModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_module');
+			$this->canDo		= Actions::get('joomla_module');
 		}
 
 		if (!$this->canDo->get('joomla_module.create') && !$this->canDo->get('joomla_module.batch'))
@@ -1227,7 +1228,7 @@ class Joomla_moduleModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_module');
+			$this->canDo		= Actions::get('joomla_module');
 		}
 
 		if (!$this->canDo->get('joomla_module.edit') && !$this->canDo->get('joomla_module.batch'))

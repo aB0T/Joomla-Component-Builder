@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -677,7 +678,7 @@ class Component_custom_admin_menusModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_custom_admin_menus');
+			$this->canDo		= Actions::get('component_custom_admin_menus');
 		}
 
 		if (!$this->canDo->get('component_custom_admin_menus.create') && !$this->canDo->get('component_custom_admin_menus.batch'))
@@ -820,7 +821,7 @@ class Component_custom_admin_menusModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_custom_admin_menus');
+			$this->canDo		= Actions::get('component_custom_admin_menus');
 		}
 
 		if (!$this->canDo->get('component_custom_admin_menus.edit') && !$this->canDo->get('component_custom_admin_menus.batch'))

@@ -40,16 +40,11 @@
 - Fix a security vulnerability in custom code redirect URL validation.
 - Add an alert to the Compiler view when no Components exist. #1263
 
-# v4.1.3-alpha3
+# v4.1.3-alpha4
 
-- Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.
-- Added user access verification logic in the model to prevent unauthorized direct item loading.
-- Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.
-- Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.
-- Improved initialization handling in the view to reduce dependency errors during rendering.
-- Fixed a bug caused by missing option settings in the model configuration.
-- Updated and refined the site view class for greater consistency with backend view logic.
-- Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.
+- Fix permission issue in the list view. #1266
+- Refactor the list view buttons
+- Refactor the getActions helper method
 
 # v4.1.3-alpha
 
@@ -65,6 +60,14 @@
 - Fixed linked admin views with New and New & Close buttons to correctly initialize fields using global unique IDs and default conventions.
 - Resolved missing language strings when linked admin views are also configured as site edit views.
 - Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.
+- Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.
+- Added user access verification logic in the model to prevent unauthorized direct item loading.
+- Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.
+- Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.
+- Improved initialization handling in the view to reduce dependency errors during rendering.
+- Fixed a bug caused by missing option settings in the model configuration.
+- Updated and refined the site view class for greater consistency with backend view logic.
+- Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.
 
 # v4.1.2
 

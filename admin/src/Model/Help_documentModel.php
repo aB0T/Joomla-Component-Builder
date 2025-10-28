@@ -30,6 +30,7 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
@@ -714,7 +715,7 @@ class Help_documentModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('help_document');
+			$this->canDo		= Actions::get('help_document');
 		}
 
 		if (!$this->canDo->get('help_document.create') && !$this->canDo->get('help_document.batch'))
@@ -852,7 +853,7 @@ class Help_documentModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('help_document');
+			$this->canDo		= Actions::get('help_document');
 		}
 
 		if (!$this->canDo->get('help_document.edit') && !$this->canDo->get('help_document.batch'))

@@ -33,6 +33,7 @@ use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
@@ -770,7 +771,7 @@ class Validation_ruleModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('validation_rule');
+			$this->canDo		= Actions::get('validation_rule');
 		}
 
 		if (!$this->canDo->get('validation_rule.create') && !$this->canDo->get('validation_rule.batch'))
@@ -913,7 +914,7 @@ class Validation_ruleModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('validation_rule');
+			$this->canDo		= Actions::get('validation_rule');
 		}
 
 		if (!$this->canDo->get('validation_rule.edit') && !$this->canDo->get('validation_rule.batch'))

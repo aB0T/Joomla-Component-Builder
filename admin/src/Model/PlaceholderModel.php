@@ -33,6 +33,7 @@ use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
@@ -767,7 +768,7 @@ class PlaceholderModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('placeholder');
+			$this->canDo		= Actions::get('placeholder');
 		}
 
 		if (!$this->canDo->get('placeholder.create') && !$this->canDo->get('placeholder.batch'))
@@ -910,7 +911,7 @@ class PlaceholderModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('placeholder');
+			$this->canDo		= Actions::get('placeholder');
 		}
 
 		if (!$this->canDo->get('placeholder.edit') && !$this->canDo->get('placeholder.batch'))

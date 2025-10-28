@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\User\UserFactoryInterface;
 
@@ -28,7 +29,7 @@ $edit = "index.php?option=com_componentbuilder&view=templates&task=template.edit
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
 				loadUserById((int) ($item->checked_out ?? 0));
-		$canDo = ComponentbuilderHelper::getActions('template',$item,'templates');
+		$canDo = Actions::get('template', $item, 'templates');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">

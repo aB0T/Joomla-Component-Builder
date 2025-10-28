@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -674,7 +675,7 @@ class Component_configModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_config');
+			$this->canDo		= Actions::get('component_config');
 		}
 
 		if (!$this->canDo->get('component_config.create') && !$this->canDo->get('component_config.batch'))
@@ -817,7 +818,7 @@ class Component_configModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_config');
+			$this->canDo		= Actions::get('component_config');
 		}
 
 		if (!$this->canDo->get('component_config.edit') && !$this->canDo->get('component_config.batch'))

@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -732,8 +733,8 @@ class Custom_admin_viewModel extends AdminModel
 				return false;
 			}
 		}
-		// Since there is no permission given, block access.
-		return false;
+		// Since there is no permission given, core edit must be checked.
+		return $user->authorise('core.edit', $this->option);
 	}
 
 	/**
@@ -977,7 +978,7 @@ class Custom_admin_viewModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('custom_admin_view');
+			$this->canDo		= Actions::get('custom_admin_view');
 		}
 
 		if (!$this->canDo->get('core.create') && !$this->canDo->get('custom_admin_view.batch'))
@@ -1120,7 +1121,7 @@ class Custom_admin_viewModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('custom_admin_view');
+			$this->canDo		= Actions::get('custom_admin_view');
 		}
 
 		if (!$this->canDo->get('core.edit') && !$this->canDo->get('custom_admin_view.batch'))

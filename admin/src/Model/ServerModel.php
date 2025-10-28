@@ -31,6 +31,7 @@ use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
@@ -771,7 +772,7 @@ class ServerModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('server');
+			$this->canDo		= Actions::get('server');
 		}
 
 		if (!$this->canDo->get('server.create') && !$this->canDo->get('server.batch'))
@@ -914,7 +915,7 @@ class ServerModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('server');
+			$this->canDo		= Actions::get('server');
 		}
 
 		if (!$this->canDo->get('server.edit') && !$this->canDo->get('server.batch'))

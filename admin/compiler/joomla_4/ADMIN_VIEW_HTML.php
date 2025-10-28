@@ -187,8 +187,8 @@ class HtmlView extends BaseHtmlView
 		$this->scripts = $model->getScripts();
 		$this->state = $model->getState();
 
-		// get action permissions
-		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
+		// get the permitted actions the current user can do.
+		$this->canDo = Super___7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('###view###', $this->item);
 
 		// Set the return
 		$this->setReturn();###LINKEDVIEWITEMS###

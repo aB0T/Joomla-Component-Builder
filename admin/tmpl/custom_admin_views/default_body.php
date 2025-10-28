@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\User\UserFactoryInterface;
 
@@ -28,7 +29,7 @@ $edit = "index.php?option=com_componentbuilder&view=custom_admin_views&task=cust
 		$userChkOut = Factory::getContainer()->
 			get(UserFactoryInterface::class)->
 				loadUserById((int) ($item->checked_out ?? 0));
-		$canDo = ComponentbuilderHelper::getActions('custom_admin_view',$item,'custom_admin_views');
+		$canDo = Actions::get('custom_admin_view', $item, 'custom_admin_views');
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="order nowrap center hidden-phone">

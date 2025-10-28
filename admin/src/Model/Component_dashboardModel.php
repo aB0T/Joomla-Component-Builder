@@ -33,6 +33,7 @@ use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -786,7 +787,7 @@ class Component_dashboardModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_dashboard');
+			$this->canDo		= Actions::get('component_dashboard');
 		}
 
 		if (!$this->canDo->get('component_dashboard.create') && !$this->canDo->get('component_dashboard.batch'))
@@ -929,7 +930,7 @@ class Component_dashboardModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_dashboard');
+			$this->canDo		= Actions::get('component_dashboard');
 		}
 
 		if (!$this->canDo->get('component_dashboard.edit') && !$this->canDo->get('component_dashboard.batch'))

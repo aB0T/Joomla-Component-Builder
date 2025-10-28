@@ -78,10 +78,10 @@ class HtmlView extends BaseHtmlView
 	/**
 	 * The toolbar object
 	 *
-	 * @var    Toolbar
+	 * @var    Joomla___47ee1f2b_9902_4f26_a856_04930ac9ddc3___Power
 	 * @since  3.10.11
 	 */
-	public Toolbar $toolbar;
+	public Joomla___47ee1f2b_9902_4f26_a856_04930ac9ddc3___Power $toolbar;
 
 	/**
 	 * The styles url array
@@ -186,8 +186,8 @@ class HtmlView extends BaseHtmlView
 		$this->styles = $model->getStyles() ?? [];
 		$this->scripts = $model->getScripts() ?? [];
 
-		// get action permissions
-		$this->canDo = ###Component###Helper::getActions('###view###', $this->item);
+		// get the permitted actions the current user can do.
+		$this->canDo = Super___7d95ce74_53dc_4672_bd8a_3b71cdacabea___Power::get('###view###', $this->item);
 
 		// Set the return
 		$this->setReturn();###LINKEDVIEWITEMS###

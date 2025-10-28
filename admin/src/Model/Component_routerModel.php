@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -816,7 +817,7 @@ class Component_routerModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_router');
+			$this->canDo		= Actions::get('component_router');
 		}
 
 		if (!$this->canDo->get('component_router.create') && !$this->canDo->get('component_router.batch'))
@@ -959,7 +960,7 @@ class Component_routerModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_router');
+			$this->canDo		= Actions::get('component_router');
 		}
 
 		if (!$this->canDo->get('component_router.edit') && !$this->canDo->get('component_router.batch'))

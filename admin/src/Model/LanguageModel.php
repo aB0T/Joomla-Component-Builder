@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
@@ -656,7 +657,7 @@ class LanguageModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('language');
+			$this->canDo		= Actions::get('language');
 		}
 
 		if (!$this->canDo->get('language.create') && !$this->canDo->get('language.batch'))
@@ -799,7 +800,7 @@ class LanguageModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('language');
+			$this->canDo		= Actions::get('language');
 		}
 
 		if (!$this->canDo->get('language.edit') && !$this->canDo->get('language.batch'))

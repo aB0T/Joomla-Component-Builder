@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
@@ -669,7 +670,7 @@ class Joomla_module_updatesModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_module_updates');
+			$this->canDo		= Actions::get('joomla_module_updates');
 		}
 
 		if (!$this->canDo->get('joomla_module_updates.create') && !$this->canDo->get('joomla_module_updates.batch'))
@@ -812,7 +813,7 @@ class Joomla_module_updatesModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_module_updates');
+			$this->canDo		= Actions::get('joomla_module_updates');
 		}
 
 		if (!$this->canDo->get('joomla_module_updates.edit') && !$this->canDo->get('joomla_module_updates.batch'))

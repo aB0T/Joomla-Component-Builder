@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
@@ -712,7 +713,7 @@ class Library_files_folders_urlsModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('library_files_folders_urls');
+			$this->canDo		= Actions::get('library_files_folders_urls');
 		}
 
 		if (!$this->canDo->get('library_files_folders_urls.create') && !$this->canDo->get('library_files_folders_urls.batch'))
@@ -855,7 +856,7 @@ class Library_files_folders_urlsModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('library_files_folders_urls');
+			$this->canDo		= Actions::get('library_files_folders_urls');
 		}
 
 		if (!$this->canDo->get('library_files_folders_urls.edit') && !$this->canDo->get('library_files_folders_urls.batch'))

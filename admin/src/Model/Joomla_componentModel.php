@@ -37,6 +37,7 @@ use VDM\Joomla\FOF\Encrypt\AES;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\String\ComponentCodeNameHelper;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Componentbuilder\Extrusion\Helper\Extrusion;
@@ -1265,7 +1266,7 @@ class Joomla_componentModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
+			$this->canDo		= Actions::get('joomla_component');
 		}
 
 		if (!$this->canDo->get('joomla_component.create') && !$this->canDo->get('joomla_component.batch'))
@@ -1408,7 +1409,7 @@ class Joomla_componentModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_component');
+			$this->canDo		= Actions::get('joomla_component');
 		}
 
 		if (!$this->canDo->get('joomla_component.edit') && !$this->canDo->get('joomla_component.batch'))

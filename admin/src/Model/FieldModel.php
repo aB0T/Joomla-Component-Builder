@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\String\FieldHelper;
 use VDM\Joomla\Utilities\String\TypeHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -635,7 +636,7 @@ class FieldModel extends AdminModel
 					// If the owner matches 'me' then do the test.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('field.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('field.edit.own', $this->option))
 						{
 							return true;
 						}
@@ -925,7 +926,7 @@ class FieldModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('field');
+			$this->canDo		= Actions::get('field');
 		}
 
 		if (!$this->canDo->get('field.create') && !$this->canDo->get('field.batch'))
@@ -1077,7 +1078,7 @@ class FieldModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('field');
+			$this->canDo		= Actions::get('field');
 		}
 
 		if (!$this->canDo->get('field.edit') && !$this->canDo->get('field.batch'))

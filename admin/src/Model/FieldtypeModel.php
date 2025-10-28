@@ -33,6 +33,7 @@ use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -568,7 +569,7 @@ class FieldtypeModel extends AdminModel
 					// If the owner matches 'me' then do the test.
 					if ($ownerId == $user->id)
 					{
-						if ($user->authorise('fieldtype.edit.own', 'com_componentbuilder'))
+						if ($user->authorise('fieldtype.edit.own', $this->option))
 						{
 							return true;
 						}
@@ -858,7 +859,7 @@ class FieldtypeModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('fieldtype');
+			$this->canDo		= Actions::get('fieldtype');
 		}
 
 		if (!$this->canDo->get('fieldtype.create') && !$this->canDo->get('fieldtype.batch'))
@@ -1010,7 +1011,7 @@ class FieldtypeModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('fieldtype');
+			$this->canDo		= Actions::get('fieldtype');
 		}
 
 		if (!$this->canDo->get('fieldtype.edit') && !$this->canDo->get('fieldtype.batch'))

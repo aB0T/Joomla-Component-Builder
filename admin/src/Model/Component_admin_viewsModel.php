@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -678,7 +679,7 @@ class Component_admin_viewsModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_admin_views');
+			$this->canDo		= Actions::get('component_admin_views');
 		}
 
 		if (!$this->canDo->get('component_admin_views.create') && !$this->canDo->get('component_admin_views.batch'))
@@ -821,7 +822,7 @@ class Component_admin_viewsModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_admin_views');
+			$this->canDo		= Actions::get('component_admin_views');
 		}
 
 		if (!$this->canDo->get('component_admin_views.edit') && !$this->canDo->get('component_admin_views.batch'))

@@ -33,6 +33,7 @@ use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
 // No direct access to this file
@@ -772,7 +773,7 @@ class Admin_fields_relationsModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_relations');
+			$this->canDo		= Actions::get('admin_fields_relations');
 		}
 
 		if (!$this->canDo->get('admin_fields_relations.create') && !$this->canDo->get('admin_fields_relations.batch'))
@@ -915,7 +916,7 @@ class Admin_fields_relationsModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_fields_relations');
+			$this->canDo		= Actions::get('admin_fields_relations');
 		}
 
 		if (!$this->canDo->get('admin_fields_relations.edit') && !$this->canDo->get('admin_fields_relations.batch'))

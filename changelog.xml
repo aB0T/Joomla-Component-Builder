@@ -204,6 +204,9 @@
     <element>com_componentbuilder</element>
     <type>component</type>
     <version>6.1.4-alpha</version>
+    <security>
+      <item>Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.</item>
+    </security>
     <fix>
       <item>Fix the linked [new] button to use the correct init_default params.</item>
       <item>Fix the Components list view to better display long website urls.</item>
@@ -213,41 +216,37 @@
       <item>Fix that ensure that we always load and int into loadUserById.</item>
       <item>Fix the subform permission behaviour to use removeField.</item>
       <item>Fixed linked admin views with New and New &amp; Close buttons to correctly initialize fields using global unique IDs and default conventions.</item>
+      <item>Fixed a bug caused by missing option settings in the model configuration.</item>
     </fix>
     <language>
       <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
     </language>
     <addition>
       <item>Add version 6 to the version 5 update server, for easier upgrade path.</item>
-    </addition>
-    <change>
-      <item>Refactor the JS selText method.</item>
-    </change>
-    <note>
-      <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
-    </note>
-  </changelog>
-  <changelog>
-    <element>com_componentbuilder</element>
-    <type>component</type>
-    <version>6.1.4-alpha3</version>
-    <security>
-      <item>Enhanced security in edit views by moving access validation into the model, ensuring protection even when Joomla bypasses the controller layer.</item>
-    </security>
-    <fix>
-      <item>Fixed a bug caused by missing option settings in the model configuration.</item>
-    </fix>
-    <addition>
       <item>Added user access verification logic in the model to prevent unauthorized direct item loading.</item>
     </addition>
     <change>
+      <item>Refactor the JS selText method.</item>
       <item>Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.</item>
       <item>Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.</item>
       <item>Updated and refined the site view class for greater consistency with backend view logic.</item>
     </change>
     <note>
+      <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
       <item>Improved initialization handling in the view to reduce dependency errors during rendering.</item>
       <item>Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.</item>
     </note>
+  </changelog>
+  <changelog>
+    <element>com_componentbuilder</element>
+    <type>component</type>
+    <version>6.1.4-alpha4</version>
+    <fix>
+      <item>Fix permission issue in the list view. #1266</item>
+    </fix>
+    <change>
+      <item>Refactor the list view buttons.</item>
+      <item>Refactor the getActions helper method.</item>
+    </change>
   </changelog>
 </changelogs>

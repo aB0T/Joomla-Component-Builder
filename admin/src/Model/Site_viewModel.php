@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -753,8 +754,8 @@ class Site_viewModel extends AdminModel
 				return false;
 			}
 		}
-		// Since there is no permission given, block access.
-		return false;
+		// Since there is no permission given, core edit must be checked.
+		return $user->authorise('core.edit', $this->option);
 	}
 
 	/**
@@ -998,7 +999,7 @@ class Site_viewModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
+			$this->canDo		= Actions::get('site_view');
 		}
 
 		if (!$this->canDo->get('core.create') && !$this->canDo->get('site_view.batch'))
@@ -1141,7 +1142,7 @@ class Site_viewModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('site_view');
+			$this->canDo		= Actions::get('site_view');
 		}
 
 		if (!$this->canDo->get('core.edit') && !$this->canDo->get('site_view.batch'))

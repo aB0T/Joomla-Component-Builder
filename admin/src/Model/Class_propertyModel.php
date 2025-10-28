@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\GetHelper;
 
@@ -802,7 +803,7 @@ class Class_propertyModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('class_property');
+			$this->canDo		= Actions::get('class_property');
 		}
 
 		if (!$this->canDo->get('class_property.create') && !$this->canDo->get('class_property.batch'))
@@ -945,7 +946,7 @@ class Class_propertyModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('class_property');
+			$this->canDo		= Actions::get('class_property');
 		}
 
 		if (!$this->canDo->get('class_property.edit') && !$this->canDo->get('class_property.batch'))

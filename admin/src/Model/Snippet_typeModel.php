@@ -30,6 +30,7 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -665,7 +666,7 @@ class Snippet_typeModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('snippet_type');
+			$this->canDo		= Actions::get('snippet_type');
 		}
 
 		if (!$this->canDo->get('snippet_type.create') && !$this->canDo->get('snippet_type.batch'))
@@ -808,7 +809,7 @@ class Snippet_typeModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('snippet_type');
+			$this->canDo		= Actions::get('snippet_type');
 		}
 
 		if (!$this->canDo->get('snippet_type.edit') && !$this->canDo->get('snippet_type.batch'))

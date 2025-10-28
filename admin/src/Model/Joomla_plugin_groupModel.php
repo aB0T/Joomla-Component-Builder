@@ -30,6 +30,7 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
@@ -414,8 +415,8 @@ class Joomla_plugin_groupModel extends AdminModel
 				return false;
 			}
 		}
-		// Since there is no permission given, block access.
-		return false;
+		// Since there is no permission given, core edit must be checked.
+		return $user->authorise('core.edit', $this->option);
 	}
 
 	/**
@@ -659,7 +660,7 @@ class Joomla_plugin_groupModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_plugin_group');
+			$this->canDo		= Actions::get('joomla_plugin_group');
 		}
 
 		if (!$this->canDo->get('core.create') && !$this->canDo->get('joomla_plugin_group.batch'))
@@ -802,7 +803,7 @@ class Joomla_plugin_groupModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_plugin_group');
+			$this->canDo		= Actions::get('joomla_plugin_group');
 		}
 
 		if (!$this->canDo->get('core.edit') && !$this->canDo->get('joomla_plugin_group.batch'))

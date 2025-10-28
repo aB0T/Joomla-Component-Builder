@@ -25,6 +25,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\Input\Input;
@@ -200,8 +201,8 @@ class HtmlView extends BaseHtmlView
 		$this->scripts = $model->getScripts();
 		$this->state = $model->getState();
 
-		// get action permissions
-		$this->canDo = ComponentbuilderHelper::getActions('joomla_component', $this->item);
+		// get the permitted actions the current user can do.
+		$this->canDo = Actions::get('joomla_component', $this->item);
 
 		// Set the return
 		$this->setReturn();

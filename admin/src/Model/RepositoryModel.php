@@ -30,6 +30,7 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -694,7 +695,7 @@ class RepositoryModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('repository');
+			$this->canDo		= Actions::get('repository');
 		}
 
 		if (!$this->canDo->get('repository.create') && !$this->canDo->get('repository.batch'))
@@ -837,7 +838,7 @@ class RepositoryModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('repository');
+			$this->canDo		= Actions::get('repository');
 		}
 
 		if (!$this->canDo->get('repository.edit') && !$this->canDo->get('repository.batch'))

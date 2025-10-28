@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -709,7 +710,7 @@ class Component_files_foldersModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_files_folders');
+			$this->canDo		= Actions::get('component_files_folders');
 		}
 
 		if (!$this->canDo->get('component_files_folders.create') && !$this->canDo->get('component_files_folders.batch'))
@@ -852,7 +853,7 @@ class Component_files_foldersModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('component_files_folders');
+			$this->canDo		= Actions::get('component_files_folders');
 		}
 
 		if (!$this->canDo->get('component_files_folders.edit') && !$this->canDo->get('component_files_folders.batch'))

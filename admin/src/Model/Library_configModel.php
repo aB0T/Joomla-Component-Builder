@@ -29,6 +29,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 
@@ -666,7 +667,7 @@ class Library_configModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('library_config');
+			$this->canDo		= Actions::get('library_config');
 		}
 
 		if (!$this->canDo->get('library_config.create') && !$this->canDo->get('library_config.batch'))
@@ -809,7 +810,7 @@ class Library_configModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('library_config');
+			$this->canDo		= Actions::get('library_config');
 		}
 
 		if (!$this->canDo->get('library_config.edit') && !$this->canDo->get('library_config.batch'))

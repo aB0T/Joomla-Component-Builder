@@ -30,6 +30,7 @@ use Joomla\Input\Input;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use Joomla\CMS\Helper\TagsHelper;
 use VDM\Joomla\Utilities\GuidHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
@@ -676,7 +677,7 @@ class Joomla_powerModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_power');
+			$this->canDo		= Actions::get('joomla_power');
 		}
 
 		if (!$this->canDo->get('joomla_power.create') && !$this->canDo->get('joomla_power.batch'))
@@ -819,7 +820,7 @@ class Joomla_powerModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('joomla_power');
+			$this->canDo		= Actions::get('joomla_power');
 		}
 
 		if (!$this->canDo->get('joomla_power.edit') && !$this->canDo->get('joomla_power.batch'))

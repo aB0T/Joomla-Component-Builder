@@ -34,6 +34,7 @@ use VDM\Joomla\Utilities\StringHelper as UtilitiesStringHelper;
 use VDM\Joomla\Utilities\ObjectHelper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -995,7 +996,7 @@ class Dynamic_getModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
+			$this->canDo		= Actions::get('dynamic_get');
 		}
 
 		if (!$this->canDo->get('dynamic_get.create') && !$this->canDo->get('dynamic_get.batch'))
@@ -1138,7 +1139,7 @@ class Dynamic_getModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('dynamic_get');
+			$this->canDo		= Actions::get('dynamic_get');
 		}
 
 		if (!$this->canDo->get('dynamic_get.edit') && !$this->canDo->get('dynamic_get.batch'))

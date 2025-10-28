@@ -36,6 +36,7 @@ use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Data\Factory as DataFactory;
+use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\GetHelper;
 
 // No direct access to this file
@@ -1308,7 +1309,7 @@ class Admin_viewModel extends AdminModel
 			$this->user 		= Factory::getApplication()->getIdentity();
 			$this->table 		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
+			$this->canDo		= Actions::get('admin_view');
 		}
 
 		if (!$this->canDo->get('admin_view.create') && !$this->canDo->get('admin_view.batch'))
@@ -1451,7 +1452,7 @@ class Admin_viewModel extends AdminModel
 			$this->user		= Factory::getApplication()->getIdentity();
 			$this->table		= $this->getTable();
 			$this->tableClassName	= get_class($this->table);
-			$this->canDo		= ComponentbuilderHelper::getActions('admin_view');
+			$this->canDo		= Actions::get('admin_view');
 		}
 
 		if (!$this->canDo->get('admin_view.edit') && !$this->canDo->get('admin_view.batch'))

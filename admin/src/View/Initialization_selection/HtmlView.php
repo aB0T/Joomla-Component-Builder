@@ -27,7 +27,6 @@ use VDM\Joomla\Utilities\StringHelper;
 use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
-use Joomla\CMS\Toolbar\Toolbar;
 
 // No direct access to this file
 \defined('_JEXEC') or die; 
@@ -89,6 +88,14 @@ class HtmlView extends BaseHtmlView
 	protected array $scripts;
 
 	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -143,42 +150,40 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
-		// hide the main menu
 		$this->input->set('hidemainmenu', true);
+
 		// set the title
-		if (isset($this->item->name) && $this->item->name)
+		if (!empty($this->item->name))
 		{
 			$title = $this->item->name;
 		}
 
-		// Check for empty title and add view name if param is set
+		// check for empty title to add the view name
 		if (empty($title))
 		{
 			$title = Text::_('COM_COMPONENTBUILDER_INITIALIZATION_SELECTION');
 		}
 
 		// add title to the page
-		ToolbarHelper::title($title,'puzzle');
-		/** @var  Toolbar $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
+		ToolbarHelper::title($title, 'puzzle');
 		// add cpanel button
 		ToolbarHelper::custom('initialization_selection.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
-
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('initialization_selection');
 		if (StringHelper::check($this->help_url))
 		{
-			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			$toolbar->preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 

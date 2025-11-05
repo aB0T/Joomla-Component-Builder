@@ -26,8 +26,8 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -229,60 +229,46 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
+		
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPONENTS_FILES_FOLDERS'), 'joomla');
-		/** @var  Toolbar $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
 
 		if ($this->canCreate)
 		{
-			$toolbar->addNew('component_files_folders.add');
+			ToolbarHelper::addNew('component_files_folders.add');
 		}
 
 		// Only load if there are items
-		if (!$this->isEmptyState)
+		if (ArrayHelper::check($this->items))
 		{
-			/** @var  DropdownButton $dropdown */
-			$dropdown = $toolbar->dropdownButton('status-group')
-				->text('JTOOLBAR_CHANGE_STATUS')
-				->toggleSplit(false)
-				->icon('icon-ellipsis-h')
-				->buttonClass('btn btn-action')
-				->listCheck(true);
-
-			$childBar = $dropdown->getChildToolbar();
-
-			if (!$this->isEmptyState && $this->canEdit)
+			if ($this->canEdit)
 			{
-				$childBar->edit('component_files_folders.edit')->listCheck(true);
+				ToolbarHelper::editList('component_files_folders.edit');
 			}
 
 			if ($this->canState)
 			{
-				$childBar->publish('components_files_folders.publish')->listCheck(true);
-
-				$childBar->unpublish('components_files_folders.unpublish')->listCheck(true);
-
-				$childBar->archive('components_files_folders.archive')->listCheck(true);
+				ToolbarHelper::publishList('components_files_folders.publish');
+				ToolbarHelper::unpublishList('components_files_folders.unpublish');
+				ToolbarHelper::archiveList('components_files_folders.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					$childBar->checkin('components_files_folders.checkin')->listCheck(true);
+					ToolbarHelper::checkin('components_files_folders.checkin');
 				}
+			}
 
-				if ($this->state->get('filter.published') == -2 && $this->canDelete)
-				{
-					$toolbar->delete('components_files_folders.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
-						->message('JGLOBAL_CONFIRM_DELETE')
-						->listCheck(true);
-				}
-				elseif ($this->canDelete)
-				{
-					$childBar->trash('components_files_folders.trash')->listCheck(true);
-				}
+			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
+			{
+				ToolbarHelper::deleteList('', 'components_files_folders.delete', 'JTOOLBAR_EMPTY_TRASH');
+			}
+			elseif ($this->canState && $this->canDelete)
+			{
+				ToolbarHelper::trash('components_files_folders.trash');
 			}
 		}
 
@@ -290,13 +276,13 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('components_files_folders');
 		if (StringHelper::check($this->help_url))
 		{
-			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			$toolbar->preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 

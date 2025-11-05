@@ -26,8 +26,8 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -229,60 +229,46 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
+		
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_ADMINS_FIELDS_RELATIONS'), 'joomla');
-		/** @var  Toolbar $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
 
 		if ($this->canCreate)
 		{
-			$toolbar->addNew('admin_fields_relations.add');
+			ToolbarHelper::addNew('admin_fields_relations.add');
 		}
 
 		// Only load if there are items
-		if (!$this->isEmptyState)
+		if (ArrayHelper::check($this->items))
 		{
-			/** @var  DropdownButton $dropdown */
-			$dropdown = $toolbar->dropdownButton('status-group')
-				->text('JTOOLBAR_CHANGE_STATUS')
-				->toggleSplit(false)
-				->icon('icon-ellipsis-h')
-				->buttonClass('btn btn-action')
-				->listCheck(true);
-
-			$childBar = $dropdown->getChildToolbar();
-
-			if (!$this->isEmptyState && $this->canEdit)
+			if ($this->canEdit)
 			{
-				$childBar->edit('admin_fields_relations.edit')->listCheck(true);
+				ToolbarHelper::editList('admin_fields_relations.edit');
 			}
 
 			if ($this->canState)
 			{
-				$childBar->publish('admins_fields_relations.publish')->listCheck(true);
-
-				$childBar->unpublish('admins_fields_relations.unpublish')->listCheck(true);
-
-				$childBar->archive('admins_fields_relations.archive')->listCheck(true);
+				ToolbarHelper::publishList('admins_fields_relations.publish');
+				ToolbarHelper::unpublishList('admins_fields_relations.unpublish');
+				ToolbarHelper::archiveList('admins_fields_relations.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					$childBar->checkin('admins_fields_relations.checkin')->listCheck(true);
+					ToolbarHelper::checkin('admins_fields_relations.checkin');
 				}
+			}
 
-				if ($this->state->get('filter.published') == -2 && $this->canDelete)
-				{
-					$toolbar->delete('admins_fields_relations.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
-						->message('JGLOBAL_CONFIRM_DELETE')
-						->listCheck(true);
-				}
-				elseif ($this->canDelete)
-				{
-					$childBar->trash('admins_fields_relations.trash')->listCheck(true);
-				}
+			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
+			{
+				ToolbarHelper::deleteList('', 'admins_fields_relations.delete', 'JTOOLBAR_EMPTY_TRASH');
+			}
+			elseif ($this->canState && $this->canDelete)
+			{
+				ToolbarHelper::trash('admins_fields_relations.trash');
 			}
 		}
 
@@ -290,13 +276,13 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('admins_fields_relations');
 		if (StringHelper::check($this->help_url))
 		{
-			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			$toolbar->preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 

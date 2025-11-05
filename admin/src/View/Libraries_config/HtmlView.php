@@ -26,8 +26,8 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -229,60 +229,46 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
+		
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_LIBRARIES_CONFIG'), 'joomla');
-		/** @var  Toolbar $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
 
 		if ($this->canCreate)
 		{
-			$toolbar->addNew('library_config.add');
+			ToolbarHelper::addNew('library_config.add');
 		}
 
 		// Only load if there are items
-		if (!$this->isEmptyState)
+		if (ArrayHelper::check($this->items))
 		{
-			/** @var  DropdownButton $dropdown */
-			$dropdown = $toolbar->dropdownButton('status-group')
-				->text('JTOOLBAR_CHANGE_STATUS')
-				->toggleSplit(false)
-				->icon('icon-ellipsis-h')
-				->buttonClass('btn btn-action')
-				->listCheck(true);
-
-			$childBar = $dropdown->getChildToolbar();
-
-			if (!$this->isEmptyState && $this->canEdit)
+			if ($this->canEdit)
 			{
-				$childBar->edit('library_config.edit')->listCheck(true);
+				ToolbarHelper::editList('library_config.edit');
 			}
 
 			if ($this->canState)
 			{
-				$childBar->publish('libraries_config.publish')->listCheck(true);
-
-				$childBar->unpublish('libraries_config.unpublish')->listCheck(true);
-
-				$childBar->archive('libraries_config.archive')->listCheck(true);
+				ToolbarHelper::publishList('libraries_config.publish');
+				ToolbarHelper::unpublishList('libraries_config.unpublish');
+				ToolbarHelper::archiveList('libraries_config.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					$childBar->checkin('libraries_config.checkin')->listCheck(true);
+					ToolbarHelper::checkin('libraries_config.checkin');
 				}
+			}
 
-				if ($this->state->get('filter.published') == -2 && $this->canDelete)
-				{
-					$toolbar->delete('libraries_config.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
-						->message('JGLOBAL_CONFIRM_DELETE')
-						->listCheck(true);
-				}
-				elseif ($this->canDelete)
-				{
-					$childBar->trash('libraries_config.trash')->listCheck(true);
-				}
+			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
+			{
+				ToolbarHelper::deleteList('', 'libraries_config.delete', 'JTOOLBAR_EMPTY_TRASH');
+			}
+			elseif ($this->canState && $this->canDelete)
+			{
+				ToolbarHelper::trash('libraries_config.trash');
 			}
 		}
 
@@ -290,13 +276,13 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('libraries_config');
 		if (StringHelper::check($this->help_url))
 		{
-			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			$toolbar->preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 

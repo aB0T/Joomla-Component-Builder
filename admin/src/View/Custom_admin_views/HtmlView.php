@@ -26,8 +26,8 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Document\Document;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
+use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\StringHelper;
-use Joomla\CMS\Toolbar\Button\DropdownButton;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -229,60 +229,46 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
+		
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_CUSTOM_ADMIN_VIEWS'), 'screen');
-		/** @var  Toolbar $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
 
 		if ($this->canCreate)
 		{
-			$toolbar->addNew('custom_admin_view.add');
+			ToolbarHelper::addNew('custom_admin_view.add');
 		}
 
 		// Only load if there are items
-		if (!$this->isEmptyState)
+		if (ArrayHelper::check($this->items))
 		{
-			/** @var  DropdownButton $dropdown */
-			$dropdown = $toolbar->dropdownButton('status-group')
-				->text('JTOOLBAR_CHANGE_STATUS')
-				->toggleSplit(false)
-				->icon('icon-ellipsis-h')
-				->buttonClass('btn btn-action')
-				->listCheck(true);
-
-			$childBar = $dropdown->getChildToolbar();
-
-			if (!$this->isEmptyState && $this->canEdit)
+			if ($this->canEdit)
 			{
-				$childBar->edit('custom_admin_view.edit')->listCheck(true);
+				ToolbarHelper::editList('custom_admin_view.edit');
 			}
 
 			if ($this->canState)
 			{
-				$childBar->publish('custom_admin_views.publish')->listCheck(true);
-
-				$childBar->unpublish('custom_admin_views.unpublish')->listCheck(true);
-
-				$childBar->archive('custom_admin_views.archive')->listCheck(true);
+				ToolbarHelper::publishList('custom_admin_views.publish');
+				ToolbarHelper::unpublishList('custom_admin_views.unpublish');
+				ToolbarHelper::archiveList('custom_admin_views.archive');
 
 				if ($this->canDo->get('core.admin'))
 				{
-					$childBar->checkin('custom_admin_views.checkin')->listCheck(true);
+					ToolbarHelper::checkin('custom_admin_views.checkin');
 				}
+			}
 
-				if ($this->state->get('filter.published') == -2 && $this->canDelete)
-				{
-					$toolbar->delete('custom_admin_views.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
-						->message('JGLOBAL_CONFIRM_DELETE')
-						->listCheck(true);
-				}
-				elseif ($this->canDelete)
-				{
-					$childBar->trash('custom_admin_views.trash')->listCheck(true);
-				}
+			if ($this->state->get('filter.published') == -2 && ($this->canState && $this->canDelete))
+			{
+				ToolbarHelper::deleteList('', 'custom_admin_views.delete', 'JTOOLBAR_EMPTY_TRASH');
+			}
+			elseif ($this->canState && $this->canDelete)
+			{
+				ToolbarHelper::trash('custom_admin_views.trash');
 			}
 		}
 		if ($this->user->authorise('custom_admin_view.init', 'com_componentbuilder'))
@@ -305,13 +291,13 @@ class HtmlView extends BaseHtmlView
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('custom_admin_views');
 		if (StringHelper::check($this->help_url))
 		{
-			$toolbar->help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
+			ToolbarHelper::help('COM_COMPONENTBUILDER_HELP_MANAGER', false, $this->help_url);
 		}
 
 		// add the options comp button
 		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
 		{
-			$toolbar->preferences('com_componentbuilder');
+			ToolbarHelper::preferences('com_componentbuilder');
 		}
 	}
 

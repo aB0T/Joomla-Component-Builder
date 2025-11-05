@@ -41,11 +41,13 @@
 - Fix a security vulnerability in custom code redirect URL validation.
 - Add an alert to the Compiler view when no Components exist. #1263
 
-# v5.1.4-alpha4
+# v5.1.4-alpha5
 
-- Fix permission issue in the list view. #1266
-- Refactor the list view buttons.
-- Refactor the getActions helper method.
+- Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268
+- Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268
+- Refactored toolbar into version specific classes to resolve getToolbar errors. #1267
+- Added method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270
+- Fix php8.3 deprecation warnings in compiler templates. #1265
 
 # v5.1.4-alpha
 
@@ -69,6 +71,9 @@
 - Fixed a bug caused by missing option settings in the model configuration.
 - Updated and refined the site view class for greater consistency with backend view logic.
 - Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.
+- Fix permission issue in the list view. #1266
+- Refactor the list view buttons.
+- Refactor the getActions helper method.
 
 # v5.1.3
 

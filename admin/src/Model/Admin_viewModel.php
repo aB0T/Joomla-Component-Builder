@@ -189,16 +189,20 @@ class Admin_viewModel extends AdminModel
 				'javascript_views_footer'
 			)
 		),
-		'custom_buttons' => array(
+		'toolbar' => array(
 			'left' => array(
-				'add_custom_button',
-				'custom_button'
+				'add_custom_button'
 			),
 			'fullwidth' => array(
+				'custom_button',
 				'php_controller',
 				'php_model',
 				'php_controller_list',
-				'php_model_list'
+				'php_model_list',
+				'add_view_toolbar',
+				'view_toolbar',
+				'add_views_toolbar',
+				'views_toolbar'
 			)
 		)
 	);
@@ -350,12 +354,6 @@ class Admin_viewModel extends AdminModel
 				return false;
 			}
 
-			if (!empty($item->php_allowedit))
-			{
-				// base64 Decode php_allowedit.
-				$item->php_allowedit = base64_decode($item->php_allowedit);
-			}
-
 			if (!empty($item->php_postsavehook))
 			{
 				// base64 Decode php_postsavehook.
@@ -380,10 +378,22 @@ class Admin_viewModel extends AdminModel
 				$item->php_getitems = base64_decode($item->php_getitems);
 			}
 
-			if (!empty($item->php_after_publish))
+			if (!empty($item->php_batchmove))
 			{
-				// base64 Decode php_after_publish.
-				$item->php_after_publish = base64_decode($item->php_after_publish);
+				// base64 Decode php_batchmove.
+				$item->php_batchmove = base64_decode($item->php_batchmove);
+			}
+
+			if (!empty($item->php_allowedit))
+			{
+				// base64 Decode php_allowedit.
+				$item->php_allowedit = base64_decode($item->php_allowedit);
+			}
+
+			if (!empty($item->php_after_delete))
+			{
+				// base64 Decode php_after_delete.
+				$item->php_after_delete = base64_decode($item->php_after_delete);
 			}
 
 			if (!empty($item->php_after_cancel))
@@ -392,16 +402,10 @@ class Admin_viewModel extends AdminModel
 				$item->php_after_cancel = base64_decode($item->php_after_cancel);
 			}
 
-			if (!empty($item->php_batchmove))
+			if (!empty($item->php_after_publish))
 			{
-				// base64 Decode php_batchmove.
-				$item->php_batchmove = base64_decode($item->php_batchmove);
-			}
-
-			if (!empty($item->php_after_delete))
-			{
-				// base64 Decode php_after_delete.
-				$item->php_after_delete = base64_decode($item->php_after_delete);
+				// base64 Decode php_after_publish.
+				$item->php_after_publish = base64_decode($item->php_after_publish);
 			}
 
 			if (!empty($item->php_getitem))
@@ -470,6 +474,12 @@ class Admin_viewModel extends AdminModel
 				$item->sql = base64_decode($item->sql);
 			}
 
+			if (!empty($item->php_ajaxmethod))
+			{
+				// base64 Decode php_ajaxmethod.
+				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+			}
+
 			if (!empty($item->css_view))
 			{
 				// base64 Decode css_view.
@@ -530,10 +540,24 @@ class Admin_viewModel extends AdminModel
 				$item->php_model_list = base64_decode($item->php_model_list);
 			}
 
-			if (!empty($item->php_ajaxmethod))
+			if (!empty($item->view_toolbar))
 			{
-				// base64 Decode php_ajaxmethod.
-				$item->php_ajaxmethod = base64_decode($item->php_ajaxmethod);
+				// base64 Decode view_toolbar.
+				$item->view_toolbar = base64_decode($item->view_toolbar);
+			}
+
+			if (!empty($item->views_toolbar))
+			{
+				// base64 Decode views_toolbar.
+				$item->views_toolbar = base64_decode($item->views_toolbar);
+			}
+
+			if (!empty($item->ajax_input))
+			{
+				// Convert the ajax_input field to an array.
+				$ajax_input = new Registry;
+				$ajax_input->loadString($item->ajax_input);
+				$item->ajax_input = $ajax_input->toArray();
 			}
 
 			if (!empty($item->addpermissions))
@@ -582,14 +606,6 @@ class Admin_viewModel extends AdminModel
 				$addtables = new Registry;
 				$addtables->loadString($item->addtables);
 				$item->addtables = $addtables->toArray();
-			}
-
-			if (!empty($item->ajax_input))
-			{
-				// Convert the ajax_input field to an array.
-				$ajax_input = new Registry;
-				$ajax_input->loadString($item->ajax_input);
-				$item->ajax_input = $ajax_input->toArray();
 			}
 
 
@@ -1590,6 +1606,19 @@ class Admin_viewModel extends AdminModel
 			$data['guid'] = (string) GuidHelper::get();
 		}
 
+		// Set the ajax_input items to data.
+		if (isset($data['ajax_input']) && is_array($data['ajax_input']))
+		{
+			$ajax_input = new Registry;
+			$ajax_input->loadArray($data['ajax_input']);
+			$data['ajax_input'] = (string) $ajax_input;
+		}
+		elseif (!isset($data['ajax_input']))
+		{
+			// Set the empty ajax_input to data
+			$data['ajax_input'] = '';
+		}
+
 		// Set the addpermissions items to data.
 		if (isset($data['addpermissions']) && is_array($data['addpermissions']))
 		{
@@ -1668,25 +1697,6 @@ class Admin_viewModel extends AdminModel
 			$data['addtables'] = '';
 		}
 
-		// Set the ajax_input items to data.
-		if (isset($data['ajax_input']) && is_array($data['ajax_input']))
-		{
-			$ajax_input = new Registry;
-			$ajax_input->loadArray($data['ajax_input']);
-			$data['ajax_input'] = (string) $ajax_input;
-		}
-		elseif (!isset($data['ajax_input']))
-		{
-			// Set the empty ajax_input to data
-			$data['ajax_input'] = '';
-		}
-
-		// Set the php_allowedit string to base64 string.
-		if (isset($data['php_allowedit']))
-		{
-			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
-		}
-
 		// Set the php_postsavehook string to base64 string.
 		if (isset($data['php_postsavehook']))
 		{
@@ -1711,10 +1721,22 @@ class Admin_viewModel extends AdminModel
 			$data['php_getitems'] = base64_encode($data['php_getitems']);
 		}
 
-		// Set the php_after_publish string to base64 string.
-		if (isset($data['php_after_publish']))
+		// Set the php_batchmove string to base64 string.
+		if (isset($data['php_batchmove']))
 		{
-			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
+			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
+		}
+
+		// Set the php_allowedit string to base64 string.
+		if (isset($data['php_allowedit']))
+		{
+			$data['php_allowedit'] = base64_encode($data['php_allowedit']);
+		}
+
+		// Set the php_after_delete string to base64 string.
+		if (isset($data['php_after_delete']))
+		{
+			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
 		}
 
 		// Set the php_after_cancel string to base64 string.
@@ -1723,16 +1745,10 @@ class Admin_viewModel extends AdminModel
 			$data['php_after_cancel'] = base64_encode($data['php_after_cancel']);
 		}
 
-		// Set the php_batchmove string to base64 string.
-		if (isset($data['php_batchmove']))
+		// Set the php_after_publish string to base64 string.
+		if (isset($data['php_after_publish']))
 		{
-			$data['php_batchmove'] = base64_encode($data['php_batchmove']);
-		}
-
-		// Set the php_after_delete string to base64 string.
-		if (isset($data['php_after_delete']))
-		{
-			$data['php_after_delete'] = base64_encode($data['php_after_delete']);
+			$data['php_after_publish'] = base64_encode($data['php_after_publish']);
 		}
 
 		// Set the php_getitem string to base64 string.
@@ -1801,6 +1817,12 @@ class Admin_viewModel extends AdminModel
 			$data['sql'] = base64_encode($data['sql']);
 		}
 
+		// Set the php_ajaxmethod string to base64 string.
+		if (isset($data['php_ajaxmethod']))
+		{
+			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
+		}
+
 		// Set the css_view string to base64 string.
 		if (isset($data['css_view']))
 		{
@@ -1861,10 +1883,16 @@ class Admin_viewModel extends AdminModel
 			$data['php_model_list'] = base64_encode($data['php_model_list']);
 		}
 
-		// Set the php_ajaxmethod string to base64 string.
-		if (isset($data['php_ajaxmethod']))
+		// Set the view_toolbar string to base64 string.
+		if (isset($data['view_toolbar']))
 		{
-			$data['php_ajaxmethod'] = base64_encode($data['php_ajaxmethod']);
+			$data['view_toolbar'] = base64_encode($data['view_toolbar']);
+		}
+
+		// Set the views_toolbar string to base64 string.
+		if (isset($data['views_toolbar']))
+		{
+			$data['views_toolbar'] = base64_encode($data['views_toolbar']);
 		}
 
 		// Set the Params Items to data

@@ -114,15 +114,15 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>
 
-	<?php echo Html::_('uitab.addTab', 'admin_viewTab', 'custom_buttons', Text::_('COM_COMPONENTBUILDER_ADMIN_VIEW_CUSTOM_BUTTONS', true)); ?>
+	<?php echo Html::_('uitab.addTab', 'admin_viewTab', 'toolbar', Text::_('COM_COMPONENTBUILDER_ADMIN_VIEW_TOOLBAR', true)); ?>
 		<div class="row">
 			<div class="col-md-12">
-				<?php echo LayoutHelper::render('admin_view.custom_buttons_left', $this); ?>
+				<?php echo LayoutHelper::render('admin_view.toolbar_left', $this); ?>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<?php echo LayoutHelper::render('admin_view.custom_buttons_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('admin_view.toolbar_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>

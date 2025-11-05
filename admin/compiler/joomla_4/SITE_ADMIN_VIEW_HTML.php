@@ -242,14 +242,13 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
-	{
-		###ADDTOOLBAR###
+	{###INITTOOLBAR###
 
-		// add the toolbar if it's not already loaded
-		$this->toolbar ??= $this->getDocument()->getToolbar();
+		###ADDTOOLBAR###
 	}
 
 	/**

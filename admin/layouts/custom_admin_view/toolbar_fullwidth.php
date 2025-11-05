@@ -26,10 +26,11 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'note_custom_toolbar_placeholder',
 	'custom_button',
 	'php_controller',
-	'php_model'
+	'php_model',
+	'add_view_toolbar',
+	'view_toolbar'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: [];

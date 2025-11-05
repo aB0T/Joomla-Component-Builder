@@ -26,18 +26,27 @@ $fields_tab_layout = 'fields_' . $layout_path_array[1];
 
 // get the fields
 $fields = $displayData->get($fields_tab_layout) ?: array(
-	'add_custom_button',
-	'custom_button'
+	'custom_button',
+	'php_controller',
+	'php_model',
+	'php_controller_list',
+	'php_model_list',
+	'add_view_toolbar',
+	'view_toolbar',
+	'add_views_toolbar',
+	'views_toolbar'
 );
 
 $hiddenFields = $displayData->get('hidden_fields') ?: [];
 
 ?>
 <?php if ($fields && count((array) $fields)) :?>
-<?php foreach($fields as $field): ?>
-	<?php if (in_array($field, $hiddenFields)) : ?>
-		<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
-	<?php endif; ?>
-	<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
-<?php endforeach; ?>
+<div class="form-vertical">
+	<?php foreach($fields as $field): ?>
+		<?php if (in_array($field, $hiddenFields)) : ?>
+			<?php $form->setFieldAttribute($field, 'type', 'hidden'); ?>
+		<?php endif; ?>
+		<?php echo $form->renderField($field, null, null, array('class' => 'control-wrapper-' . $field)); ?>
+	<?php endforeach; ?>
+</div>
 <?php endif; ?>

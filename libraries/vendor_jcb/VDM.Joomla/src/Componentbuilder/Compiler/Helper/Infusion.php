@@ -453,12 +453,17 @@ class Infusion extends Interpretation
 
 					// ADDTOOLBAR <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDTOOLBAR',
-						$this->setAddToolBar($view)
+						CFactory::_('Architecture.AdminView.AddToolBar')->get($view)
+					);
+
+					// INITTOOLBAR <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|INITTOOLBAR',
+						CFactory::_('Architecture.AdminView.AddToolBar')->initSite()
 					);
 
 					// ADDMODALTOOLBAR <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameSingleCode . '|ADDMODALTOOLBAR',
-						$this->setAddModalToolBar($view)
+						CFactory::_('Architecture.AdminView.AddModalToolBar')->get($view)
 					);
 
 					// set the script for this view
@@ -806,10 +811,10 @@ class Infusion extends Interpretation
 					);
 					// ADMIN_CUSTOM_BUTTONS_LIST
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_CUSTOM_BUTTONS_LIST',
-						$this->setCustomButtons($view, 3, Indent::_(1)));
+						CFactory::_('Architecture.CustomButtons')->get($view, 3, Indent::_(1)));
 					CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST',
-						$this->setFunctionOnlyButtons(
-							$nameListCode
+						CFactory::_('Compiler.Builder.Only.Function.Buttons')->get(
+							$nameListCode, ''
 						)
 					);
 
@@ -1218,7 +1223,7 @@ class Infusion extends Interpretation
 				// set custom admin view Toolbare buttons
 				// CUSTOM_ADMIN_DYNAMIC_BUTTONS  <<<DYNAMIC>>>
 				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|CUSTOM_ADMIN_DYNAMIC_BUTTONS',
-					$this->setCustomAdminDynamicButton(
+					CFactory::_('Architecture.DynamicButtons')->get(
 						$nameListCode
 					)
 				);
@@ -1227,6 +1232,11 @@ class Infusion extends Interpretation
 					$this->setCustomAdminDynamicButtonController(
 						$nameListCode
 					)
+				);
+
+				// ADDTOOLBAR <<<DYNAMIC>>>
+				CFactory::_('Compiler.Builder.Content.Multi')->set($nameListCode . '|ADDTOOLBAR',
+					CFactory::_('Architecture.AdminViews.AddToolBar')->get($view)
 				);
 
 				// set helper router
@@ -1506,6 +1516,10 @@ class Infusion extends Interpretation
 								'custom.admin.view', $view['settings']->code
 							)
 						);
+						// CUSTOM_ADMIN_ADDTOOLBAR <<<DYNAMIC>>>
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_ADDTOOLBAR',
+							CFactory::_('Architecture.CustomAdminView.AddToolBar')->get($view)
+						);
 					}
 					elseif ($view['settings']->main_get->gettype == 2)
 					{
@@ -1533,6 +1547,10 @@ class Infusion extends Interpretation
 							CFactory::_('Header')->get(
 								'custom.admin.views', $view['settings']->code
 							)
+						);
+						// CUSTOM_ADMIN_ADDTOOLBAR <<<DYNAMIC>>>
+						CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|CUSTOM_ADMIN_ADDTOOLBAR',
+							CFactory::_('Architecture.CustomAdminViews.AddToolBar')->get($view)
 						);
 					}
 
@@ -1987,6 +2005,10 @@ class Infusion extends Interpretation
 					// SITE_BODY <<<DYNAMIC>>>
 					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_BODY',
 						$this->setCustomViewBody($view)
+					);
+					// SITE_ADDTOOLBAR <<<DYNAMIC>>>
+					CFactory::_('Compiler.Builder.Content.Multi')->set($view['settings']->code . '|SITE_ADDTOOLBAR',
+						CFactory::_('Architecture.SiteView.AddToolBar')->get($view)
 					);
 
 					// setup the templates

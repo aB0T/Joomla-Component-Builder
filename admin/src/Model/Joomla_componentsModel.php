@@ -79,7 +79,7 @@ class Joomla_componentsModel extends ListModel
 	 * @since   1.6
 	 * @throws  \Exception
 	 */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		if (empty($config['filter_fields']))
 		{

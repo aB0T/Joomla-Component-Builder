@@ -70,18 +70,18 @@ $tmpl    = $tmpl ? '&tmpl=' . $tmpl : '';
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>
 
-	<?php echo Html::_('uitab.addTab', 'site_viewTab', 'custom_buttons', Text::_('COM_COMPONENTBUILDER_SITE_VIEW_CUSTOM_BUTTONS', true)); ?>
+	<?php echo Html::_('uitab.addTab', 'site_viewTab', 'toolbar', Text::_('COM_COMPONENTBUILDER_SITE_VIEW_TOOLBAR', true)); ?>
 		<div class="row">
 			<div class="col-md-6">
-				<?php echo LayoutHelper::render('site_view.custom_buttons_left', $this); ?>
+				<?php echo LayoutHelper::render('site_view.toolbar_left', $this); ?>
 			</div>
 			<div class="col-md-6">
-				<?php echo LayoutHelper::render('site_view.custom_buttons_right', $this); ?>
+				<?php echo LayoutHelper::render('site_view.toolbar_right', $this); ?>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<?php echo LayoutHelper::render('site_view.custom_buttons_fullwidth', $this); ?>
+				<?php echo LayoutHelper::render('site_view.toolbar_fullwidth', $this); ?>
 			</div>
 		</div>
 	<?php echo Html::_('uitab.endTab'); ?>

@@ -292,7 +292,7 @@ class HtmlView extends BaseHtmlView
 			}
 			if ($isNew)
 			{
-				// Do not creat but cancel.
+				// Do not create but cancel.
 				ToolbarHelper::cancel('language.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else
@@ -380,7 +380,7 @@ class HtmlView extends BaseHtmlView
 			}
 			if ($isNew)
 			{
-				// Do not creat but cancel.
+				// Do not create but cancel.
 				ToolbarHelper::cancel('language.cancel', 'JTOOLBAR_CANCEL');
 			}
 			else

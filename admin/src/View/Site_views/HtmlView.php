@@ -229,6 +229,7 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
@@ -236,7 +237,6 @@ class HtmlView extends BaseHtmlView
 		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_SITE_VIEWS'), 'palette');
 		/** @var  Toolbar $toolbar */
 		$toolbar = $this->getDocument()->getToolbar();
-
 		if ($this->canCreate)
 		{
 			$toolbar->addNew('site_view.add');
@@ -255,7 +255,7 @@ class HtmlView extends BaseHtmlView
 
 			$childBar = $dropdown->getChildToolbar();
 
-			if (!$this->isEmptyState && $this->canEdit)
+			if ($this->canEdit)
 			{
 				$childBar->edit('site_view.edit')->listCheck(true);
 			}
@@ -263,9 +263,7 @@ class HtmlView extends BaseHtmlView
 			if ($this->canState)
 			{
 				$childBar->publish('site_views.publish')->listCheck(true);
-
 				$childBar->unpublish('site_views.unpublish')->listCheck(true);
-
 				$childBar->archive('site_views.archive')->listCheck(true);
 
 				if ($this->canDo->get('core.admin'))

@@ -217,6 +217,7 @@
       <item>Fix the subform permission behaviour to use removeField.</item>
       <item>Fixed linked admin views with New and New &amp; Close buttons to correctly initialize fields using global unique IDs and default conventions.</item>
       <item>Fixed a bug caused by missing option settings in the model configuration.</item>
+      <item>Fix permission issue in the list view. #1266</item>
     </fix>
     <language>
       <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
@@ -230,6 +231,8 @@
       <item>Refactored the view class to introduce a class constructor that initializes key dependencies more reliably.</item>
       <item>Began aligning the view class structure with Joomla 6's updated MVC architecture for future compatibility.</item>
       <item>Updated and refined the site view class for greater consistency with backend view logic.</item>
+      <item>Refactor the list view buttons.</item>
+      <item>Refactor the getActions helper method.</item>
     </change>
     <note>
       <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
@@ -240,13 +243,19 @@
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
-    <version>6.1.4-alpha4</version>
+    <version>6.1.4-alpha5</version>
     <fix>
-      <item>Fix permission issue in the list view. #1266</item>
+      <item>Fix php8.3 deprecation warnings in compiler templates. #1265</item>
     </fix>
+    <addition>
+      <item>Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268</item>
+      <item>Added method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
+    </addition>
     <change>
-      <item>Refactor the list view buttons.</item>
-      <item>Refactor the getActions helper method.</item>
+      <item>Refactored toolbar into version specific classes to resolve getToolbar errors. #1267</item>
     </change>
+    <note>
+      <item>Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268</item>
+    </note>
   </changelog>
 </changelogs>

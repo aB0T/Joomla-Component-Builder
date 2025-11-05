@@ -107,14 +107,16 @@ class Config extends ComponentConfig
 		$repos = [];
 
 		// get the users own power repo (can overwrite all)
-		if ($this->gitea_username !== null)
-		{
-			$repos[$this->gitea_username . '.super-powers'] = (object) [
-				'organisation' => $this->gitea_username,
-				'repository' => 'super-powers',
-				'read_branch' => 'master'
-			];
-		}
+		// users can now just add the personal repos in the repositories area
+		// none of this tricks are still needed, so we are removing this
+		//if ($this->gitea_username !== null)
+		//{
+		//	$repos[$this->gitea_username . '.super-powers'] = (object) [
+		//		'organisation' => $this->gitea_username,
+		//		'repository' => 'super-powers',
+		//		'read_branch' => 'master'
+		//	];
+		//}
 
 		$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) [
 			'base' => 'https://codeberg.org',
@@ -397,8 +399,8 @@ class Config extends ComponentConfig
 		return [
 			3 => ['folder_key' => 3, 'xml_version' => '3.10'],
 			4 => ['folder_key' => 4, 'xml_version' => '4.0'],
-			5 => ['folder_key' => 4, 'xml_version' => '5.0'], // for now we build 4 and 5 from same templates ;),
-			6 => ['folder_key' => 4, 'xml_version' => '6.0'] // for now we build 4 and 6 from same templates ;)
+			5 => ['folder_key' => 4, 'xml_version' => '5.0'],
+			6 => ['folder_key' => 4, 'xml_version' => '6.0'] // for now we build 4 to 6 from same templates ;)
 		];
 	}
 
@@ -863,15 +865,19 @@ class Config extends ComponentConfig
 	{
 		// some defaults repos we need by JCB
 		$repos = [];
+
 		// get the users own power repo (can overwrite all)
-		if ($this->gitea_username !== null)
-		{
-			$repos[$this->gitea_username . '.joomla-powers'] = (object) [
-				'organisation' => $this->gitea_username,
-				'repository' => 'joomla-powers',
-				'read_branch' => 'master'
-			];
-		}
+		// users can now just add the personal repos in the repositories area
+		// none of this tricks are still needed, so we are removing this
+		//if ($this->gitea_username !== null)
+		//{
+		//	$repos[$this->gitea_username . '.joomla-powers'] = (object) [
+		//		'organisation' => $this->gitea_username,
+		//		'repository' => 'joomla-powers',
+		//		'read_branch' => 'master'
+		//	];
+		//}
+
 		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) [
 			'base' => 'https://codeberg.org',
 			'organisation' => $this->joomla_powers_core_organisation,

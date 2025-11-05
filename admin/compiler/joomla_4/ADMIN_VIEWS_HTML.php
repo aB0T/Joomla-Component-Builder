@@ -205,75 +205,12 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
-		Joomla___0c1a176a_304f_433a_8233_37d01ff87815___Power::title(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('COM_###COMPONENT###_###VIEWS###'), '###ICOMOON###');
-		/** @var  Joomla___47ee1f2b_9902_4f26_a856_04930ac9ddc3___Power $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
-
-		if ($this->canCreate)
-		{
-			$toolbar->addNew('###view###.add');
-		}
-
-		// Only load if there are items
-		if (!$this->isEmptyState)
-		{
-			/** @var  Joomla___f5a65880_6185_4f43_8d55_770616692a40___Power $dropdown */
-			$dropdown = $toolbar->dropdownButton('status-group')
-				->text('JTOOLBAR_CHANGE_STATUS')
-				->toggleSplit(false)
-				->icon('icon-ellipsis-h')
-				->buttonClass('btn btn-action')
-				->listCheck(true);
-
-			$childBar = $dropdown->getChildToolbar();
-
-			if (!$this->isEmptyState && $this->canEdit)
-			{
-				$childBar->edit('###view###.edit')->listCheck(true);
-			}
-
-			if ($this->canState)
-			{
-				$childBar->publish('###views###.publish')->listCheck(true);
-
-				$childBar->unpublish('###views###.unpublish')->listCheck(true);
-
-				$childBar->archive('###views###.archive')->listCheck(true);
-
-				if ($this->canDo->get('core.admin'))
-				{
-					$childBar->checkin('###views###.checkin')->listCheck(true);
-				}
-
-				if ($this->state->get('filter.published') == -2 && $this->canDelete)
-				{
-					$toolbar->delete('###views###.delete', 'JTOOLBAR_DELETE_FROM_TRASH')
-						->message('JGLOBAL_CONFIRM_DELETE')
-						->listCheck(true);
-				}
-				elseif ($this->canDelete)
-				{
-					$childBar->trash('###views###.trash')->listCheck(true);
-				}
-			}###CUSTOM_ADMIN_DYNAMIC_BUTTONS######ADMIN_CUSTOM_BUTTONS_LIST###
-		}###ADMIN_CUSTOM_FUNCTION_ONLY_BUTTONS_LIST###
-
-		// set help url for this view if found
-		$this->help_url = ###Component###Helper::getHelpUrl('###views###');
-		if (Super___1f28cb53_60d9_4db1_b517_3c7dc6b429ef___Power::check($this->help_url))
-		{
-			$toolbar->help('COM_###COMPONENT###_HELP_MANAGER', false, $this->help_url);
-		}
-
-		// add the options comp button
-		if ($this->canDo->get('core.admin') || $this->canDo->get('core.options'))
-		{
-			$toolbar->preferences('com_###component###');
-		}###FILTERFIELDDISPLAYHELPER######BATCHDISPLAYHELPER###
+		###ADDTOOLBAR###
 	}
 
 	/**

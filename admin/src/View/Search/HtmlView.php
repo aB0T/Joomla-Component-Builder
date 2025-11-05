@@ -94,6 +94,14 @@ class HtmlView extends BaseHtmlView
 	protected array $scripts;
 
 	/**
+	 * The actions object
+	 *
+	 * @var    object
+	 * @since  3.10.11
+	 */
+	public object $canDo;
+
+	/**
 	 * Display the view
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -388,28 +396,30 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
-		// hide the main menu
 		$this->input->set('hidemainmenu', true);
+
+		/** @var Toolbar $toolbar */
+		$toolbar = $this->getDocument()->getToolbar();
+
 		// set the title
-		if (isset($this->item->name) && $this->item->name)
+		if (!empty($this->item->name))
 		{
 			$title = $this->item->name;
 		}
 
-		// Check for empty title and add view name if param is set
+		// check for empty title to add the view name
 		if (empty($title))
 		{
 			$title = Text::_('COM_COMPONENTBUILDER_SEARCH');
 		}
 
 		// add title to the page
-		ToolbarHelper::title($title,'search');
-		/** @var  Toolbar $toolbar */
-		$toolbar = $this->getDocument()->getToolbar();
+		ToolbarHelper::title($title, 'search');
 		// add cpanel button
 		ToolbarHelper::custom('search.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('search.compiler'))
@@ -417,7 +427,6 @@ class HtmlView extends BaseHtmlView
 			// add Compiler button.
 			ToolbarHelper::custom('search.openCompiler', 'cogs custom-button-opencompiler', '', 'COM_COMPONENTBUILDER_COMPILER', false);
 		}
-
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('search');
 		if (StringHelper::check($this->help_url))

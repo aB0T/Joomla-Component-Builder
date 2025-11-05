@@ -664,16 +664,18 @@ class HtmlView extends BaseHtmlView
 	 * Add the page title and toolbar.
 	 *
 	 * @return  void
+	 * @throws  \Exception
 	 * @since   1.6
 	 */
 	protected function addToolbar(): void
 	{
-		// hide the main menu
 		$this->input->set('hidemainmenu', true);
-		// add title to the page
-		ToolbarHelper::title(Text::_('COM_COMPONENTBUILDER_COMPILER'),'cogs');
-		/** @var  Toolbar $toolbar */
+
+		/** @var Toolbar $toolbar */
 		$toolbar = $this->getDocument()->getToolbar();
+
+		// add title to the page
+		ToolbarHelper::title(Text::_(''), 'cogs');
 		// add cpanel button
 		ToolbarHelper::custom('compiler.dashboard', 'grid-2', '', 'COM_COMPONENTBUILDER_DASH', false);
 		if ($this->canDo->get('compiler.compiler_animations'))
@@ -686,7 +688,6 @@ class HtmlView extends BaseHtmlView
 			// add Clear tmp button.
 			ToolbarHelper::custom('compiler.clearTmp', 'purge custom-button-cleartmp', '', 'COM_COMPONENTBUILDER_CLEAR_TMP', false);
 		}
-
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('compiler');
 		if (StringHelper::check($this->help_url))

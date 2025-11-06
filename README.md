@@ -36,7 +36,7 @@ Here are just some of the key powers JCB brings:
 * 🌐 **Update Server Support** - Integrate custom update mechanisms for extensions post-deployment.
 
 <details>
-<summary>📚 View 100+ Additional Advanced Features</summary>
+<summary>📚 View 80+ Additional Advanced Features</summary>
 
 ### 🧩 Architecture & Core Logic
 
@@ -50,11 +50,9 @@ Here are just some of the key powers JCB brings:
 * 🔄 **Round-trip code integration** with file-to-database inserts/replaces
 * 🧬 **Custom Admin Views** with full MVC override power
 * 🧩 **Site Views** supporting public display of data with custom logic
-* 📊 **Dynamic dashboards** built via custom admin view chart helpers
 * 🔗 **Model linking between views** using subforms and dynamic selectors
 * 🧩 **Shared field reuse across views** and components
-* 📥 **Drag & Drop field mapping** for layout and logic assignment
-* 🎯 **Dynamic Field Visibility** conditions via GUI
+* 🎯 **Dynamic Field Visibility** conditions via user permission structure
 * 📦 **Independent packaging** of views and logic for reuse
 
 ### 📁 File & Code Management
@@ -64,27 +62,19 @@ Here are just some of the key powers JCB brings:
 * 🛠️ **Automatic file synchronization** on rebuild
 * 🧮 **Reverse string parser** to restore lang strings back to natural text
 * 📋 **Line tracking** to see where code was compiled from
-* 🗂️ **Smart override detection** and conflict management
-* 🔍 **Compiler debug tracking**
-* ✍️ **Dynamic use-statement generation** with alias auto-resolving
 * 💾 **Auto language string export** from templates & views
 * 🧰 **Helper classes and static utilities** included by default
 
 ### 🧠 Code Reuse & Blueprints
 
 * 🧱 **Demo component blueprints** for rapid prototyping
-* 🔁 **Blueprint export/import** via JSON or Git sync
+* 🔁 **Blueprint export/import** via JSON files and Git repos
 * 📎 **Shared field types** serve as field templates
-* 🧪 **Test-friendly compiler mode** for internal checking
-* 🧩 **Template-based file creation** with dynamic variables
-* 📚 **Smart template merging** for updates
-* 🚧 **Field definitions drive DB schema**
 * 🎛️ **Custom scripting per field** on get/save
 * 🔀 **Field view-type override (admin vs config)**
 
 ### 🌐 Joomla CMS Integration
 
-* 🛡️ **Token integration** via Joomla methods
 * 🔐 **ACL per view, field, item**
 * 🧾 **Field-based Joomla config generation**
 * 📘 **Support for Joomla categories/tags/custom fields**
@@ -98,11 +88,8 @@ Here are just some of the key powers JCB brings:
 * 🎨 **Layout builder** with inline layout reusability
 * 📁 **Template builder** with overrides
 * 🧠 **Snippets GUI** for code blocks linked to layouts/templates
-* 📚 **Custom documentation sections** linked into generated components
 * 🧬 **Field injection points in layout/template snippets**
 * 🔁 **Dynamic reload on selection change** via JavaScript binding
-* 📦 **Reusable custom admin view templates**
-* 🧠 **JS callback logic on field events**
 * 📄 **Inline help descriptions** from config
 * 🖱️ **Custom admin menus** and dashboard menu builders
 
@@ -119,9 +106,7 @@ Here are just some of the key powers JCB brings:
 
 * 📤 **Push component to Git repo**
 * 🔄 **Auto-compile and auto-tag packages**
-* 🗂️ **Blueprints stored and versioned by metadata**
 * 🎁 **Auto-generated changelog from commits**
-* 🔐 **Signed zip packaging supported**
 * 📬 **Component update URLs via GUI settings**
 * 🏷️ **Version-aware build ID assignment**
 
@@ -129,9 +114,6 @@ Here are just some of the key powers JCB brings:
 
 * ⚡ **Under-30-second build time** on large components
 * 📦 **Memory-optimized ZIP builder**
-* 🔁 **Repeatable fields** via subform templates
-* 💥 **Fail-safe error protection** and rollback
-* 🔍 **Detailed compiler logs with stack trace and UUIDs**
 * 📃 **Build summary report** after compilation
 
 ### 🧱 Custom Code System (Powerful Dual Feature)
@@ -143,25 +125,18 @@ Here are just some of the key powers JCB brings:
 * 🔁 **Nested custom code support**
 * 🔥 **Advanced compiler hooks per code block**
 * 🧠 **Round-trip tag tracking in PHP/HTML**
-* 📜 [Learn more about this here](https://git.vdm.dev/joomla/Component-Builder/wiki/TIPS:-Custom-Code)
 
 ### 🛠 Field Type System
 
-* 🧬 **Field types define templates and data types**
 * 💡 **GUI-defined rules (required, unique, nullable)**
-* 🧠 **Save/get hooks per field**
 * 🛡️ **Database schema auto-generated from field settings**
 * 📄 **Per-display field rendering config (list/edit)**
-* 🧩 **Create dynamic models with modals/selectors**
-* 🧠 **Conditional JS & CSS per field**
 
 ### 📐 Dynamic GET (Visual SQL Engine)
 
 * 📊 **Design complex joins from GUI**
-* 🧠 **Multiple GETs per view**
 * 🔄 **Reusable query sets**
 * 🧾 **Where/group/order statements supported**
-* 📃 **Auto model method generation**
 * 🔧 **Switch between list/item GETs**
 * 🛡️ **Output Joomla-native query builder logic**
 
@@ -170,27 +145,20 @@ Here are just some of the key powers JCB brings:
 * 🧠 **Snippets = reusable HTML blocks**
 * 🧩 **Layouts = reusable PHP render templates**
 * 🖼️ **Templates = page-level views linked to custom admin/site views**
-* 📦 **Libraries = JS/CSS assets linked to UI**
+* 📦 **Libraries = JS/CSS assets linked to custom admin/site views**
 * 🌐 **CDN/local toggle for library delivery**
-* 📁 **Media folder injection with override support**
 * 🔧 **Repository push/pull/reset workflow**
 * 📥 **Init snippets/layouts/templates via GUI**
 
 ### 📚 Documentation & Metadata
 
-* 📄 **Per-entity README auto-generation**
 * 📑 **Markdown + PHPDoc docblock support**
-* 🧾 **Internal documentation tables**
 * 🔄 **Update version history logs per entity**
-* 🧠 **Field reference mapping table output**
 * 📘 **Auto-documented component structure**
 
 ### 📊 Analytics & Insights
 
 * 📈 **Track last build, size, line count, field count**
-* 🔄 **Compare current vs previous builds**
-* 🧠 **Export component metadata as JSON**
-* 🗃️ **Stats per model/view**
 * 📁 **Total file/folder/line counters**
 
 </details>

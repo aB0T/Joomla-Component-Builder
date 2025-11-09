@@ -1064,7 +1064,7 @@ class Config extends ComponentConfig
 	 */
 	protected function getAddsuperpowers(): bool
 	{
-		$default = (bool) $this->params->get('powers_repository', 0);
+		$default = (bool) $this->params->get('powers_repository', 1); // default to always add
 
 		if (!$this->show_advanced_options)
 		{
@@ -1086,7 +1086,7 @@ class Config extends ComponentConfig
 	{
 		if ($this->add_super_powers)
 		{
-			return (bool) $this->params->get('super_powers_repositories', 0);
+			return (bool) $this->params->get('super_powers_repositories', 1);
 		}
 
 		return false;

@@ -282,6 +282,9 @@ class Structure
 
 		// Increment the file counter
 		$this->counter->file++;
+
+		// Increment the power counter
+		$this->counter->power++;
 	}
 
 	/**

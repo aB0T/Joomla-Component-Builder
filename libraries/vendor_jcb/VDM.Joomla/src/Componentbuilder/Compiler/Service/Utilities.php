@@ -24,6 +24,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Dynamicpath;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Pathfix;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Structure;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Valuation;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Xml;
 use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
 use VDM\Joomla\Componentbuilder\Utilities\Uri;
@@ -74,6 +75,9 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Structure::class, 'Utilities.Structure')
 			->share('Utilities.Structure', [$this, 'getStructure'], true);
+
+		$container->alias(Valuation::class, 'Utilities.Valuation')
+			->share('Utilities.Valuation', [$this, 'getValuation'], true);
 
 		$container->alias(Xml::class, 'Utilities.Xml')
 			->share('Utilities.Xml', [$this, 'getXml'], true);
@@ -149,7 +153,7 @@ class Utilities implements ServiceProviderInterface
 	public function getCounter(Container $container): Counter
 	{
 		return new Counter(
-			$container->get('Compiler.Builder.Content.One')
+			$container->get('Utilities.Valuation')
 		);
 	}
 
@@ -228,6 +232,22 @@ class Utilities implements ServiceProviderInterface
 			$container->get('Utilities.Counter'),
 			$container->get('Utilities.File'),
 			$container->get('Utilities.Files')
+		);
+	}
+
+	/**
+	 * Get The Valuation Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Valuation
+	 * @since   5.1.4
+	 */
+	public function getValuation(Container $container): Valuation
+	{
+		return new Valuation(
+			$container->get('Config'),
+			$container->get('Compiler.Builder.Content.One')
 		);
 	}
 

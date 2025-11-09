@@ -40,10 +40,12 @@
 - Fix a security vulnerability in custom code redirect URL validation.
 - Add an alert to the Compiler view when no Components exist. #1263
 
-# v4.1.3-alpha5
+# v4.1.3-alpha6
 
-- Refactored toolbar into version-specific classes to resolve getToolbar errors. #1267
-- Added method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270
+- Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.
+- Fix an issue where the Email Helper send() function was executed twice.
+- Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.
+- Fix the Compiler success message to display both build seconds and project weeks.
 
 # v4.1.3-alpha
 
@@ -70,6 +72,8 @@
 - Fix permission issue in the list view. #1266
 - Refactor the list view buttons
 - Refactor the getActions helper method
+- Refactor toolbar into version-specific classes to resolve getToolbar errors. #1267
+- Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270
 
 # v4.1.2
 

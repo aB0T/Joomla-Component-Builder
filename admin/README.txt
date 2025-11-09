@@ -9,7 +9,7 @@ This is a professional-grade [Joomla 4.x](https://extensions.joomla.org/extensio
 
 JCB generates native Joomla components, plugins, and modules for Joomla 3.x, 4.x, and 5.x - and is already prepared for Joomla 6. Every compiled project is tailored for the specific version without needing backward compatibility plugins. With integrated version-aware compiling, smart boilerplating, and Git-powered project syncing, JCB is much more than a code generator-it's a **full-stack development pipeline for Joomla extensions**.
 
-You can install this component easily. The latest release (**4.1.3-alpha5**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
+You can install this component easily. The latest release (**4.1.3-alpha6**) is available on [Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) and updated frequently with full source access.
 
 Upgrades are seamless through Joomla's built-in extension update mechanism.
 
@@ -201,7 +201,7 @@ Here are just some of the key powers JCB brings:
 
 * 🔽 **Download**: [Stable Releases](https://git.vdm.dev/joomla/pkg-component-builder/releases) · [Nightly J5](https://git.vdm.dev/joomla/pkg-component-builder/archive/5.x.zip) · [Nightly J4](https://git.vdm.dev/joomla/pkg-component-builder/archive/4.x.zip)
 * 📥 **Install**: Use Joomla's extension manager
-* 🎓 **Learn**: [Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE) · [How to Install Demo Blueprints](https://vdm.bz/how-to-install-jcb-packages)
+* 🎓 **Learn**: [Onboarding](https://github.com/joomengine/jcb-documentation/blob/master/english/README.md) · [Documentation](https://github.com/joomengine/jcb-documentation/blob/master/english/index.md)
 
 ---
 
@@ -209,9 +209,9 @@ Here are just some of the key powers JCB brings:
 
 * 💬 [GitHub Discussions](https://github.com/orgs/joomengine/discussions)
 * 🐛 [Report Issues](https://git.vdm.dev/joomla/Component-Builder/issues)
-* 📚 [JCB Wiki](https://git.vdm.dev/joomla/Component-Builder/wiki)
-* 👨‍🏫 [Video Tutorials](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wtGvPQZWBfDzzlERLQgpMRE)
-* 🇩🇪 [German Series](https://www.youtube.com/playlist?list=PLQRGFI8XZ_wu0tDFxJtZFwW7AxA4JHQV7)
+* 📚 [JCB Documentation](https://github.com/joomengine/jcb-documentation/blob/master/english/README.md)
+* 👨‍🏫 [Video Channel](https://www.youtube.com/@OctoYou) (offical)
+* 🏛️ [Legacy Channel](https://www.youtube.com/@Joomlamount) (outdated)
 * 🔔 [Telegram Groups](https://t.me/jcb_group) · [Announcements](https://t.me/Joomla_component_builder)
 * 📶 [Status](https://status.vdm.dev/status/jcb)
 * 🛡️ [Security Reports](https://www.vdm.io/report-security-issues)
@@ -229,9 +229,9 @@ JCB is developed by developers for developers. Its purpose is to democratize hig
 * **Company:** [Vast Development Method](https://dev.vdm.io)
 * **Author:** [Llewellyn van der Merwe](mailto:joomla@vdm.io)
 * **Component:** [Component Builder](https://git.vdm.dev/joomla/Component-Builder)
-* **Created:** 30th April, 2015 · **Last Build:** 5th November, 2025 · **Version:** 4.1.3-alpha5
+* **Created:** 30th April, 2015 · **Last Build:** 9th November, 2025 · **Version:** 4.1.3-alpha6
 * **License:** GNU General Public License version 2 or later; see LICENSE.txt · **Copyright:** Copyright (C) 2015 Vast Development Method. All rights reserved.
-* **Lines:** 1246381 · **Fields:** 2092 · **Files:** 8168 · **Folders:** 764
+* **Lines:** 1251239 · **Fields:** 2119 · **Files:** 8185 · **Folders:** 765
 
 > Generated with [JCB](https://www.joomlacomponentbuilder.com) — The Smartest Way to Build Joomla Extensions.
 

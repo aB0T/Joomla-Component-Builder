@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\CustomButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\CustomAdmin\AddToolBarInterface;
 
@@ -135,22 +136,34 @@ final class AddToolBar implements AddToolBarInterface
 			$langView, $icomoon
 		);
 
-		// Step 3: Add custom buttons
-		$toolBar .= $this->addCustomButtons($view);
-
 		if (empty(trim($overrideToolbar)))
 		{
+			// Step 3: Add custom buttons
+			$toolBar .= $this->addCustomButtons($view);
+
 			// Step 4: Add help and inline help
 			$toolBar .= $this->addHelpSection($nameSingleCode);
 
 			// Step 5: Add preferences
 			$toolBar .= $this->buildPreferences();
+
+			return $toolBar;
+		}
+
+		// Step 6: Add custom buttons
+		$customButtons = $this->addCustomButtons($view);
+		$placeholder = Placefix::_('CUSTOM_BUTTONS');
+		if (strpos($overrideToolbar, $placeholder) !== false)
+		{
+			$overrideToolbar = str_replace($placeholder, $customButtons, $overrideToolbar);
 		}
 		else
 		{
-			// Step 6: Add override toolbar
-			$toolBar .= $overrideToolbar;
+			$toolBar .= $customButtons;
 		}
+
+		// Step 7: Add override toolbar
+		$toolBar .= $overrideToolbar;
 
 		return $toolBar;
 	}

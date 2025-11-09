@@ -16,6 +16,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\CustomButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\DynamicButtons;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ToolbarComposer as AdminViewsToolbarComposer;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\AdminView\AddToolBarInterface as AdminViewAddToolBar;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\AdminView\AddToolBar as J6AdminViewAddToolBar;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\AdminView\AddToolBar as J5AdminViewAddToolBar;
@@ -110,6 +111,9 @@ class ArchitectureView implements ServiceProviderInterface
 		$container->alias(J3AdminViewAddModalToolBar::class, 'Architecture.AdminView.J3.AddModalToolBar')
 			->share('Architecture.AdminView.J3.AddModalToolBar', [$this, 'getJ3AdminViewAddModalToolBar'], true);
 
+
+		$container->alias(AdminViewsToolbarComposer::class, 'Architecture.AdminViews.ToolbarComposer')
+			->share('Architecture.AdminViews.ToolbarComposer', [$this, 'getAdminViewsToolbarComposer'], true);
 
 		$container->alias(AdminViewsAddToolBar::class, 'Architecture.AdminViews.AddToolBar')
 			->share('Architecture.AdminViews.AddToolBar', [$this, 'getAdminViewsAddToolBar'], true);
@@ -406,6 +410,19 @@ class ArchitectureView implements ServiceProviderInterface
 	}
 
 	/**
+	 * Get The Admin Views Toolbar Composer Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  AdminViewsToolbarComposer
+	 * @since 5.1.4
+	 */
+	public function getAdminViewsToolbarComposer(Container $container): AdminViewsToolbarComposer
+	{
+		return new AdminViewsToolbarComposer();
+	}
+
+	/**
 	 * Get The AdminViews AddToolBar Class.
 	 *
 	 * @param   Container  $container  The DI container.
@@ -437,6 +454,7 @@ class ArchitectureView implements ServiceProviderInterface
 			$container->get('Config'),
 			$container->get('Placeholder'),
 			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Architecture.AdminViews.ToolbarComposer'),
 			$container->get('Architecture.DynamicButtons'),
 			$container->get('Architecture.CustomButtons'),
 			$container->get('Compiler.Builder.Only.Function.Buttons')
@@ -457,6 +475,7 @@ class ArchitectureView implements ServiceProviderInterface
 			$container->get('Config'),
 			$container->get('Placeholder'),
 			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Architecture.AdminViews.ToolbarComposer'),
 			$container->get('Architecture.DynamicButtons'),
 			$container->get('Architecture.CustomButtons'),
 			$container->get('Compiler.Builder.Only.Function.Buttons')

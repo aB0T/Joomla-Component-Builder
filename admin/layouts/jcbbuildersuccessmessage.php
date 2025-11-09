@@ -141,6 +141,7 @@ $allowInstall = ((int) (CompilerFactory::_('Config')->joomla_version ?? 0) === (
 		<?php echo LayoutHelper::render('jcbsinglepathdownload', ['model' => $displayData, 'url' => $urls['componentUrl'] ?? null]); ?>
 	<?php endif; ?>
 	<p>
-		<small><?php echo Text::_('COM_COMPONENTBUILDER_COMPILATION_TOOK'); ?> <b><?php '#'.'##COMPILER_TIMER##'.'#'; ?></b> <?php echo Text::_('COM_COMPONENTBUILDER_SECONDS_TO_COMPLETE'); ?>.</small>
+		<small><?php echo Text::_('COM_COMPONENTBUILDER_COMPILATION_TOOK'); ?> <b><?php echo '#'.'##COMPILER_TIMER##'.'#'; ?></b> <?php echo Text::_('COM_COMPONENTBUILDER_SECONDS_TO_COMPLETE'); ?>.</small>
 	</p>
+	<?php // echo LayoutHelper::render('jcbbuildervaluationandcostingreport', []); // TODO: will soon be ready, we are working on making this more realistic! ?>
 </div>

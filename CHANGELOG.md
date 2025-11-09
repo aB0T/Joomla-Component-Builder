@@ -1,10 +1,10 @@
-# v6.1.4-alpha5
+# v6.1.4-alpha6
 
-- Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268
-- Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268
-- Refactored toolbar into version specific classes to resolve getToolbar errors. #1267
-- Added method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270
-- Fix php8.3 deprecation warnings in compiler templates. #1265
+- Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.
+- Fix an issue where the Email Helper send() function was executed twice.
+- Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.
+- Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.
+- Fix the Compiler success message to display both build seconds and project weeks.
 
 # v6.1.4-alpha
 
@@ -31,6 +31,11 @@
 - Fix permission issue in the list view. #1266
 - Refactor the list view buttons.
 - Refactor the getActions helper method.
+- Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268
+- Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268
+- Refactor toolbar into version specific classes to resolve getToolbar errors. #1267
+- Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270
+- Fix php8.3 deprecation warnings in compiler templates. #1265
 
 # v6.1.3
 

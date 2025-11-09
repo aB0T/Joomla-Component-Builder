@@ -15,6 +15,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\AdminView
 use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\AdminViews\ToolbarComposer;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\DynamicButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\CustomButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\OnlyFunctionButtons;
@@ -56,6 +57,14 @@ final class AddToolBar implements AddToolBarInterface
 	protected ContentOne $contentone;
 
 	/**
+	 * The ToolbarComposer Class.
+	 *
+	 * @var   ToolbarComposer
+	 * @since 5.1.4
+	 */
+	protected ToolbarComposer $toolbarcomposer;
+
+	/**
 	 * The DynamicButtons Class.
 	 *
 	 * @var   DynamicButtons
@@ -85,6 +94,7 @@ final class AddToolBar implements AddToolBarInterface
 	 * @param Config                $config                The Config Class.
 	 * @param Placeholder           $placeholder           The Placeholder Class.
 	 * @param ContentOne            $contentone            The ContentOne Class.
+	 * @param ToolbarComposer       $toolbarcomposer       The ToolbarComposer Class.
 	 * @param DynamicButtons        $dynamicbuttons        The DynamicButtons Class.
 	 * @param CustomButtons         $custombuttons         The CustomButtons Class.
 	 * @param OnlyFunctionButtons   $onlyfunctionbuttons   The OnlyFunctionButtons Class.
@@ -92,13 +102,15 @@ final class AddToolBar implements AddToolBarInterface
 	 * @since 5.1.4
 	 */
 	public function __construct(Config $config, Placeholder $placeholder,
-		ContentOne $contentone, DynamicButtons $dynamicbuttons,
+		ContentOne $contentone, ToolbarComposer $toolbarcomposer,
+		DynamicButtons $dynamicbuttons,
 		CustomButtons $custombuttons,
 		OnlyFunctionButtons $onlyfunctionbuttons)
 	{
 		$this->config = $config;
 		$this->placeholder = $placeholder;
 		$this->contentone = $contentone;
+		$this->toolbarcomposer = $toolbarcomposer;
 		$this->dynamicbuttons = $dynamicbuttons;
 		$this->custombuttons = $custombuttons;
 		$this->onlyfunctionbuttons = $onlyfunctionbuttons;
@@ -149,26 +161,18 @@ final class AddToolBar implements AddToolBarInterface
 			$toolBar .= $this->buildStateEditDeleteDropdown($nameSingleCode, $nameListCode, $view);
 			$toolBar .= $this->buildFunctionButtons($nameListCode);
 			$toolBar .= $this->buildHelpAndPreferences($nameListCode);
-		}
-		else
-		{
-			$toolBar .= $overrideToolbar;
 
-			// Dynamic and custom buttons
-			$toolBar_ = $this->dynamicbuttons->get($nameListCode);
-			$toolBar_ .= $this->custombuttons->get($view, 3, Indent::_(1));
-
-			if (!empty(trim($toolBar_)))
-			{
-				$toolBar .= PHP_EOL . Indent::_(2) . "//" . Line::_(__LINE__, __CLASS__) . " Only load if there are items" . PHP_EOL;
-				$toolBar .= Indent::_(2) . "if (!\$this->isEmptyState)" . PHP_EOL;
-				$toolBar .= Indent::_(2) . '{' . $toolBar_ . PHP_EOL . Indent::_(2) . '}';
-			}
-
-			$toolBar .= $this->onlyfunctionbuttons->get($nameListCode, '');
+			return $toolBar;
 		}
 
-		return $toolBar;
+		$toolBar .= $overrideToolbar;
+
+		return $this->toolbarcomposer->build(
+			$toolBar,
+			$this->dynamicbuttons->get($nameListCode),
+			$this->custombuttons->get($view, 3, Indent::_(1)),
+			$this->onlyfunctionbuttons->get($nameListCode, '')
+		);
 	}
 
 	/**

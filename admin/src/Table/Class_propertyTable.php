@@ -372,7 +372,7 @@ class Class_propertyTable extends Table implements VersionableTableInterface, Ta
 	/**
 	 * Retrieve the database connection in a version-safe and cached manner.
 	 *
-	 * Compatible with Joomla 4 → 7:
+	 * Compatible with Joomla 4 -> 7:
 	 * - If the parent class implements getDatabase() (DatabaseAwareTrait), that is used.
 	 * - Otherwise it falls back to getDbo() for legacy versions.
 	 * - The detected instance is cached to avoid repeated reflection or lookups.
@@ -413,7 +413,7 @@ class Class_propertyTable extends Table implements VersionableTableInterface, Ta
 			}
 		}
 
-		// --- Step 2: Fallback to getDbo() (J3–J6 style) ---
+		// --- Step 2: Fallback to getDbo() (J3-J6 style) ---
 		if (method_exists($this, 'getDbo'))
 		{
 			try

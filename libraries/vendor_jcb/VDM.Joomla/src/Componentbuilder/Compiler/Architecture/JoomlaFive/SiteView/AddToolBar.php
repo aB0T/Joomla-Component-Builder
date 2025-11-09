@@ -18,6 +18,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Builder\ContentOne;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\CustomButtons;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\SiteView\AddToolBarInterface;
 
 
@@ -123,19 +124,31 @@ final class AddToolBar implements AddToolBarInterface
 			!str_contains($overrideToolbar, 'this->getDocument()->getToolbar(')
 		);
 
-		// Step 2: Add custom buttons
-		$toolBar .= $this->addCustomButtons($view);
-
 		if (empty(trim($overrideToolbar)))
 		{
+			// Step 2: Add custom buttons
+			$toolBar .= $this->addCustomButtons($view);
+
 			// Step 3: Add help and inline help
 			$toolBar .= $this->addHelpSection($nameSingleCode);
+
+			return $toolBar;
+		}
+
+		// Step 4: Add custom buttons
+		$customButtons = $this->addCustomButtons($view);
+		$placeholder = Placefix::_('CUSTOM_BUTTONS');
+		if (strpos($overrideToolbar, $placeholder) !== false)
+		{
+			$overrideToolbar = str_replace($placeholder, $customButtons, $overrideToolbar);
 		}
 		else
 		{
-			// Step 4: Add override toolbar
-			$toolBar .= $overrideToolbar;
+			$toolBar .= $customButtons;
 		}
+
+		// Step 5: Add override toolbar
+		$toolBar .= $overrideToolbar;
 
 		return $toolBar;
 	}

@@ -218,6 +218,7 @@
       <item>Fixed linked admin views with New and New &amp; Close buttons to correctly initialize fields using global unique IDs and default conventions.</item>
       <item>Fixed a bug caused by missing option settings in the model configuration.</item>
       <item>Fix permission issue in the list view. #1266</item>
+      <item>Fix php8.3 deprecation warnings in compiler templates. #1265</item>
     </fix>
     <language>
       <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
@@ -225,6 +226,8 @@
     <addition>
       <item>Add version 6 to the version 5 update server, for easier upgrade path.</item>
       <item>Added user access verification logic in the model to prevent unauthorized direct item loading.</item>
+      <item>Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268</item>
+      <item>Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
     </addition>
     <change>
       <item>Refactor the JS selText method.</item>
@@ -233,29 +236,29 @@
       <item>Updated and refined the site view class for greater consistency with backend view logic.</item>
       <item>Refactor the list view buttons.</item>
       <item>Refactor the getActions helper method.</item>
+      <item>Refactor toolbar into version specific classes to resolve getToolbar errors. #1267</item>
     </change>
     <note>
       <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
       <item>Improved initialization handling in the view to reduce dependency errors during rendering.</item>
       <item>Continued progressive improvements across view classes to ensure compatibility with Joomla's evolving MVC patterns.</item>
+      <item>Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268</item>
     </note>
   </changelog>
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
-    <version>6.1.4-alpha5</version>
+    <version>6.1.4-alpha6</version>
     <fix>
-      <item>Fix php8.3 deprecation warnings in compiler templates. #1265</item>
+      <item>Fix an issue where the Email Helper send() function was executed twice.</item>
+      <item>Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.</item>
+      <item>Fix the Compiler success message to display both build seconds and project weeks.</item>
     </fix>
     <addition>
-      <item>Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268</item>
-      <item>Added method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
+      <item>Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.</item>
     </addition>
     <change>
-      <item>Refactored toolbar into version specific classes to resolve getToolbar errors. #1267</item>
+      <item>Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.</item>
     </change>
-    <note>
-      <item>Rename Custom Buttons tab to Toolbar for clearer grouping of toolbar functions. #1268</item>
-    </note>
   </changelog>
 </changelogs>

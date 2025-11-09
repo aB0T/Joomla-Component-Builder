@@ -22,6 +22,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Architecture\CustomButtons;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Indent;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Line;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Placefix;
 use VDM\Joomla\Componentbuilder\Compiler\Interfaces\Architecture\AdminView\AddToolBarInterface;
 
 
@@ -310,15 +311,24 @@ final class AddToolBar implements AddToolBarInterface
 
 			// Step 7: Add help and inline help
 			$toolBar .= $this->addHelpSection($nameSingleCode);
+
+			return $toolBar;
+		}
+
+		// Step 8: Add custom buttons
+		$customButtons = $this->addCustomButtons($view, '');
+		$placeholder = Placefix::_('CUSTOM_BUTTONS');
+		if (strpos($overrideToolbar, $placeholder) !== false)
+		{
+			$overrideToolbar = str_replace($placeholder, $customButtons, $overrideToolbar);
 		}
 		else
 		{
-			// Step 8: Add custom buttons
-			$toolBar .= $this->addCustomButtons($view, '');
-
-			// Step 9: Add override toolbar
-			$toolBar .= $overrideToolbar;
+			$toolBar .= $customButtons;
 		}
+
+		// Step 9: Add override toolbar
+		$toolBar .= $overrideToolbar;
 
 		return $toolBar;
 	}

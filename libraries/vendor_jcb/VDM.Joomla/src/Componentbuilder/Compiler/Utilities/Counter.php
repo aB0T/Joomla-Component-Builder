@@ -12,7 +12,6 @@
 namespace VDM\Joomla\Componentbuilder\Compiler\Utilities;
 
 
-use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Utilities\MathHelper;
 
 
@@ -59,7 +58,7 @@ class Counter
 	 * The number of admin views.
 	 *
 	 * @var   int
-	 * @since 5.1.6
+	 * @since 5.1.4
 	 */
 	public int $adminView = 0;
 
@@ -67,7 +66,7 @@ class Counter
 	 * The number of custom admin views.
 	 *
 	 * @var   int
-	 * @since 5.1.6
+	 * @since 5.1.4
 	 */
 	public int $customAdminView = 0;
 
@@ -75,7 +74,7 @@ class Counter
 	 * The number of site views.
 	 *
 	 * @var   int
-	 * @since 5.1.6
+	 * @since 5.1.4
 	 */
 	public int $siteView = 0;
 
@@ -83,15 +82,31 @@ class Counter
 	 * The number of dynamic get statements.
 	 *
 	 * @var   int
-	 * @since 5.1.6
+	 * @since 5.1.4
 	 */
 	public int $dynamicGet = 0;
+
+	/**
+	 * The number of layouts.
+	 *
+	 * @var   int
+	 * @since 5.1.4
+	 */
+	public int $layout = 0;
+
+	/**
+	 * The number of templates.
+	 *
+	 * @var   int
+	 * @since 5.1.4
+	 */
+	public int $template = 0;
 
 	/**
 	 * The number of powers used.
 	 *
 	 * @var   int
-	 * @since 5.1.6
+	 * @since 5.1.4
 	 */
 	public int $power = 0;
 
@@ -99,9 +114,25 @@ class Counter
 	 * The number of custom code blocks used.
 	 *
 	 * @var   int
-	 * @since 5.1.6
+	 * @since 5.1.4
 	 */
 	public int $customCodeBlock = 0;
+
+	/**
+	 * The number of modules.
+	 *
+	 * @var   int
+	 * @since 5.1.4
+	 */
+	public int $module = 0;
+
+	/**
+	 * The number of plugins.
+	 *
+	 * @var   int
+	 * @since 5.1.4
+	 */
+	public int $plugin = 0;
 
 	/**
 	 * The access size
@@ -110,6 +141,15 @@ class Counter
 	 * @since 3.2.0
 	 */
 	public int $accessSize = 0;
+
+	/**
+	 * The time stamp of the start of the project in JCB
+	 *   - this date can be manually set via the component create date
+	 *
+	 * @var   int
+	 * @since 5.1.4
+	 */
+	public int $projectStart = 0;
 
 	/**
 	 * The compiler start timer
@@ -205,7 +245,7 @@ class Counter
 	 * @param  mixed   $default  The default value to return if not set.
 	 *
 	 * @return mixed
-	 * @since  5.1.6
+	 * @since  5.1.4
 	 */
 	public function get(string $name, mixed $default = 0): mixed
 	{

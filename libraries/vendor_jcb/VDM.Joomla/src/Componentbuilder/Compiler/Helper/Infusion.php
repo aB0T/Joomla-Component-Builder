@@ -120,12 +120,13 @@ class Infusion extends Interpretation
 			);
 
 			// CREATIONDATE
-			CFactory::_('Compiler.Builder.Content.One')->set('CREATIONDATE',
-				Factory::getDate(CFactory::_('Component')->get('created'))->format(
-				'jS F, Y'
-			));
-			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALCREATIONDATE',
-				CFactory::_('Compiler.Builder.Content.One')->get('CREATIONDATE'));
+			$creationDate = CFactory::_('Component')->get('created');
+			$creationDateFormat = Factory::getDate($creationDate)->format('jS F, Y');
+
+			CFactory::_('Compiler.Builder.Content.One')->set('CREATIONDATE', $creationDateFormat);
+			CFactory::_('Compiler.Builder.Content.One')->set('GLOBALCREATIONDATE', $creationDateFormat);
+
+			CFactory::_('Utilities.Counter')->projectStart = strtotime($creationDate);
 
 			// BUILDDATE
 			CFactory::_('Compiler.Builder.Content.One')->set('BUILDDATE', Factory::getDate(

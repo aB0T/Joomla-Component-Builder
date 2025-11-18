@@ -139,6 +139,7 @@ class Joomlaplugin implements ServiceProviderInterface
 			$container->get('Field'),
 			$container->get('Field.Name'),
 			$container->get('Model.Filesfolders'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}
@@ -162,6 +163,7 @@ class Joomlaplugin implements ServiceProviderInterface
 			$container->get('Field'),
 			$container->get('Field.Name'),
 			$container->get('Model.Filesfolders'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}
@@ -185,6 +187,7 @@ class Joomlaplugin implements ServiceProviderInterface
 			$container->get('Field'),
 			$container->get('Field.Name'),
 			$container->get('Model.Filesfolders'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}
@@ -208,6 +211,7 @@ class Joomlaplugin implements ServiceProviderInterface
 			$container->get('Field'),
 			$container->get('Field.Name'),
 			$container->get('Model.Filesfolders'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}

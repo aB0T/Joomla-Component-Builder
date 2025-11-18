@@ -26,6 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Csscustomview;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Phpcustomview;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Ajaxcustomview;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Custombuttons;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -161,6 +162,14 @@ class Data
 	protected Custombuttons $custombuttons;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
@@ -184,6 +193,7 @@ class Data
 	 * @param Phpcustomview          $phpcustomview          The Phpcustomview Class.
 	 * @param Ajaxcustomview         $ajaxcustomview         The Ajaxcustomview Class.
 	 * @param Custombuttons          $custombuttons          The Custombuttons Class.
+	 * @param Counter                $counter                The Counter Class.
 	 * @param DatabaseInterface      $db                     The Joomla Database Class.
 	 *
 	 * @since 3.2.0
@@ -196,7 +206,7 @@ class Data
 		Csscustomview $csscustomview,
 		Phpcustomview $phpcustomview,
 		Ajaxcustomview $ajaxcustomview,
-		Custombuttons $custombuttons,
+		Custombuttons $custombuttons, Counter $counter,
 		DatabaseInterface $db)
 	{
 		$this->config = $config;
@@ -212,6 +222,7 @@ class Data
 		$this->php = $phpcustomview;
 		$this->ajax = $ajaxcustomview;
 		$this->custombuttons = $custombuttons;
+		$this->counter = $counter;
 		$this->db = $db;
 	}
 
@@ -276,6 +287,16 @@ class Data
 			$this->data[$key_id] = $data;
 			$this->index[$key_id] = $key_id;
 			$this->index[$key_guid] = $key_id;
+
+			// count the targeted entity
+			if ($table === 'site_view')
+			{
+				$this->counter->siteView++;
+			}
+			else
+			{
+				$this->counter->customAdminView++;
+			}
 		}
 	}
 

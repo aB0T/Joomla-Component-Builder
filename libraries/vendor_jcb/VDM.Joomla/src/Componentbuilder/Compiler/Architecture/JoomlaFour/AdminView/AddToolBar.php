@@ -202,7 +202,7 @@ final class AddToolBar implements AddToolBarInterface
 		// set lang strings
 		$viewNameLang_readonly = $this->config->lang_prefix . '_'
 			. StringHelper::safe(
-				settings->name_single . ' readonly', 'U'
+				$settings->name_single . ' readonly', 'U'
 			);
 		// load to lang
 		$this->language->set(

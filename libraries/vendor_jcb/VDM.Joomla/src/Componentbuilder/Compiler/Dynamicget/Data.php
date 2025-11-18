@@ -20,6 +20,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Customcode;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Dispenser;
 use VDM\Joomla\Componentbuilder\Compiler\Customcode\Gui;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Dynamicget;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\GuidHelper;
@@ -102,12 +103,28 @@ class Data
 	protected Dynamicget $dynamic;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
 	 * @since 5.1.2
 	 **/
 	protected DatabaseInterface $db;
+
+	/**
+	 * The unique counter array
+	 *
+	 * @var   array
+	 * @since 5.1.4
+	 */
+	protected array $uniqueCounter = [];
 
 	/**
 	 * Constructor.
@@ -119,13 +136,14 @@ class Data
 	 * @param Dispenser           $dispenser    The Dispenser Class.
 	 * @param Gui                 $gui          The Gui Class.
 	 * @param Dynamicget          $dynamicget   The Dynamicget Class.
+	 * @param Counter             $counter      The Counter Class.
 	 * @param DatabaseInterface   $db           The Joomla Database Class.
 	 *
 	 * @since 3.2.0
 	 */
 	public function __construct(Config $config, Registry $registry, Event $event,
 		Customcode $customcode, Dispenser $dispenser, Gui $gui,
-		Dynamicget $dynamicget, DatabaseInterface $db)
+		Dynamicget $dynamicget, Counter $counter, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->registry = $registry;
@@ -134,6 +152,7 @@ class Data
 		$this->dispenser = $dispenser;
 		$this->gui = $gui;
 		$this->dynamic = $dynamicget;
+		$this->counter = $counter;
 		$this->db = $db;
 	}
 
@@ -192,6 +211,12 @@ class Data
 
 				// set GUI mapper id
 				$this->guiMapper['id'] = (int) $result->id;
+
+				if (empty($this->uniqueCounter[$result->id]))
+				{
+					$this->counter->dynamicGet++;
+					$this->uniqueCounter[$result->id] = true;
+				}
 
 				// add calculations if set
 				if ($result->addcalculation == 1

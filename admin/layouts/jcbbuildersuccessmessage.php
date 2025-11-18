@@ -143,5 +143,5 @@ $allowInstall = ((int) (CompilerFactory::_('Config')->joomla_version ?? 0) === (
 	<p>
 		<small><?php echo Text::_('COM_COMPONENTBUILDER_COMPILATION_TOOK'); ?> <b><?php echo '#'.'##COMPILER_TIMER##'.'#'; ?></b> <?php echo Text::_('COM_COMPONENTBUILDER_SECONDS_TO_COMPLETE'); ?>.</small>
 	</p>
-	<?php // echo LayoutHelper::render('jcbbuildervaluationandcostingreport', []); // TODO: will soon be ready, we are working on making this more realistic! ?>
+	<?php echo LayoutHelper::render('jcbbuildervaluationandcostingreport', []); ?>
 </div>

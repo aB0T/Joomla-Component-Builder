@@ -75,6 +75,7 @@ class Adminview implements ServiceProviderInterface
 			$container->get('Model.Sql'),
 			$container->get('Model.Mysqlsettings'),
 			$container->get('Compiler.Builder.Site.Edit.View'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}

@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FileInjector;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Paths;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\ComplexityEngine;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Files;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Dynamicpath;
@@ -57,6 +58,9 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(FileInjector::class, 'Utilities.FileInjector')
 			->share('Utilities.FileInjector', [$this, 'getFileInjector'], true);
+
+		$container->alias(ComplexityEngine::class, 'Utilities.ComplexityEngine')
+			->share('Utilities.ComplexityEngine', [$this, 'getComplexityEngine'], true);
 
 		$container->alias(Counter::class, 'Utilities.Counter')
 			->share('Utilities.Counter', [$this, 'getCounter'], true);
@@ -139,6 +143,21 @@ class Utilities implements ServiceProviderInterface
 		return new FileInjector(
 			$container->get('Power.Injector'),
 			$container->get('Joomla.Power.Injector')
+		);
+	}
+
+	/**
+	 * Get The ComplexityEngine Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ComplexityEngine
+	 * @since   5.1.4
+	 */
+	public function getComplexityEngine(Container $container): ComplexityEngine
+	{
+		return new ComplexityEngine(
+			$container->get('Config'),
 		);
 	}
 
@@ -247,7 +266,8 @@ class Utilities implements ServiceProviderInterface
 	{
 		return new Valuation(
 			$container->get('Config'),
-			$container->get('Compiler.Builder.Content.One')
+			$container->get('Compiler.Builder.Content.One'),
+			$container->get('Utilities.ComplexityEngine')
 		);
 	}
 

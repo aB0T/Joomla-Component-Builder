@@ -30,10 +30,10 @@ class ###Views###Model extends ListModel
 	/**
 	 * The application object.
 	 *
-	 * @var   CMSApplicationInterface  The application instance.
+	 * @var   Joomla___a6ee04f5_33c7_4a9b_aa6d_6a03f3715a88___Power  The application instance.
 	 * @since 3.2.0
 	 */
-	protected CMSApplicationInterface $app;
+	protected Joomla___a6ee04f5_33c7_4a9b_aa6d_6a03f3715a88___Power $app;
 
 	/**
 	 * The styles array.

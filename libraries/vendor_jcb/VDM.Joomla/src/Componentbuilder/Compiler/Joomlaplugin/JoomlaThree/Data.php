@@ -23,6 +23,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Field;
 use VDM\Joomla\Componentbuilder\Compiler\Field\Name as FieldName;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\String\PluginHelper;
@@ -121,6 +122,14 @@ final class Data implements PluginDataInterface
 	protected Filesfolders $filesfolders;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
@@ -139,6 +148,7 @@ final class Data implements PluginDataInterface
 	 * @param Field              $field          The Field Class.
 	 * @param FieldName          $fieldname      The Name Class.
 	 * @param Filesfolders       $filesfolders   The Filesfolders Class.
+	 * @param Counter            $counter          The Counter Class.
 	 * @param DatabaseInterface  $db             The Joomla Database Class.
 	 *
 	 * @since 5.0.2
@@ -146,7 +156,7 @@ final class Data implements PluginDataInterface
 	public function __construct(Config $config, Customcode $customcode, Gui $gui,
 		Placeholder $placeholder, Language $language,
 		Field $field, FieldName $fieldname,
-		Filesfolders $filesfolders, DatabaseInterface $db)
+		Filesfolders $filesfolders, Counter $counter, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -156,6 +166,7 @@ final class Data implements PluginDataInterface
 		$this->field = $field;
 		$this->fieldname = $fieldname;
 		$this->filesfolders = $filesfolders;
+		$this->counter = $counter;
 		$this->db = $db;
 	}
 
@@ -239,6 +250,8 @@ final class Data implements PluginDataInterface
 			$this->data[$data->id] = $data;
 			$this->index[$data->id] = $data->id;
 			$this->index[$data->guid] = $data->id;
+
+			$this->counter->plugin++;
 
 			return true;
 		}

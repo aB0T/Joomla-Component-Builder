@@ -35,6 +35,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Customalias;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Sql;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Mysqlsettings;
 use VDM\Joomla\Componentbuilder\Compiler\Builder\SiteEditView;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
 use VDM\Joomla\Utilities\ArrayHelper;
@@ -241,6 +242,14 @@ class Data
 	protected SiteEditView $siteeditview;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
@@ -273,6 +282,7 @@ class Data
 	 * @param Sql                   $sql                   The Sql Class.
 	 * @param Mysqlsettings         $mysqlsettings         The Mysqlsettings Class.
 	 * @param SiteEditView          $siteeditview          The SiteEditView Class.
+	 * @param Counter               $counter               The Counter Class.
 	 * @param DatabaseInterface     $db                    The Joomla Database Class.
 	 *
 	 * @since 3.2.0
@@ -280,7 +290,7 @@ class Data
 	public function __construct(Config $config, Event $event, Placeholder $placeholder, Dispenser $dispenser, Customtabs $customtabs, Tabs $tabs, Fields $fields,
 		History $history, Permissions $permissions, Conditions $conditions, Relations $relations, Linkedviews $linkedviews, Javascript $javascript,
 		Css $css, Php $php, Custombuttons $custombuttons, Customimportscripts $customimportscripts, Ajax $ajax, Customalias $customalias, Sql $sql,
-		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, DatabaseInterface $db)
+		Mysqlsettings $mysqlsettings, SiteEditView $siteeditview, Counter $counter, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -304,6 +314,7 @@ class Data
 		$this->sql = $sql;
 		$this->mysqlsettings = $mysqlsettings;
 		$this->siteeditview = $siteeditview;
+		$this->counter = $counter;
 		$this->db = $db;
 	}
 
@@ -367,6 +378,8 @@ class Data
 			$this->data[$data->id] = $data;
 			$this->index[$data->id] = $data->id;
 			$this->index[$data->guid] = $data->id;
+
+			$this->counter->adminView++;
 		}
 	}
 

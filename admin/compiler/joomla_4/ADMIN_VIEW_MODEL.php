@@ -105,14 +105,14 @@ class ###View###Model extends AdminModel
 			if (property_exists($item, 'metadata') && !is_array($item->metadata))
 			{
 				// Convert the metadata field to an array.
-				$metadata       = new Registry($item->metadata);
+				$metadata       = new Joomla___a87c432d_b5b4_428e_b7ff_14b51664c624___Power($item->metadata);
 				$item->metadata = $metadata->toArray();
 			}
 
 			// check edit access permissions
 			if (!empty($item->id) && !$this->allowEdit((array) $item))
 			{
- 				$app = Factory::getApplication();
+ 				$app = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication();
   				$app->enqueueMessage(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('Not authorised!'), 'error');
 				$app->redirect('index.php?option=com_###component###');
 				return false;
@@ -294,7 +294,7 @@ class ###View###Model extends AdminModel
 			$data = $this->getItem();
 		}
 
-		// run the perprocess of the data
+		// run the per process of the data
 		$this->preprocessData('com_###component###.###view###', $data);
 
 		return $data;
@@ -338,100 +338,6 @@ class ###View###Model extends AdminModel
 	}
 
 	/**
-	 * Method to perform batch operations on an item or a set of items.
-	 *
-	 * @param   array  $commands  An array of commands to perform.
-	 * @param   array  $pks       An array of item ids.
-	 * @param   array  $contexts  An array of item contexts.
-	 *
-	 * @return  boolean  Returns true on success, false on failure.
-	 * @since   12.2
-	 */
-	public function batch($commands, $pks, $contexts)
-	{
-		// Sanitize ids.
-		$pks = array_unique($pks);
-		ArrayHelper::toInteger($pks);
-
-		// Remove any values of zero.
-		if (array_search(0, $pks, true))
-		{
-			unset($pks[array_search(0, $pks, true)]);
-		}
-
-		if (empty($pks))
-		{
-			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JGLOBAL_NO_ITEM_SELECTED'));
-			return false;
-		}
-
-		$done = false;
-
-		// Set some needed variables.
-		$this->user ??= $this->getCurrentUser();
-		$this->table = $this->getTable();
-		$this->tableClassName = get_class($this->table);
-		$this->contentType = new UCMType;
-		$this->type = $this->contentType->getTypeByTable($this->tableClassName);
-		$this->canDo = ###Component###Helper::getActions('###view###');
-		$this->batchSet = true;
-
-		if (!$this->canDo->get('core.batch'))
-		{
-			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		if ($this->type == false)
-		{
-			$type = new UCMType;
-			$this->type = $type->getTypeByAlias($this->typeAlias);
-		}
-
-		$this->tagsObserver = $this->table->getObserverOfClass('JTableObserverTags');
-
-		if (!empty($commands['move_copy']))
-		{
-			$cmd = ArrayHelper::getValue($commands, 'move_copy', 'c');
-
-			if ($cmd == 'c')
-			{
-				$result = $this->batchCopy($commands, $pks, $contexts);
-
-				if (is_array($result))
-				{
-					foreach ($result as $old => $new)
-					{
-						$contexts[$new] = $contexts[$old];
-					}
-					$pks = array_values($result);
-				}
-				else
-				{
-					return false;
-				}
-			}
-			elseif ($cmd == 'm' && !$this->batchMove($commands, $pks, $contexts))
-			{
-				return false;
-			}
-
-			$done = true;
-		}
-
-		if (!$done)
-		{
-			$this->setError(Joomla___ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('JLIB_APPLICATION_ERROR_INSUFFICIENT_BATCH_INFORMATION'));
-			return false;
-		}
-
-		// Clear the cache
-		$this->cleanCache();
-
-		return true;
-	}###MODEL_BATCH_COPY######MODEL_BATCH_MOVE###
-
-	/**
 	 * Method to save the form data.
 	 *
 	 * @param   array  $data  The form data.
@@ -442,14 +348,14 @@ class ###View###Model extends AdminModel
 	public function save($data)
 	{
 		$input    = Joomla___39403062_84fb_46e0_bac4_0023f766e827___Power::getApplication()->getInput();
-		$filter   = InputFilter::getInstance();
+		$filter   = Joomla___193deb3e_0c3e_4610_8e55_450e463095b4___Power::getInstance();
 
 		// set the metadata to the Item Data
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
 			$data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
 
-			$metadata = new Registry;
+			$metadata = new Joomla___a87c432d_b5b4_428e_b7ff_14b51664c624___Power;
 			$metadata->loadArray($data['metadata']);
 			$data['metadata'] = (string) $metadata;
 		}###CHECKBOX_SAVE######METHOD_ITEM_SAVE###
@@ -457,7 +363,7 @@ class ###View###Model extends AdminModel
 		// Set the Params Items to data
 		if (isset($data['params']) && is_array($data['params']))
 		{
-			$params = new Registry;
+			$params = new Joomla___a87c432d_b5b4_428e_b7ff_14b51664c624___Power;
 			$params->loadArray($data['params']);
 			$data['params'] = (string) $params;
 		}###TITLEALIASFIX###
@@ -485,7 +391,7 @@ class ###View###Model extends AdminModel
 
 		while ($table->load([$field => $value]))
 		{
-			$value = StringHelper::increment($value);
+			$value = Joomla___46ba6c12_361e_4f7d_b6d9_70450e7cd7c2___Power::increment($value);
 		}
 
 		return $value;

@@ -301,7 +301,7 @@ final class Valuation
 	 * This is a notional cost used for value attribution.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $licenseSeatAnnualCost;
 
@@ -310,7 +310,7 @@ final class Valuation
 	 * Used to multiply the attributed tool license cost.
 	 *
 	 * @var   int
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected int $assumedDeveloperCount;
 
@@ -319,7 +319,7 @@ final class Valuation
 	 * Used to divide the subscription cost.
 	 *
 	 * @var   int
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected int $assumedSubscriptionPerMonth;
 
@@ -328,73 +328,16 @@ final class Valuation
 	 * of the JCB license seat cost to this project.
 	 *
 	 * @var   int
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected int $workdaysPerYear;
-
-	/**
-	 * The maximum number of lines that define a low market demand project.
-	 *
-	 * @var   int
-	 * @since 5.1.5
-	 */
-	protected int $marketLowMaxLines;
-
-	/**
-	 * The maximum number of lines that define a medium market demand project.
-	 *
-	 * @var   int
-	 * @since 5.1.5
-	 */
-	protected int $marketMediumMaxLines;
-
-	/**
-	 * The maximum number of lines that define a high market demand project.
-	 *
-	 * @var   int
-	 * @since 5.1.5
-	 */
-	protected int $marketHighMaxLines;
-
-	/**
-	 * The multiplier applied to the actual value for low-demand projects.
-	 *
-	 * @var   float
-	 * @since 5.1.5
-	 */
-	protected float $marketMultiplierLow;
-
-	/**
-	 * The multiplier applied to the actual value for medium-demand projects.
-	 *
-	 * @var   float
-	 * @since 5.1.5
-	 */
-	protected float $marketMultiplierMedium;
-
-	/**
-	 * The multiplier applied to the actual value for high-demand projects.
-	 *
-	 * @var   float
-	 * @since 5.1.5
-	 */
-	protected float $marketMultiplierHigh;
-
-	/**
-	 * The multiplier applied to the actual value for revolutionary projects.
-	 * (e.g. when total line count exceeds the high threshold)
-	 *
-	 * @var   float
-	 * @since 5.1.5
-	 */
-	protected float $marketMultiplierRevolutionary;
 
 	/**
 	 * The profit margin factor (0..1) applied after the market multiplier
 	 * to calculate the perceived project value.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $profitMarginFactor;
 
@@ -403,7 +346,7 @@ final class Valuation
 	 * or reused in other projects. Used in blueprint value calculations.
 	 *
 	 * @var   int
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected int $blueprintReplicationPotential;
 
@@ -412,7 +355,7 @@ final class Valuation
 	 * Represents market risk, competition, or uncertainty.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $blueprintRiskFactor;
 
@@ -420,7 +363,7 @@ final class Valuation
 	 * The calculated labor base value (USD), excluding overhead.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $laborBaseValue = 0.0;
 
@@ -428,7 +371,7 @@ final class Valuation
 	 * The calculated labor value including all overheads (USD).
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $laborWithOverheadValue = 0.0;
 
@@ -436,7 +379,7 @@ final class Valuation
 	 * The attributed cost of the professional JCB tool license (USD).
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $toolLicenseAttribution = 0.0;
 
@@ -444,23 +387,23 @@ final class Valuation
 	 * The combined actual project value (USD) including labor and tool attribution.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $actualValue = 0.0;
 
 	/**
-	 * The selected market multiplier based on the total line count.
+	 * The selected market multiplier based on the component complexity.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
-	protected float $marketMultiplierChosen = 1.0;
+	protected float $marketMultiplier = 1.0;
 
 	/**
 	 * The market-adjusted project value (USD) after applying the multiplier.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $marketAdjustedValue = 0.0;
 
@@ -468,7 +411,7 @@ final class Valuation
 	 * The perceived project value (USD) after applying profit margin.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $perceivedValue = 0.0;
 
@@ -476,7 +419,7 @@ final class Valuation
 	 * The estimated blueprint value (USD) after replication potential and risk adjustments.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $blueprintValue = 0.0;
 
@@ -484,7 +427,7 @@ final class Valuation
 	 * The suggested monthly subscription fee (USD) for the app over 12 months.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $appMonthly12 = 0.0;
 
@@ -492,7 +435,7 @@ final class Valuation
 	 * The suggested monthly subscription fee (USD) for the app over 24 months.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $appMonthly24 = 0.0;
 
@@ -500,7 +443,7 @@ final class Valuation
 	 * The suggested monthly subscription fee (USD) for the app over 36 months.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $appMonthly36 = 0.0;
 
@@ -508,7 +451,7 @@ final class Valuation
 	 * The suggested monthly subscription fee (USD) for the blueprint over 12 months.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $blueprintMonthly12 = 0.0;
 
@@ -516,7 +459,7 @@ final class Valuation
 	 * The suggested monthly subscription fee (USD) for the blueprint over 24 months.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $blueprintMonthly24 = 0.0;
 
@@ -524,7 +467,7 @@ final class Valuation
 	 * The suggested monthly subscription fee (USD) for the blueprint over 36 months.
 	 *
 	 * @var   float
-	 * @since 5.1.5
+	 * @since 5.1.4
 	 */
 	protected float $blueprintMonthly36 = 0.0;
 
@@ -553,6 +496,14 @@ final class Valuation
 	protected Content $content;
 
 	/**
+	 * The ComplexityEngine Class.
+	 *
+	 * @var   ComplexityEngine
+	 * @since 5.1.4
+	 */
+	protected ComplexityEngine $complexityengine;
+
+	/**
 	 * The Counter Class.
 	 *
 	 * @var   Counter
@@ -563,15 +514,18 @@ final class Valuation
 	/**
 	 * Constructor.
 	 *
-	 * @param  Config   $config   The Config Class.
-	 * @param  Content  $content  The ContentOne Class.
+	 * @param  Config            $config            The Config Class.
+	 * @param  Content           $content           The ContentOne Class.
+	 * @param ComplexityEngine   $complexityengine  The ComplexityEngine Class.
 	 *
 	 * @since  3.2.0
 	 */
-	public function __construct(Config $config, Content $content)
+	public function __construct(Config $config, Content $content,
+		ComplexityEngine $complexityengine)
 	{
 		$this->config  = $config;
 		$this->content = $content;
+		$this->complexityengine = $complexityengine;
 	}
 
 	/**
@@ -629,15 +583,6 @@ final class Valuation
 		$this->workdaysPerYear       = (int)   $this->config->get('workdays_per_year', 240);
 
 		$this->assumedSubscriptionPerMonth = (int)   $this->config->get('assumed_subscription_per_month', 100);
-
-		$this->marketLowMaxLines     = (int) $this->config->get('market_low_max_lines', 100000);
-		$this->marketMediumMaxLines  = (int) $this->config->get('market_medium_max_lines', 300000);
-		$this->marketHighMaxLines    = (int) $this->config->get('market_high_max_lines', 700000);
-
-		$this->marketMultiplierLow            = (float) $this->config->get('market_multiplier_low', 0.9);
-		$this->marketMultiplierMedium         = (float) $this->config->get('market_multiplier_medium', 1.2);
-		$this->marketMultiplierHigh           = (float) $this->config->get('market_multiplier_high', 2.0);
-		$this->marketMultiplierRevolutionary  = (float) $this->config->get('market_multiplier_revolutionary', 4.0);
 
 		$this->profitMarginFactor             = (float) $this->config->get('profit_margin_factor', 0.6);
 
@@ -737,7 +682,7 @@ final class Valuation
 	 * Compute labor base and labor with overhead values.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function calculateLaborLayers(): void
 	{
@@ -752,7 +697,7 @@ final class Valuation
 	 * Attribute the notional professional JCB seat cost to this project.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function calculateToolAttribution(): void
 	{
@@ -769,7 +714,7 @@ final class Valuation
 	 * Combine labor and tool attribution for the actual value.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function calculateActualValue(): void
 	{
@@ -785,42 +730,25 @@ final class Valuation
 	 * Choose a market multiplier based on total lines.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function determineMarketMultiplier(): void
 	{
-		$totalLines = $this->counter->get('line', 100);
+		$complexity = $this->complexityengine->get($this->counter);
 
-		if ($totalLines <= $this->marketLowMaxLines)
-		{
-			$this->marketMultiplierChosen = $this->marketMultiplierLow;
-			return;
-		}
-
-		if ($totalLines <= $this->marketMediumMaxLines)
-		{
-			$this->marketMultiplierChosen = $this->marketMultiplierMedium;
-			return;
-		}
-
-		if ($totalLines <= $this->marketHighMaxLines)
-		{
-			$this->marketMultiplierChosen = $this->marketMultiplierHigh;
-			return;
-		}
-
-		$this->marketMultiplierChosen = $this->marketMultiplierRevolutionary;
+		$this->marketMultiplier = $complexity['complexity_multiplier'];
+		$this->content->set('COMPLEXITY_INDEX', $complexity['complexity_index']);
 	}
 
 	/**
 	 * Apply market multiplier and profit margin to get perceived value.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function calculateMarketAndPerceivedValues(): void
 	{
-		$marketAdjusted = MathHelper::bc('mul', $this->actualValue, $this->marketMultiplierChosen, 2) ?? 0.00;
+		$marketAdjusted = MathHelper::bc('mul', $this->actualValue, $this->marketMultiplier, 2) ?? 0.00;
 		$marginFactor   = MathHelper::bc('add', 1.0, max(0.0, $this->profitMarginFactor), 4) ?? 1.0;
 		$perceived      = MathHelper::bc('mul', $marketAdjusted, $marginFactor, 2) ?? 0.00;
 
@@ -832,7 +760,7 @@ final class Valuation
 	 * Blueprint value based on replication potential and risk.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function calculateBlueprintValue(): void
 	{
@@ -856,7 +784,7 @@ final class Valuation
 	 * yet preserve consistent overall revenue across time.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function calculateSubscriptionBreakdowns(): void
 	{
@@ -945,7 +873,7 @@ final class Valuation
 	 * Store extended valuation results without altering legacy content keys.
 	 *
 	 * @return void
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function storeExtendedResults(): void
 	{
@@ -963,7 +891,7 @@ final class Valuation
 		$this->content->set('ACTUAL_VALUE', $this->makeMoney($this->actualValue));
 
 		// Market and perceived
-		$this->content->set('MARKET_MULTIPLIER_CHOSEN', $this->marketMultiplierChosen);
+		$this->content->set('MARKET_MULTIPLIER', $this->marketMultiplier);
 		$this->content->set('SUBSCRIPTION_PER_MONTH', $this->assumedSubscriptionPerMonth);
 		$this->content->set('MARKET_ADJUSTED_VALUE', $this->makeMoney($this->marketAdjustedValue));
 		$this->content->set('PERCEIVED_VALUE', $this->makeMoney($this->perceivedValue));
@@ -996,7 +924,7 @@ final class Valuation
 	 * @param  string  $symbol    The currency symbol (default: '$').
 	 *
 	 * @return string
-	 * @since  5.1.5
+	 * @since  5.1.4
 	 */
 	protected function makeMoney(float $value, string $currency = 'USD', string $symbol = '$'): string
 	{

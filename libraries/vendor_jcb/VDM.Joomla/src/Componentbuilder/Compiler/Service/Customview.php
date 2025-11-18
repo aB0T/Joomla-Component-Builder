@@ -138,6 +138,7 @@ class Customview implements ServiceProviderInterface
 			$container->get('Model.Phpcustomview'),
 			$container->get('Model.Ajaxcustomview'),
 			$container->get('Model.Custombuttons'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}
@@ -160,6 +161,7 @@ class Customview implements ServiceProviderInterface
 			$container->get('Customcode.Dispenser'),
 			$container->get('Customcode.Gui'),
 			$container->get('Model.Dynamicget'),
+			$container->get('Utilities.Counter'),
 			$container->get('Joomla.Database')
 		);
 	}

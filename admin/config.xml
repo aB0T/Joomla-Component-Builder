@@ -687,8 +687,8 @@
 		/>
 	</fieldset>
 	<fieldset
-		name="valuation_development_model_custom_config"
-		label="COM_COMPONENTBUILDER_CONFIG_VALUATION_DEVELOPMENT_MODEL">
+		name="development_valuation_model_custom_config"
+		label="COM_COMPONENTBUILDER_CONFIG_DEVELOPMENT_VALUATION_MODEL">
 
 		<!-- Note_developer_performance_settings Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_developer_performance_settings" label="COM_COMPONENTBUILDER_CONFIG_NOTE_DEVELOPER_PERFORMANCE_SETTINGS_LABEL" heading="h4" class="alert alert-info note_developer_performance_settings" />
@@ -899,51 +899,6 @@
 		<field type="spacer" name="spacer_hr_13" hr="true" class="spacer_hr_13" />
 		<!-- Note_market_segmentation_scaling_multipliers Field. Type: Note. A None Database Field. (joomla) -->
 		<field type="note" name="note_market_segmentation_scaling_multipliers" label="COM_COMPONENTBUILDER_CONFIG_NOTE_MARKET_SEGMENTATION_SCALING_MULTIPLIERS_LABEL" heading="h4" class="alert alert-info note_market_segmentation_scaling_multipliers" />
-		<!-- Market_low_max_lines Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="market_low_max_lines"
-			label="COM_COMPONENTBUILDER_CONFIG_MARKET_LOW_MAX_LINES_LABEL"
-			default="100000"
-			description="COM_COMPONENTBUILDER_CONFIG_MARKET_LOW_MAX_LINES_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="INT"
-			message="COM_COMPONENTBUILDER_CONFIG_MARKET_LOW_MAX_LINES_MESSAGE"
-			onchange="if(!this.value.trim().match(/^\d+$/)){this.value='';}"
-		/>
-		<!-- Market_medium_max_lines Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="market_medium_max_lines"
-			label="COM_COMPONENTBUILDER_CONFIG_MARKET_MEDIUM_MAX_LINES_LABEL"
-			default="300000"
-			description="COM_COMPONENTBUILDER_CONFIG_MARKET_MEDIUM_MAX_LINES_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="INT"
-			message="COM_COMPONENTBUILDER_CONFIG_MARKET_MEDIUM_MAX_LINES_MESSAGE"
-			onchange="if(!this.value.trim().match(/^\d+$/)){this.value='';}"
-		/>
-		<!-- Market_high_max_lines Field. Type: Text. (joomla) -->
-		<field
-			type="text"
-			name="market_high_max_lines"
-			label="COM_COMPONENTBUILDER_CONFIG_MARKET_HIGH_MAX_LINES_LABEL"
-			default="700000"
-			description="COM_COMPONENTBUILDER_CONFIG_MARKET_HIGH_MAX_LINES_DESCRIPTION"
-			class="text_area"
-			readonly="false"
-			disabled="false"
-			required="true"
-			filter="INT"
-			message="COM_COMPONENTBUILDER_CONFIG_MARKET_HIGH_MAX_LINES_MESSAGE"
-			onchange="if(!this.value.trim().match(/^\d+$/)){this.value='';}"
-		/>
 		<!-- Market_multiplier_low Field. Type: Text. (joomla) -->
 		<field
 			type="text"

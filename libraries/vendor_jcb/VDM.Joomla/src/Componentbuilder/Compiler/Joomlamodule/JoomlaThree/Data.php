@@ -26,6 +26,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Filesfolders;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Libraries;
 use VDM\Joomla\Componentbuilder\Compiler\Dynamicget\Data as Dynamicget;
 use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as Templatelayout;
+use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -147,6 +148,14 @@ class Data implements ModuleDataInterface
 	protected Templatelayout $templatelayout;
 
 	/**
+	 * The Counter Class.
+	 *
+	 * @var   Counter
+	 * @since 5.1.4
+	 */
+	protected Counter $counter;
+
+	/**
 	 * Joomla Database Class.
 	 *
 	 * @var   DatabaseInterface
@@ -168,6 +177,7 @@ class Data implements ModuleDataInterface
 	 * @param Libraries          $libraries        The Libraries Class.
 	 * @param Dynamicget         $dynamicget       The Data Class.
 	 * @param Templatelayout     $templatelayout   The Data Class.
+	 * @param Counter            $counter          The Counter Class.
 	 * @param DatabaseInterface  $db               The Joomla Database Class.
 	 *
 	 * @since 3.2.0
@@ -177,7 +187,7 @@ class Data implements ModuleDataInterface
 		Field $field, Fieldname $fieldname,
 		Filesfolders $filesfolders, Libraries $libraries,
 		Dynamicget $dynamicget, Templatelayout $templatelayout,
-		DatabaseInterface $db)
+		Counter $counter, DatabaseInterface $db)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -190,6 +200,7 @@ class Data implements ModuleDataInterface
 		$this->libraries = $libraries;
 		$this->dynamicget = $dynamicget;
 		$this->templatelayout = $templatelayout;
+		$this->counter = $counter;
 		$this->db = $db;
 	}
 
@@ -274,6 +285,8 @@ class Data implements ModuleDataInterface
 			$this->index[$data->id] = $data->id;
 			$this->index[$data->guid] = $data->id;
 
+			$this->counter->module++;
+
 			return true;
 		}
 
@@ -281,12 +294,12 @@ class Data implements ModuleDataInterface
 	}
 
 	/**
-	 * get current plugin data query
+	 * get current module data query
 	 *
-	 * @param   mixed    $value   The plugin ID/GUID
+	 * @param   mixed    $value   The module ID/GUID
 	 * @param   string   $key     The type of value
 	 *
-	 * @return  string  The plugin data query
+	 * @return  string  The module data query
 	 * @since   5.0.4
 	 */
 	private function getQuery($value, string $key = 'id')

@@ -1,10 +1,15 @@
-# v6.1.4-alpha6
+# v6.1.4-beta1
 
-- Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.
-- Fix an issue where the Email Helper send() function was executed twice.
-- Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.
-- Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.
-- Fix the Compiler success message to display both build seconds and project weeks.
+- Add Development Valuation Model to calculate JCB component pricing.
+- Add functionality to push JCB packages to Self hosted Git system that uses a self signed SSL.
+- Add functionality that will include Validation Rules linked to fields in JCB packages. #1273
+- Refactor and Improve Router Helper Class to new standard Site Router practice.
+- Refactor and Improve JCB Search engine for better searching of JCB areas.
+- Fix bug in the search editor in JCB Search Engine.
+- Fix issue where Custom Gets linked to a Site view did not ship correctly with JCB packages. #1272
+- Fix issue where the Icon linked to a Custom Admin Menu did not ship with JCB packages. #1271
+- Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274
+- Remove batch feature from JCB compiler Templates due to lack of use and outdated code.
 
 # v6.1.4-alpha
 
@@ -36,6 +41,11 @@
 - Refactor toolbar into version specific classes to resolve getToolbar errors. #1267
 - Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270
 - Fix php8.3 deprecation warnings in compiler templates. #1265
+- Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.
+- Fix an issue where the Email Helper send() function was executed twice.
+- Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.
+- Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.
+- Fix the Compiler success message to display both build seconds and project weeks.
 
 # v6.1.3
 

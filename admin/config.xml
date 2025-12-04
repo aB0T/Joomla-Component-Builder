@@ -184,39 +184,19 @@
 		/>
 		<!-- Spacer_hr_1 Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_1" hr="true" class="spacer_hr_1" />
-		<!-- Manage_jcb_package_directories Field. Type: Radio. (joomla) -->
+		<!-- Allow_selfsigned_certificates Field. Type: Radio. (joomla) -->
 		<field
 			type="radio"
-			name="manage_jcb_package_directories"
-			label="COM_COMPONENTBUILDER_CONFIG_MANAGE_JCB_PACKAGE_DIRECTORIES_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_MANAGE_JCB_PACKAGE_DIRECTORIES_DESCRIPTION"
-			class="btn-group btn-group-yesno"
-			default="2"
-			required="true">
+			name="allow_selfsigned_certificates"
+			label="COM_COMPONENTBUILDER_CONFIG_ALLOW_SELFSIGNED_CERTIFICATES_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_ALLOW_SELFSIGNED_CERTIFICATES_DESCRIPTION"
+			layout="joomla.form.field.radio.switcher"
+			default="1">
 			<!-- Option Set. -->
-			<option value="0">
-				COM_COMPONENTBUILDER_CONFIG_NONE</option>
-			<option value="2">
-				COM_COMPONENTBUILDER_CONFIG_SHOW_ALL</option>
 			<option value="1">
-				COM_COMPONENTBUILDER_CONFIG_MANUAL_SELECTION</option>
-		</field>
-		<!-- Jcb_package_directories Field. Type: List. (joomla) -->
-		<field
-			type="list"
-			name="jcb_package_directories"
-			label="COM_COMPONENTBUILDER_CONFIG_JCB_PACKAGE_DIRECTORIES_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_JCB_PACKAGE_DIRECTORIES_DESCRIPTION"
-			class="list_class"
-			layout="joomla.form.field.list-fancy-select"
-			multiple="true"
-			default=""
-			showon="manage_jcb_package_directories:1">
-			<!-- Option Set. -->
-			<option value="vdm">
-				COM_COMPONENTBUILDER_CONFIG_VDM_PACKAGES</option>
-			<option value="jcb">
-				COM_COMPONENTBUILDER_CONFIG_JCB_COMMUNITY_PACKAGES</option>
+				COM_COMPONENTBUILDER_CONFIG_YES</option>
+			<option value="0">
+				COM_COMPONENTBUILDER_CONFIG_NO</option>
 		</field>
 		<!-- Spacer_hr_2 Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_2" hr="true" class="spacer_hr_2" />

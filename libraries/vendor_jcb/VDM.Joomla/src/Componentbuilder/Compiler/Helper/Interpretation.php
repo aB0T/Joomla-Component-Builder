@@ -6358,46 +6358,62 @@ class Interpretation extends Fields
 		return $array;
 	}
 
-	public function setRouterHelp($nameSingleCode, $nameListCode,
-	                              $front = false
-	)
+	public function setRouterHelp($nameSingleCode, $nameListCode, $front = false)
 	{
 		// add if tags is added, also for all front item views
-		if ((CFactory::_('Compiler.Builder.Tags')->exists($nameSingleCode)
-				|| $front)
+		if ((CFactory::_('Compiler.Builder.Tags')->exists($nameSingleCode) || $front)
 			&& (!in_array($nameSingleCode, $this->setRouterHelpDone)))
 		{
 			// insure we load a view only once
 			$this->setRouterHelpDone[] = $nameSingleCode;
 			// build view route helper
-			$View          = StringHelper::safe(
+			$View = StringHelper::safe(
 				$nameSingleCode, 'F'
 			);
+
+			$hasCategory = (CFactory::_('Compiler.Builder.Category.Code')->exists($nameSingleCode) &&
+				'category' !== $nameSingleCode && 'categories' !== $nameSingleCode);
+
 			$routeHelper   = [];
 			$routeHelper[] = PHP_EOL . PHP_EOL . Indent::_(1) . "/**";
-			$routeHelper[] = Indent::_(1) . " * @param int The route of the "
-				. $View;
-			$routeHelper[] = Indent::_(1) . " */";
-			if ('category' === $nameSingleCode
-				|| 'categories' === $nameSingleCode)
+			$routeHelper[] = Indent::_(1) . " * Get the URL route for {$nameSingleCode}";
+			$routeHelper[] = Indent::_(1) . " *";
+			$routeHelper[] = Indent::_(1) . " * @param   integer  \$id     The id of the {$nameSingleCode}";
+
+			if ($hasCategory)
 			{
-				$routeHelper[] = Indent::_(1) . "public static function get"
-					. $View . "Route(\$id = 0)";
+				$routeHelper[] = Indent::_(1) . " * @param   integer  \$catid  The id of the {$nameSingleCode}'s category";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @return  string  The link to the {$nameSingleCode}";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @since   1.5";
+				$routeHelper[] = Indent::_(1) . " */";
+				$routeHelper[] = Indent::_(1) . "public static function get" . $View . "Route(\$id = 0, \$catid = 0): string";
 			}
 			else
 			{
-				$routeHelper[] = Indent::_(1) . "public static function get"
-					. $View . "Route(\$id = 0, \$catid = 0)";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @return  string  The link to the {$nameSingleCode}";
+				$routeHelper[] = Indent::_(1) . " *";
+				$routeHelper[] = Indent::_(1) . " * @since   1.5";
+				$routeHelper[] = Indent::_(1) . " */";
+				$routeHelper[] = Indent::_(1) . "public static function get" . $View . "Route(\$id = 0): string";
 			}
+
 			$routeHelper[] = Indent::_(1) . "{";
 			$routeHelper[] = Indent::_(2) . "if (\$id > 0)";
 			$routeHelper[] = Indent::_(2) . "{";
-			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Initialize the needel array.";
-			$routeHelper[] = Indent::_(3) . "\$needles = array(";
-			$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
-				. "'  => array((int) \$id)";
-			$routeHelper[] = Indent::_(3) . ");";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+					. " Initialize the needel array.";
+				$routeHelper[] = Indent::_(3) . "\$needles = array(";
+				$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
+					. "'  => array((int) \$id)";
+				$routeHelper[] = Indent::_(3) . ");";
+			}
+
 			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Create the link";
 			$routeHelper[] = Indent::_(3) . "\$link = 'index.php?option=com_"
@@ -6406,52 +6422,77 @@ class Interpretation extends Fields
 			$routeHelper[] = Indent::_(2) . "}";
 			$routeHelper[] = Indent::_(2) . "else";
 			$routeHelper[] = Indent::_(2) . "{";
-			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
-				. " Initialize the needel array.";
-			$routeHelper[] = Indent::_(3) . "\$needles = array(";
-			$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
-				. "'  => array()";
-			$routeHelper[] = Indent::_(3) . ");";
+
+			if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+			{
+				$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
+					. " Initialize the needel array.";
+				$routeHelper[] = Indent::_(3) . "\$needles = array(";
+				$routeHelper[] = Indent::_(4) . "'" . $nameSingleCode
+					. "'  => array()";
+				$routeHelper[] = Indent::_(3) . ");";
+			}
+
 			$routeHelper[] = Indent::_(3) . "//" . Line::_(__Line__, __Class__)
 				. " Create the link but don't add the id.";
 			$routeHelper[] = Indent::_(3) . "\$link = 'index.php?option=com_"
-				. CFactory::_('Config')->component_code_name . "&view=" . $nameSingleCode
-				. "';";
+				. CFactory::_('Config')->component_code_name . "&view=" . $nameSingleCode . "';";
 			$routeHelper[] = Indent::_(2) . "}";
-			if ('category' != $nameSingleCode
-				&& 'categories' != $nameSingleCode)
+
+			if ($hasCategory)
 			{
 				$routeHelper[] = Indent::_(2) . "if (\$catid > 1)";
 				$routeHelper[] = Indent::_(2) . "{";
-				$routeHelper[] = Indent::_(3)
-					. "\$categories = Categories::getInstance('"
-					. CFactory::_('Config')->component_code_name . "." . $nameListCode . "');";
-				$routeHelper[] = Indent::_(3)
-					. "\$category = \$categories->get(\$catid);";
-				$routeHelper[] = Indent::_(3) . "if (\$category)";
-				$routeHelper[] = Indent::_(3) . "{";
-				$routeHelper[] = Indent::_(4)
-					. "\$needles['category'] = array_reverse(\$category->getPath());";
-				$routeHelper[] = Indent::_(4)
-					. "\$needles['categories'] = \$needles['category'];";
-				$routeHelper[] = Indent::_(4) . "\$link .= '&catid='.\$catid;";
-				$routeHelper[] = Indent::_(3) . "}";
+
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$routeHelper[] = Indent::_(3)
+						. "\$categories = Categories::getInstance('"
+						. CFactory::_('Config')->component_code_name . "." . $nameListCode . "');";
+					$routeHelper[] = Indent::_(3)
+						. "\$category = \$categories->get(\$catid);";
+					$routeHelper[] = Indent::_(3) . "if (\$category)";
+					$routeHelper[] = Indent::_(3) . "{";
+					$routeHelper[] = Indent::_(4)
+						. "\$needles['category'] = array_reverse(\$category->getPath());";
+					$routeHelper[] = Indent::_(4)
+						. "\$needles['categories'] = \$needles['category'];";
+					$routeHelper[] = Indent::_(4) . "\$link .= '&catid='.\$catid;";
+					$routeHelper[] = Indent::_(3) . "}";
+				}
+				else
+				{
+					$routeHelper[] = Indent::_(3) . "\$link .= '&catid='.\$catid;";
+				}
+
 				$routeHelper[] = Indent::_(2) . "}";
 			}
+
 			if (CFactory::_('Compiler.Builder.Has.Menu.Global')->exists($nameSingleCode))
 			{
-				$routeHelper[] = PHP_EOL . Indent::_(2)
-					. "if (\$item = self::_findItem(\$needles, '"
-					. $nameSingleCode . "'))";
+				if (CFactory::_('Config')->get('joomla_version', 3) == 3)
+				{
+					$routeHelper[] = PHP_EOL . Indent::_(2)
+						. "if (\$item = self::_findItem(\$needles, '" . $nameSingleCode . "'))";
+				}
+				else
+				{
+					$routeHelper[] = PHP_EOL . Indent::_(2)
+						. "if ((\$item = self::_findItem('" . $nameSingleCode . "')) !== null)";
+				}
+				$routeHelper[] = Indent::_(2) . "{";
+				$routeHelper[] = Indent::_(3) . "\$link .= '&Itemid='.\$item;";
+				$routeHelper[] = Indent::_(2) . "}";
 			}
-			else
+			elseif (CFactory::_('Config')->get('joomla_version', 3) == 3)
 			{
 				$routeHelper[] = PHP_EOL . Indent::_(2)
 					. "if (\$item = self::_findItem(\$needles))";
+				$routeHelper[] = Indent::_(2) . "{";
+				$routeHelper[] = Indent::_(3) . "\$link .= '&Itemid='.\$item;";
+				$routeHelper[] = Indent::_(2) . "}";
 			}
-			$routeHelper[] = Indent::_(2) . "{";
-			$routeHelper[] = Indent::_(3) . "\$link .= '&Itemid='.\$item;";
-			$routeHelper[] = Indent::_(2) . "}";
+
 			$routeHelper[] = PHP_EOL . Indent::_(2) . "return \$link;";
 			$routeHelper[] = Indent::_(1) . "}";
 

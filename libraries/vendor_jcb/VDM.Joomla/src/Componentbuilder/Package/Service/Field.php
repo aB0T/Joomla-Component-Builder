@@ -21,6 +21,9 @@ use VDM\Joomla\Componentbuilder\Remote\Get;
 use VDM\Joomla\Componentbuilder\Remote\Set;
 use VDM\Joomla\Componentbuilder\Package\Field\Readme\Item as ItemReadme;
 use VDM\Joomla\Componentbuilder\Package\Field\Readme\Main as MainReadme;
+use VDM\Joomla\Componentbuilder\Package\ValidationRule\Remote\Config as ValidationRuleConfig;
+use VDM\Joomla\Componentbuilder\Package\ValidationRule\Readme\Item as ValidationRuleItemReadme;
+use VDM\Joomla\Componentbuilder\Package\ValidationRule\Readme\Main as ValidationRuleMainReadme;
 
 
 /**
@@ -47,6 +50,14 @@ class Field implements ServiceProviderInterface
 		$container->share('Field.Remote.Set', [$this, 'getRemoteSet'], true);
 		$container->share('Field.Readme.Item', [$this, 'getItemReadme'], true);
 		$container->share('Field.Readme.Main', [$this, 'getMainReadme'], true);
+
+		$container->share('ValidationRule.Grep', [$this, 'getValidationRuleGrep'], true);
+		$container->share('ValidationRule.Remote.Config', [$this, 'getValidationRuleRemoteConfig'], true);
+		$container->share('ValidationRule.Resolver', [$this, 'getValidationRuleResolver'], true);
+		$container->share('ValidationRule.Remote.Get', [$this, 'getValidationRuleRemoteGet'], true);
+		$container->share('ValidationRule.Remote.Set', [$this, 'getValidationRuleRemoteSet'], true);
+		$container->share('ValidationRule.Readme.Item', [$this, 'getValidationRuleItemReadme'], true);
+		$container->share('ValidationRule.Readme.Main', [$this, 'getValidationRuleMainReadme'], true);
 	}
 
 	/**
@@ -170,6 +181,129 @@ class Field implements ServiceProviderInterface
 	public function getMainReadme(Container $container): MainReadme
 	{
 		return new MainReadme();
+	}
+
+	/**
+	 * Get The Grep Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Grep
+	 * @since   5.1.4
+	 */
+	public function getValidationRuleGrep(Container $container): Grep
+	{
+		return new Grep(
+			$container->get('ValidationRule.Remote.Config'),
+			$container->get('Git.Repository.Contents'),
+			$container->get('Network.Resolve'),
+			$container->get('Power.Tracker'),
+			$container->get('Config')->approved_package_paths
+		);
+	}
+
+	/**
+	 * Get The Remote Config Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ValidationRuleConfig
+	 * @since   5.1.4
+	 */
+	public function getValidationRuleRemoteConfig(Container $container): ValidationRuleConfig
+	{
+		return new ValidationRuleConfig(
+			$container->get('Power.Table')
+		);
+	}
+
+	/**
+	 * Get The Resolver Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Resolver
+	 * @since 5.1.4
+	 */
+	public function getValidationRuleResolver(Container $container): Resolver
+	{
+		return new Resolver(
+			$container->get('ValidationRule.Remote.Config'),
+			$container->get('Utilities.Normalize'),
+			$container->get('Power.Tracker'),
+			$container->get('Power.Table'),
+			$container->get('Load'),
+			$container->get('Data.Items')
+		);
+	}
+
+	/**
+	 * Get The Remote Get Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Get
+	 * @since   5.1.4
+	 */
+	public function getValidationRuleRemoteGet(Container $container): Get
+	{
+		return new Get(
+			$container->get('ValidationRule.Remote.Config'),
+			$container->get('ValidationRule.Grep'),
+			$container->get('Data.Item'),
+			$container->get('Power.Tracker'),
+			$container->get('Power.Message')
+		);
+	}
+
+	/**
+	 * Get The Remote Set Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Set
+	 * @since   5.1.4
+	 */
+	public function getValidationRuleRemoteSet(Container $container): Set
+	{
+		return new Set(
+			$container->get('Power.Tracker'),
+			$container->get('Power.Message'),
+			$container->get('ValidationRule.Grep'),
+			$container->get('ValidationRule.Resolver'),
+			$container->get('ValidationRule.Remote.Config'),
+			$container->get('ValidationRule.Readme.Item'),
+			$container->get('ValidationRule.Readme.Main'),
+			$container->get('Git.Repository.Contents'),
+			$container->get('Data.Items'),
+			$container->get('Config')->approved_package_paths
+		);
+	}
+
+	/**
+	 * Get The Item Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ItemReadme
+	 * @since   5.1.4
+	 */
+	public function getValidationRuleItemReadme(Container $container): ValidationRuleItemReadme
+	{
+		return new ValidationRuleItemReadme();
+	}
+
+	/**
+	 * Get The Main Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ValidationRuleMainReadme
+	 * @since   5.1.4
+	 */
+	public function getValidationRuleMainReadme(Container $container): ValidationRuleMainReadme
+	{
+		return new ValidationRuleMainReadme();
 	}
 }
 

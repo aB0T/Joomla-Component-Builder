@@ -870,41 +870,71 @@ class Joomla_moduleModel extends AdminModel
 			'joomla_module_files_folders_urls' => 'joomla_module'
 		];
 
-		// we must also update all linked tables
+		// Update all linked tables
 		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
+			// Ensure field key
+			$_field_key ??= 'guid';
+
+			// Set active component context
 			Helper::setOption('com_componentbuilder');
-			foreach($_tables_array as $_delete_table => $_field_name)
+
+			// Load GUIDs once
+			$_guids = DataFactory::_('Load')->values(
+				['a.' . $_field_key], // selection
+				['a' => 'joomla_module'], // source table
+				['a.id' => ['value' => (array) $pks, 'operator' => 'IN']] // where
+			);
+
+			// Abort early if nothing returned
+			if (empty($_guids))
 			{
-				// get the joomla_module guid's
-				$_guids = DataFactory::_('Load')->values(
-					['a.guid' => 'guid'], // select
-					['a' => 'joomla_module'], // tables
-					['a.id' =>
-						['value' => $pks, 'operator' => 'IN']
-					] // where
-				);
+				return true;
+			}
 
-				// get the linked IDs
-				$_pks = DataFactory::_('Load')->values(
-					['a.id' => 'id'], // select
-					['a' => $_delete_table], // tables
-					['a.' . $_field_name =>
-						['value' => $_guids, 'operator' => 'IN']
-					] // where
-				);
+			// Normalize & deduplicate GUIDs
+			$_guids = array_values(array_unique((array) $_guids));
 
-				if ($_pks !== null)
+			foreach ($_tables_array as $_delete_table => $_field_name)
+			{
+				// Skip invalid configuration
+				if (empty($_delete_table) || empty($_field_name))
 				{
-					// load the model
-					$_Model = Helper::getModel($_delete_table);
-
-					// change publish state to trash (in-case the state was not changed in sync with the parent)
-					$_Model->publish($_pks, -2);
-
-					// delete the items
-					$_Model->delete($_pks);
+					continue;
 				}
+
+				// Load linked item IDs
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // selection
+					['a' => $_delete_table], // table
+					['a.' . $_field_name => ['value' => $_guids, 'operator' => 'IN']] // where
+				);
+
+				// Skip empty or broken relations
+				if (empty($_pks))
+				{
+					continue;
+				}
+
+				// Normalize keys
+				$_pks = array_values(array_unique((array) $_pks));
+
+				// Load model safely (it throws; it never returns null)
+				try
+				{
+					$_Model = Helper::getModel($_delete_table);
+				}
+				catch (\Throwable $e)
+				{
+					// Intentionally ignored (safe fail)
+					continue;
+				}
+
+				// Move to trash first
+				$_Model->publish($_pks, -2);
+
+				// Delete records
+				$_Model->delete($_pks);
 			}
 		}
 
@@ -933,38 +963,65 @@ class Joomla_moduleModel extends AdminModel
 			'joomla_module_files_folders_urls' => 'joomla_module'
 		];
 
-		// we must also update all linked tables
+		// Update all linked tables
 		if (!empty($_tables_array) && UtilitiesArrayHelper::check($pks))
 		{
+			// Ensure field key
+			$_field_key ??= 'guid';
+
+			// Set active component context
 			Helper::setOption('com_componentbuilder');
-			foreach($_tables_array as $_update_table => $_field_name)
+
+			// Load GUIDs once
+			$_guids = DataFactory::_('Load')->values(
+				['a.' . $_field_key], // selection
+				['a' => 'joomla_module'], // source table
+				['a.id' => ['value' => (array) $pks, 'operator' => 'IN']] // where
+			);
+
+			// Abort early if nothing returned
+			if (empty($_guids))
 			{
-				// get the admin guid's
-				$_guids = DataFactory::_('Load')->values(
-					['a.guid' => 'guid'], // select
-					['a' => 'joomla_module'], // tables
-					['a.id' =>
-						['value' => $pks, 'operator' => 'IN']
-					] // where
-				);
+				return true;
+			}
 
-				// get the linked IDs
-				$_pks = DataFactory::_('Load')->values(
-					['a.id' => 'id'], // select
-					['a' => $_update_table], // tables
-					['a.' . $_field_name =>
-						['value' => $_guids, 'operator' => 'IN']
-					] // where
-				);
+			// Normalize & deduplicate GUIDs
+			$_guids = array_values(array_unique((array) $_guids));
 
-				if ($_pks !== null)
+			foreach ($_tables_array as $_update_table => $_field_name)
+			{
+				// Skip invalid config
+				if (empty($_update_table) || empty($_field_name))
 				{
-					// load the model
-					$_Model = Helper::getModel($_update_table);
-
-					// change publish state
-					$_Model->publish($_pks, $value);
+					continue;
 				}
+
+				// Load linked IDs
+				$_pks = DataFactory::_('Load')->values(
+					['a.id' => 'id'], // selection
+					['a' => $_update_table], // source table
+					['a.' . $_field_name => ['value' => $_guids, 'operator' => 'IN']] // where
+				);
+
+				// Skip empty or broken relations
+				if (empty($_pks))
+				{
+					continue;
+				}
+
+				// Normalize keys
+				$_pks = array_values(array_unique((array) $_pks));
+
+				// Load model safely
+				try {
+					$_Model = Helper::getModel($_update_table);
+				} catch (\Throwable $e) {
+					// Intentionally ignored
+					continue;
+				}
+
+				// Apply publish state
+				$_Model->publish($_pks, $value);
 			}
 		}
 

@@ -67,6 +67,7 @@ class Entities extends Registry
 			'dynamic_get' => 'DynamicGet',
 			'custom_code' => 'CustomCode',
 			'field' => 'Field',
+			'validation_rule' => 'ValidationRule',
 			'library' => 'Library',
 			'library_config' => 'LibraryConfig',
 			'library_files_folders_urls' => 'LibraryFilesFoldersUrls',

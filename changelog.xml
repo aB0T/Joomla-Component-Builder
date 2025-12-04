@@ -219,6 +219,9 @@
       <item>Fixed a bug caused by missing option settings in the model configuration.</item>
       <item>Fix permission issue in the list view. #1266</item>
       <item>Fix php8.3 deprecation warnings in compiler templates. #1265</item>
+      <item>Fix an issue where the Email Helper send() function was executed twice.</item>
+      <item>Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.</item>
+      <item>Fix the Compiler success message to display both build seconds and project weeks.</item>
     </fix>
     <language>
       <item>Resolved missing language strings when linked admin views are also configured as site edit views.</item>
@@ -228,6 +231,7 @@
       <item>Added user access verification logic in the model to prevent unauthorized direct item loading.</item>
       <item>Add options for overriding default toolbars in all Admin, Site, and Custom Admin Views. #1268</item>
       <item>Add method to unify getDatabase handling across Joomla versions and prevent undefined method calls. #1270</item>
+      <item>Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.</item>
     </addition>
     <change>
       <item>Refactor the JS selText method.</item>
@@ -237,6 +241,7 @@
       <item>Refactor the list view buttons.</item>
       <item>Refactor the getActions helper method.</item>
       <item>Refactor toolbar into version specific classes to resolve getToolbar errors. #1267</item>
+      <item>Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.</item>
     </change>
     <note>
       <item>Corrected misconfiguration of the isModal property for site-linked views to default to false since modals are not yet supported on the site area.</item>
@@ -248,17 +253,24 @@
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
-    <version>6.1.4-alpha6</version>
+    <version>6.1.4-beta1</version>
     <fix>
-      <item>Fix an issue where the Email Helper send() function was executed twice.</item>
-      <item>Fix a issue where layouts added to the PHP Ajax Model were not loaded during compilation.</item>
-      <item>Fix the Compiler success message to display both build seconds and project weeks.</item>
+      <item>Fix bug in the search editor in JCB Search Engine.</item>
+      <item>Fix issue where Custom Gets linked to a Site view did not ship correctly with JCB packages. #1272</item>
+      <item>Fix issue where the Icon linked to a Custom Admin Menu did not ship with JCB packages. #1271</item>
+      <item>Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274</item>
     </fix>
     <addition>
-      <item>Add new functionality to the toolbar override system, enabling the inclusion of custom buttons via placeholders.</item>
+      <item>Add Development Valuation Model to calculate JCB component pricing.</item>
+      <item>Add functionality to push JCB packages to Self hosted Git system that uses a self signed SSL.</item>
+      <item>Add functionality that will include Validation Rules linked to fields in JCB packages. #1273</item>
     </addition>
     <change>
-      <item>Refactor and enhance the JCB Email Helper class for a more robust and maintainable design.</item>
+      <item>Refactor and Improve Router Helper Class to new standard Site Router practice.</item>
+      <item>Refactor and Improve JCB Search engine for better searching of JCB areas.</item>
     </change>
+    <remove>
+      <item>Remove batch feature from JCB compiler Templates due to lack of use and outdated code.</item>
+    </remove>
   </changelog>
 </changelogs>

@@ -4027,7 +4027,7 @@ abstract class ComponentbuilderHelper
 	 */
 	protected static function periodFix(int $main): int
 	{
-		return round($main / 3) * 3;
+		return intdiv($main + 1, 3) * 3;
 	}
 
 	/**

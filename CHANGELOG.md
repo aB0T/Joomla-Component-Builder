@@ -1,4 +1,8 @@
-# v6.1.4-beta1
+# v6.1.4-beta2
+
+- Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.
+
+# v6.1.4-beta
 
 - Add Development Valuation Model to calculate JCB component pricing.
 - Add functionality to push JCB packages to Self hosted Git system that uses a self signed SSL.

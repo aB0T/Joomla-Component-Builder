@@ -57,7 +57,7 @@ class Builder extends Mapping
 			$data['buildcomp'] = 0;
 			$data['buildcompsql'] = '';
 			// set some globals
-			$this->user = Factory::getUser();
+			$this->user = Factory::getApplication()->getIdentity();
 			$this->today = Factory::getDate()->toSql();
 
 			// no start the building of the views and fields

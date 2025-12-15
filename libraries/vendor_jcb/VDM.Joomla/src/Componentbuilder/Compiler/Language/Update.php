@@ -55,7 +55,7 @@ final class Update
 	{
 		$this->db = $db;
 
-		$this->user = Factory::getUser();
+		$this->user = Factory::getApplication()->getIdentity();
 	}
 
 	/**

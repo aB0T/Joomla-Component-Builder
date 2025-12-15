@@ -1,6 +1,6 @@
-# v6.1.4-beta2
+# v6.1.4-beta3
 
-- Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.
+- Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.
 
 # v6.1.4-beta
 
@@ -14,6 +14,7 @@
 - Fix issue where the Icon linked to a Custom Admin Menu did not ship with JCB packages. #1271
 - Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274
 - Remove batch feature from JCB compiler Templates due to lack of use and outdated code.
+- Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.
 
 # v6.1.4-alpha
 

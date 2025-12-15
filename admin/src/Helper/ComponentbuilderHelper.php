@@ -61,7 +61,9 @@ use VDM\Joomla\Utilities\String\PluginHelper;
 use VDM\Joomla\Componentbuilder\Utilities\Permitted\Actions;
 use VDM\Joomla\Utilities\FormHelper;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Client\FtpClient;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -2414,7 +2416,7 @@ abstract class ComponentbuilderHelper
 			$script['display'][] = self::_t(2) . "if (\$this->getLayout() !== 'modal')";
 			$script['display'][] = self::_t(2) . "{";
 			$script['display'][] = self::_t(3) . "\$this->addToolbar();";
-			$script['display'][] = self::_t(3) . "\$this->sidebar = JHtmlSidebar::render();";
+			$script['display'][] = self::_t(3) . "\$this->sidebar = Sidebar::render();";
 			$script['display'][] = self::_t(2) . "}";
 			$script['display'][] = PHP_EOL . self::_t(2) . "// get the session object";
 			$script['display'][] = self::_t(2) . "\$session = Factory::getSession();";
@@ -2494,7 +2496,7 @@ abstract class ComponentbuilderHelper
 			$script['headers'][] = self::_t(1) . "public function getExImPortHeaders()";
 			$script['headers'][] = self::_t(1) . "{";
 			$script['headers'][] = self::_t(2) . "// Get a db connection.";
-			$script['headers'][] = self::_t(2) . "\$db = Factory::getDbo();";
+			$script['headers'][] = self::_t(2) . "\$db = Factory::getContainer()->get(DatabaseInterface::class);";
 			$script['headers'][] = self::_t(2) . "// get the columns";
 			$script['headers'][] = self::_t(2) . "\$columns = \$db->getTableColumns(\"#__[[[-#-#-component]]]_[[[-#-#-view]]]\");";
 			$script['headers'][] = self::_t(2) . "if (Super-#-#-___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$columns))";
@@ -2530,7 +2532,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = self::_t(2) . "if(Super-#-#-___0a59c65c_9daf_4bc9_baf4_e063ff9e6a8a___Power::check(\$data['array']))";
 			$script['save'][] = self::_t(2) . "{";
 			$script['save'][] = self::_t(3) . "// get user object";
-			$script['save'][] = self::_t(3) . "\$user" . self::_t(2) . "= Factory::getUser();";
+			$script['save'][] = self::_t(3) . "\$user" . self::_t(2) . "= Factory::getApplication()->getIdentity();";
 			$script['save'][] = self::_t(3) . "// remove header if it has headers";
 			$script['save'][] = self::_t(3) . "\$id_key" . self::_t(1) . "= \$data['target_headers']['id'];";
 			$script['save'][] = self::_t(3) . "\$published_key" . self::_t(1) . "= \$data['target_headers']['published'];";
@@ -2550,7 +2552,7 @@ abstract class ComponentbuilderHelper
 			$script['save'][] = self::_t(4) . "// set target.";
 			$script['save'][] = self::_t(4) . "\$target" . self::_t(1) . "= array_flip(\$data['target_headers']);";
 			$script['save'][] = self::_t(4) . "// Get a db connection.";
-			$script['save'][] = self::_t(4) . "\$db = Factory::getDbo();";
+			$script['save'][] = self::_t(4) . "\$db = Factory::getContainer()->get(DatabaseInterface::class);";
 			$script['save'][] = self::_t(4) . "// set some defaults";
 			$script['save'][] = self::_t(4) . "\$todayDate" . self::_t(2) . "= Factory::getDate()->toSql();";
 			$script['save'][] = self::_t(4) . "// get global action permissions";
@@ -3647,7 +3649,7 @@ abstract class ComponentbuilderHelper
 		if ($server = self::getServerDetails($serverID, 1, $permission))
 		{
 			// check if we already have the server instance
-			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof JClientFtp)
+			if (isset(self::$ftp[$server->cache]) && self::$ftp[$server->cache] instanceof FtpClient)
 			{
 				// always set the name and remote server path
 				self::$ftp[$server->cache]->jcb_remote_server_name[$serverID] = $server->name;
@@ -3692,7 +3694,7 @@ abstract class ComponentbuilderHelper
 				if (isset($host) && $host != 'HOSTNAME' && isset($port) && $port != 'PORT_INT' && isset($username) && $username != 'user@name.com' && isset($password) && $password != 'password')
 				{
 					// load for reuse
-					self::$ftp[$server->cache] = JClientFtp::getInstance($host, $port, $options, $username, $password);
+					self::$ftp[$server->cache] = FtpClient::getInstance($host, $port, $options, $username, $password);
 				}
 				else
 				{
@@ -3701,7 +3703,7 @@ abstract class ComponentbuilderHelper
 					return false;
 				}
 				// check if we are connected
-				if (self::$ftp[$server->cache] instanceof JClientFtp && self::$ftp[$server->cache]->isConnected())
+				if (self::$ftp[$server->cache] instanceof FtpClient && self::$ftp[$server->cache]->isConnected())
 				{
 					// heads-up on protocol
 					self::$ftp[$server->cache]->jcb_protocol = 1; // FTP <-- if called not knowing what type of protocol is being used
@@ -3736,7 +3738,7 @@ abstract class ComponentbuilderHelper
 	public static function getServerDetails($serverID, $protocol = 2, $permission = 'core.export')
 	{
 		// check if this user has permission to access items
-		if (!Factory::getUser()->authorise($permission, 'com_componentbuilder'))
+		if (!Factory::getApplication()->getIdentity()->authorise($permission, 'com_componentbuilder'))
 		{
 			// set message to inform the user that permission was denied
 			Factory::getApplication()->enqueueMessage(Text::sprintf('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_ACCESS_THE_SERVER_DETAILS_BS_DENIEDB_PLEASE_CONTACT_YOUR_SYSTEM_ADMINISTRATOR_FOR_MORE_INFO', UtilitiesStringHelper::safe($permission, 'w')), 'Error');
@@ -4272,11 +4274,11 @@ abstract class ComponentbuilderHelper
 				if (isset($checked_out) && $checked_out > 0)
 				{
 					// is this user the one who checked it out
-					if ($checked_out == Factory::getUser()->id)
+					if ($checked_out == Factory::getApplication()->getIdentity()->id)
 					{
 						return ' <a ' . $href . ' uk-icon="icon: lock" title="' . $title . '"></a>';
 					}
-					return ' <a href="#" disabled uk-icon="icon: lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '"></a>'; 
+					return ' <a href="#" disabled uk-icon="icon: lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '"></a>'; 
 				}
 				// return normal edit link
 				return ' <a ' . $href . ' uk-icon="icon: pencil" title="' . $title . '"></a>';
@@ -4286,11 +4288,11 @@ abstract class ComponentbuilderHelper
 			if (isset($checked_out) && $checked_out > 0)
 			{
 				// is this user the one who checked it out
-				if ($checked_out == Factory::getUser()->id)
+				if ($checked_out == Factory::getApplication()->getIdentity()->id)
 				{
 					return ' <a ' . $href . ' class="uk-icon-lock" title="' . $title . '"></a>';
 				}
-				return ' <a href="#" disabled class="uk-icon-lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '"></a>'; 
+				return ' <a href="#" disabled class="uk-icon-lock" title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '"></a>'; 
 			}
 
 			// return normal edit link
@@ -4397,11 +4399,11 @@ abstract class ComponentbuilderHelper
 				if (isset($checked_out) && $checked_out > 0)
 				{
 					// is this user the one who checked it out
-					if ($checked_out == Factory::getUser()->id)
+					if ($checked_out == Factory::getApplication()->getIdentity()->id)
 					{
 						return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
 					}
-					return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+					return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '">' . $text . '</a>'; 
 				}
 				// return normal edit link
 				return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
@@ -4410,11 +4412,11 @@ abstract class ComponentbuilderHelper
 			if (isset($checked_out) && $checked_out > 0)
 			{
 				// is this user the one who checked it out
-				if ($checked_out == Factory::getUser()->id)
+				if ($checked_out == Factory::getApplication()->getIdentity()->id)
 				{
 					return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
 				}
-				return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getUser($checked_out)->name) . '">' . $text . '</a>'; 
+				return ' <a class="' . $class . '" href="#" disabled title="' . Text::sprintf('COM_COMPONENTBUILDER__HAS_BEEN_CHECKED_OUT_BY_S', UtilitiesStringHelper::safe($view, 'W'), Factory::getApplication()->getIdentity($checked_out)->name) . '">' . $text . '</a>'; 
 			}
 			// return normal edit link
 			return ' <a class="' . $class . '" ' . $href . ' title="' . $title . '">' . $text . '</a>';
@@ -4493,7 +4495,7 @@ abstract class ComponentbuilderHelper
 	protected static function canEditItem(&$record, &$item, $view, $views, $component = 'com_componentbuilder')
 	{
 		// make sure the user has access to view
-		if (!Factory::getUser()->authorise($view. '.access', $component))
+		if (!Factory::getApplication()->getIdentity()->authorise($view. '.access', $component))
 		{
 			return false;
 		}
@@ -5576,110 +5578,110 @@ abstract class ComponentbuilderHelper
 		// load user for access menus
 		$user = Factory::getApplication()->getIdentity();
 		// load the submenus to sidebar
-		\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
+		Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
 		// Access control (compiler.submenu).
 		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
 		}
 		if ($user->authorise('joomla_component.access', 'com_componentbuilder') && $user->authorise('joomla_component.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_COMPONENTS'), 'index.php?option=com_componentbuilder&view=joomla_components', $submenu === 'joomla_components');
 		}
 		if ($user->authorise('joomla_module.access', 'com_componentbuilder') && $user->authorise('joomla_module.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_MODULES'), 'index.php?option=com_componentbuilder&view=joomla_modules', $submenu === 'joomla_modules');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_MODULES'), 'index.php?option=com_componentbuilder&view=joomla_modules', $submenu === 'joomla_modules');
 		}
 		if ($user->authorise('joomla_plugin.access', 'com_componentbuilder') && $user->authorise('joomla_plugin.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_PLUGINS'), 'index.php?option=com_componentbuilder&view=joomla_plugins', $submenu === 'joomla_plugins');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_PLUGINS'), 'index.php?option=com_componentbuilder&view=joomla_plugins', $submenu === 'joomla_plugins');
 		}
 		if ($user->authorise('joomla_power.access', 'com_componentbuilder') && $user->authorise('joomla_power.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_POWERS'), 'index.php?option=com_componentbuilder&view=joomla_powers', $submenu === 'joomla_powers');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_JOOMLA_POWERS'), 'index.php?option=com_componentbuilder&view=joomla_powers', $submenu === 'joomla_powers');
 		}
 		if ($user->authorise('power.access', 'com_componentbuilder') && $user->authorise('power.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_POWERS'), 'index.php?option=com_componentbuilder&view=powers', $submenu === 'powers');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_POWERS'), 'index.php?option=com_componentbuilder&view=powers', $submenu === 'powers');
 		}
 		// Access control (search.access && search.submenu).
 		if ($user->authorise('search.access', 'com_componentbuilder') && $user->authorise('search.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SEARCH'), 'index.php?option=com_componentbuilder&view=search', $submenu === 'search');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SEARCH'), 'index.php?option=com_componentbuilder&view=search', $submenu === 'search');
 		}
 		if ($user->authorise('admin_view.access', 'com_componentbuilder') && $user->authorise('admin_view.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=admin_views', $submenu === 'admin_views');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=admin_views', $submenu === 'admin_views');
 		}
 		if ($user->authorise('custom_admin_view.access', 'com_componentbuilder') && $user->authorise('custom_admin_view.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=custom_admin_views', $submenu === 'custom_admin_views');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_ADMIN_VIEWS'), 'index.php?option=com_componentbuilder&view=custom_admin_views', $submenu === 'custom_admin_views');
 		}
 		if ($user->authorise('site_view.access', 'com_componentbuilder') && $user->authorise('site_view.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SITE_VIEWS'), 'index.php?option=com_componentbuilder&view=site_views', $submenu === 'site_views');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SITE_VIEWS'), 'index.php?option=com_componentbuilder&view=site_views', $submenu === 'site_views');
 		}
 		if ($user->authorise('template.access', 'com_componentbuilder') && $user->authorise('template.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_TEMPLATES'), 'index.php?option=com_componentbuilder&view=templates', $submenu === 'templates');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_TEMPLATES'), 'index.php?option=com_componentbuilder&view=templates', $submenu === 'templates');
 		}
 		if ($user->authorise('layout.access', 'com_componentbuilder') && $user->authorise('layout.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LAYOUTS'), 'index.php?option=com_componentbuilder&view=layouts', $submenu === 'layouts');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LAYOUTS'), 'index.php?option=com_componentbuilder&view=layouts', $submenu === 'layouts');
 		}
 		if ($user->authorise('dynamic_get.access', 'com_componentbuilder') && $user->authorise('dynamic_get.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DYNAMIC_GETS'), 'index.php?option=com_componentbuilder&view=dynamic_gets', $submenu === 'dynamic_gets');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DYNAMIC_GETS'), 'index.php?option=com_componentbuilder&view=dynamic_gets', $submenu === 'dynamic_gets');
 		}
 		if ($user->authorise('custom_code.access', 'com_componentbuilder') && $user->authorise('custom_code.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_CODES'), 'index.php?option=com_componentbuilder&view=custom_codes', $submenu === 'custom_codes');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_CUSTOM_CODES'), 'index.php?option=com_componentbuilder&view=custom_codes', $submenu === 'custom_codes');
 		}
 		if ($user->authorise('placeholder.access', 'com_componentbuilder') && $user->authorise('placeholder.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_PLACEHOLDERS'), 'index.php?option=com_componentbuilder&view=placeholders', $submenu === 'placeholders');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_PLACEHOLDERS'), 'index.php?option=com_componentbuilder&view=placeholders', $submenu === 'placeholders');
 		}
 		if ($user->authorise('library.access', 'com_componentbuilder') && $user->authorise('library.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LIBRARIES'), 'index.php?option=com_componentbuilder&view=libraries', $submenu === 'libraries');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LIBRARIES'), 'index.php?option=com_componentbuilder&view=libraries', $submenu === 'libraries');
 		}
 		if ($user->authorise('snippet.access', 'com_componentbuilder') && $user->authorise('snippet.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SNIPPETS'), 'index.php?option=com_componentbuilder&view=snippets', $submenu === 'snippets');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SNIPPETS'), 'index.php?option=com_componentbuilder&view=snippets', $submenu === 'snippets');
 		}
 		if ($user->authorise('validation_rule.access', 'com_componentbuilder') && $user->authorise('validation_rule.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_VALIDATION_RULES'), 'index.php?option=com_componentbuilder&view=validation_rules', $submenu === 'validation_rules');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_VALIDATION_RULES'), 'index.php?option=com_componentbuilder&view=validation_rules', $submenu === 'validation_rules');
 		}
 		if ($user->authorise('field.access', 'com_componentbuilder') && $user->authorise('field.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDS'), 'index.php?option=com_componentbuilder&view=fields', $submenu === 'fields');
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.field', $submenu === 'categories.field');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDS'), 'index.php?option=com_componentbuilder&view=fields', $submenu === 'fields');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELD_FIELDS_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.field', $submenu === 'categories.field');
 		}
 		if ($user->authorise('fieldtype.access', 'com_componentbuilder') && $user->authorise('fieldtype.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtype', $submenu === 'categories.fieldtype');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_FIELDTYPES'), 'index.php?option=com_componentbuilder&view=fieldtypes', $submenu === 'fieldtypes');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_FIELDTYPE_FIELDTYPES_CATEGORIES'), 'index.php?option=com_categories&view=categories&extension=com_componentbuilder.fieldtype', $submenu === 'categories.fieldtype');
 		}
 		if ($user->authorise('language_translation.access', 'com_componentbuilder') && $user->authorise('language_translation.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGE_TRANSLATIONS'), 'index.php?option=com_componentbuilder&view=language_translations', $submenu === 'language_translations');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGE_TRANSLATIONS'), 'index.php?option=com_componentbuilder&view=language_translations', $submenu === 'language_translations');
 		}
 		if ($user->authorise('language.access', 'com_componentbuilder') && $user->authorise('language.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGES'), 'index.php?option=com_componentbuilder&view=languages', $submenu === 'languages');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_LANGUAGES'), 'index.php?option=com_componentbuilder&view=languages', $submenu === 'languages');
 		}
 		if ($user->authorise('server.access', 'com_componentbuilder') && $user->authorise('server.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SERVERS'), 'index.php?option=com_componentbuilder&view=servers', $submenu === 'servers');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_SERVERS'), 'index.php?option=com_componentbuilder&view=servers', $submenu === 'servers');
 		}
 		if ($user->authorise('repository.access', 'com_componentbuilder') && $user->authorise('repository.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_REPOSITORIES'), 'index.php?option=com_componentbuilder&view=repositories', $submenu === 'repositories');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_REPOSITORIES'), 'index.php?option=com_componentbuilder&view=repositories', $submenu === 'repositories');
 		}
 		if ($user->authorise('help_document.access', 'com_componentbuilder') && $user->authorise('help_document.submenu', 'com_componentbuilder'))
 		{
-			\JHtmlSidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_componentbuilder&view=help_documents', $submenu === 'help_documents');
+			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_HELP_DOCUMENTS'), 'index.php?option=com_componentbuilder&view=help_documents', $submenu === 'help_documents');
 		}
 	}
 

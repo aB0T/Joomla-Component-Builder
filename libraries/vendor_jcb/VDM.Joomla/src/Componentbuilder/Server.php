@@ -12,7 +12,7 @@
 namespace VDM\Joomla\Componentbuilder;
 
 
-use Joomla\CMS\Factory as JoomlaFactory;
+use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
 use VDM\Joomla\Componentbuilder\Server\Load;
 use VDM\Joomla\Componentbuilder\Server\Ftp;
@@ -74,7 +74,7 @@ class Server
 		$this->load = $load;
 		$this->ftp = $ftp;
 		$this->sftp = $sftp;
-		$this->user = $user ?: JoomlaFactory::getUser();
+		$this->user = $user ?: Factory::getApplication()->getIdentity();
 	}
 
 	/**

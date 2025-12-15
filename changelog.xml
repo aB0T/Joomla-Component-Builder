@@ -268,6 +268,7 @@
     <change>
       <item>Refactor and Improve Router Helper Class to new standard Site Router practice.</item>
       <item>Refactor and Improve JCB Search engine for better searching of JCB areas.</item>
+      <item>Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.</item>
     </change>
     <remove>
       <item>Remove batch feature from JCB compiler Templates due to lack of use and outdated code.</item>
@@ -276,9 +277,9 @@
   <changelog>
     <element>com_componentbuilder</element>
     <type>component</type>
-    <version>6.1.4-beta2</version>
+    <version>6.1.4-beta3</version>
     <change>
-      <item>Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.</item>
+      <item>Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.</item>
     </change>
   </changelog>
 </changelogs>

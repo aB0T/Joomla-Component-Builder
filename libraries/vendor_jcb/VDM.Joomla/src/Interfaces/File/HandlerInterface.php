@@ -2,26 +2,22 @@
 /**
  * @package    Joomla.Component.Builder
  *
- * @created    4th September, 2020
+ * @created    4th September, 2022
  * @author     Llewellyn van der Merwe <https://dev.vdm.io>
  * @git        Joomla Component Builder <https://git.vdm.dev/joomla/Component-Builder>
  * @copyright  Copyright (C) 2015 Vast Development Method. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace VDM\Joomla\Componentbuilder\File;
-
-
-use VDM\Joomla\Interfaces\File\HandlerInterface;
-use VDM\Joomla\Utilities\UploadHelper;
+namespace VDM\Joomla\Interfaces\File;
 
 
 /**
- * File Handler Class
+ * File Handler Interface
  * 
- * @since  5.0.2
+ * @since  5.1.4
  */
-final class Handler extends UploadHelper implements HandlerInterface
+interface HandlerInterface
 {
 	/**
 	 * Set the $useStreams property to use streams for file handling
@@ -31,12 +27,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  self  Returns the current instance to allow for method chaining.
 	 * @since   5.0.3
 	 */
-	public function setUseStreams(bool $useStreams): self
-	{
-		static::$useStreams = $useStreams;
-
-		return $this;
-	}
+	public function setUseStreams(bool $useStreams): self;
 
 	/**
 	 * Set the $allowUnsafe property to allow or disallow unsafe file uploads.
@@ -46,12 +37,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  self  Returns the current instance to allow for method chaining.
 	 * @since   5.0.3
 	 */
-	public function setAllowUnsafe(bool $allowUnsafe): self
-	{
-		static::$allowUnsafe = $allowUnsafe;
-
-		return $this;
-	}
+	public function setAllowUnsafe(bool $allowUnsafe): self;
 
 	/**
 	 * Set the $safeFileOptions property to define options for file safety checks.
@@ -61,12 +47,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  self  Returns the current instance to allow for method chaining.
 	 * @since   5.0.3
 	 */
-	public function setSafeFileOptions(array $safeFileOptions): self
-	{
-		static::$safeFileOptions = $safeFileOptions;
-
-		return $this;
-	}
+	public function setSafeFileOptions(array $safeFileOptions): self;
 
 	/**
 	 * Set the $enqueueError property to control error reporting behavior.
@@ -76,12 +57,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  self  Returns the current instance to allow for method chaining.
 	 * @since   5.0.3
 	 */
-	public function setEnqueueError(bool $enqueueError): self
-	{
-		static::$enqueueError = $enqueueError;
-
-		return $this;
-	}
+	public function setEnqueueError(bool $enqueueError): self;
 
 	/**
 	 * Set the $legalFormats property to define legal file formats.
@@ -91,12 +67,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  self  Returns the current instance to allow for method chaining.
 	 * @since   5.0.3
 	 */
-	public function setLegalFormats(array $legalFormats): self
-	{
-		static::$legalFormats = $legalFormats;
-
-		return $this;
-	}
+	public function setLegalFormats(array $legalFormats): self;
 
 	/**
 	 * Get a file from the input based on field name and file type, then process it.
@@ -109,10 +80,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  array|null   File details or false on failure.
 	 * @since   3.0.11
 	 */
-	public function getFile(string $field, string $type, ?string $filter = null, ?string $path = null): ?array
-	{
-		return static::get($field, $type, $filter, $path);
-	}
+	public function getFile(string $field, string $type, string $filter = null, string $path = null): ?array;
 
 	/**
 	 * Remove a previously uploaded file.
@@ -130,10 +98,7 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 *
 	 * @since  5.1.4
 	 */
-	public function removeFile(string $path): bool
-	{
-		return static::remove($path);
-	}
+	public function removeFile(string $path): bool;
 
 	/**
 	 * Get the error messages as a string.
@@ -143,9 +108,6 @@ final class Handler extends UploadHelper implements HandlerInterface
 	 * @return  string|array  Returns the error messages as a single concatenated string.
 	 * @since   5.0.3
 	 */
-	public function getErrors(bool $toString = true): string|array
-	{
-		return static::getError($toString);
-	}
+	public function getErrors(bool $toString = true): string|array;
 }
 

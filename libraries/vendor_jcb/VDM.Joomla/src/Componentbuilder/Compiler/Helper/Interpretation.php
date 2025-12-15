@@ -15986,7 +15986,7 @@ class Interpretation extends Fields
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " " . $CodeName . " Filter";
-					$fieldFilters[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+					$fieldFilters[] = Indent::_(3) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 					$fieldFilters[] = Indent::_(4) . "'- Select ' . Text:"
 						. ":_('" . $filter['lang'] . "') . ' -',";
 					$fieldFilters[] = Indent::_(4) . "'filter_"
@@ -16051,7 +16051,7 @@ class Interpretation extends Fields
 					$fieldFilters[] = Indent::_(3) . "//" . Line::_(
 							__LINE__,__CLASS__
 						) . " " . $Codename . " Filter";
-					$fieldFilters[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+					$fieldFilters[] = Indent::_(3) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 					$fieldFilters[] = Indent::_(4) . "'- Select '.Text:"
 						. ":_('" . $filter['lang'] . "').' -',";
 					$fieldFilters[] = Indent::_(4) . "'filter_"
@@ -16102,7 +16102,7 @@ class Interpretation extends Fields
 			$filter[] = Indent::_(2)
 				. "if (\$this->canState)";
 			$filter[] = Indent::_(2) . "{";
-			$filter[] = Indent::_(3) . "\JHtmlSidebar::addFilter(";
+			$filter[] = Indent::_(3) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 			$filter[] = Indent::_(4) . "Text:"
 				. ":_('JOPTION_SELECT_PUBLISHED'),";
 			$filter[] = Indent::_(4) . "'filter_published',";
@@ -16114,7 +16114,7 @@ class Interpretation extends Fields
 			if (CFactory::_('Compiler.Builder.Access.Switch')->exists($nameSingleCode)
 				&& !CFactory::_('Compiler.Builder.Field.Names')->isString($nameSingleCode . '.access'))
 			{
-				$filter[] = PHP_EOL . Indent::_(2) . "\JHtmlSidebar::addFilter(";
+				$filter[] = PHP_EOL . Indent::_(2) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 				$filter[] = Indent::_(3) . "Text:"
 					. ":_('JOPTION_SELECT_ACCESS'),";
 				$filter[] = Indent::_(3) . "'filter_access',";
@@ -16144,7 +16144,7 @@ class Interpretation extends Fields
 			// set filter
 			$filter[] = PHP_EOL . Indent::_(2) . "//"
 				. Line::_(__Line__, __Class__) . " Category Filter.";
-			$filter[] = Indent::_(2) . "\JHtmlSidebar::addFilter(";
+			$filter[] = Indent::_(2) . "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addFilter(";
 			$filter[] = Indent::_(3) . "Text:"
 				. ":_('JOPTION_SELECT_CATEGORY'),";
 			$filter[] = Indent::_(3) . "'filter_category_id',";
@@ -19337,7 +19337,7 @@ class Interpretation extends Fields
 			// set default dashboard
 			if (!CFactory::_('Registry')->get('build.dashboard'))
 			{
-				$menus .= "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang
+				$menus .= "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang
 					. "_DASHBOARD'), 'index.php?option=com_" . $codeName
 					. "&view=" . $codeName . "', \$submenu === '" . $codeName
 					. "');";
@@ -19379,7 +19379,7 @@ class Interpretation extends Fields
 						$has_permissions = true;
 					}
 					$menus .= PHP_EOL . Indent::_(2) . $tab
-						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+						. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper . "'), 'index.php?option=com_" . $codeName
 						. "&view=" . $nameListCode . "', \$submenu === '"
 						. $nameListCode . "');";
@@ -19412,7 +19412,7 @@ class Interpretation extends Fields
 						}
 						// now load the menus
 						$menus .= PHP_EOL . Indent::_(2) . $tab
-							. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
+							. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('"
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.name", 'error')
 							. "'), 'index.php?option=com_categories&view=categories&extension="
 							. CFactory::_('Compiler.Builder.Category')->get("{$nameListCode}.extension")
@@ -19434,13 +19434,13 @@ class Interpretation extends Fields
 						. "if (ComponentHelper::isEnabled('com_fields'))";
 					$menus .= PHP_EOL . Indent::_(2) . "{";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+						. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS'), 'index.php?option=com_fields&context=com_"
 						. $codeName . "." . $nameSingleCode
 						. "', \$submenu === 'fields.fields');";
 					$menus .= PHP_EOL . Indent::_(3)
-						. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+						. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 						. $nameUpper
 						. "_FIELDS_GROUPS'), 'index.php?option=com_fields&view=groups&context=com_"
 						. $codeName . "." . $nameSingleCode
@@ -19574,7 +19574,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -19585,7 +19585,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$custom .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";
@@ -19632,7 +19632,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), '" . $menu['link']
 					. "', \$submenu === '" . $nameList . "');";
 			}
@@ -19643,7 +19643,7 @@ class Interpretation extends Fields
 				);
 				// add custom menu
 				$this->lastCustomSubMenu[$nr] .= PHP_EOL . Indent::_(2) . $tab
-					. "\JHtmlSidebar::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
+					. "Joomla__"."_ca5456e1_552c_45fb_bf4c_b751ba6e9fa1___Power::addEntry(Joomla__"."_ba6326ef_cb79_4348_80f4_ab086082e3c5___Power::_('" . $lang . "_"
 					. $nameUpper . "'), 'index.php?option=com_" . $codeName
 					. "&view=" . $nameList . "', \$submenu === '" . $nameList
 					. "');";

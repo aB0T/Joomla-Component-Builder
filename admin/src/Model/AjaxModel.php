@@ -5662,6 +5662,7 @@ class AjaxModel extends ListModel
 		'CustomCode' => 'PackageFactory',
 		'DynamicGet' => 'PackageFactory',
 		'Field' => 'PackageFactory',
+		'ValidationRule' => 'PackageFactory',
 		'Joomla.Fieldtype' => 'FieldtypeFactory',
 		'Joomla.Power' => 'JoomlaPowerFactory',
 		'Layout' => 'PackageFactory',
@@ -5680,24 +5681,117 @@ class AjaxModel extends ListModel
 	];
 
 	/**
-	 * Method to get the power get class
+	 * Method to get the power class
 	 *
 	 * @param   string  $factoryName  The factory name
-	 * @param   string  $getClass          The remote power class name
+	 * @param   string  $class        The power class name
 	 *
 	 * @return  mixed
 	 * @since   5.1.1
 	 */
-	protected function getPowerClass(string $factoryName, string $getClass)
+	protected function getPowerClass(string $factoryName, string $class)
 	{
 		return match ($factoryName) {
-			'PowerFactory' => PowerFactory::_($getClass),
-			'JoomlaPowerFactory' => JoomlaPowerFactory::_($getClass),
-			'FieldtypeFactory' => FieldtypeFactory::_($getClass),
-			'SnippetFactory' => SnippetFactory::_($getClass),
-			'PackageFactory' => PackageFactory::_($getClass),
-			'RepositoryFactory' => RepositoryFactory::_($getClass),
+			'PowerFactory' => PowerFactory::_($class),
+			'JoomlaPowerFactory' => JoomlaPowerFactory::_($class),
+			'FieldtypeFactory' => FieldtypeFactory::_($class),
+			'SnippetFactory' => SnippetFactory::_($class),
+			'PackageFactory' => PackageFactory::_($class),
+			'RepositoryFactory' => RepositoryFactory::_($class),
 			default => null,
 		};
+	}
+
+	// Used in pull_selection
+	/**
+	 * Method to pull the selected powers
+	 *
+	 * @param   string  $repo      The repo to list index
+	 * @param   string  $area      The target area
+	 * @param   array   $selected  The selected powers
+	 *
+	 * @return  array
+	 * @since   5.1.4
+	 */
+	public function pullSelectedPowers(string $repo, string $area, array $selected): array
+	{
+		if (!GuidHelper::valid($repo))
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
+		}
+
+		if (($Power = $this->getTargetAreaPower($area)) === null)
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
+		}
+
+		$result = [];
+		try
+		{
+			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			if ($class !== null)
+			{
+				$repo_path = $class->path($repo);
+				$result = $class->init($selected, $repo_path, true);
+			}
+		}
+		catch (\Exception $e)
+		{
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+
+		if ($result !== [])
+		{
+			return ['success' => true, 'result_log' => $result];
+		}
+
+		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_REPO_INDEX_FAILED_TO_LOAD_PLEASE_TRY_AGAIN')];
+	}
+
+	/**
+	 * Method to pull the selected packages
+	 *
+	 * @param   string  $repo      The repo to list index
+	 * @param   string  $area      The target area
+	 * @param   array   $selected  The selected powers
+	 *
+	 * @return  array
+	 * @since   5.1.4
+	 */
+	public function pullSelectedPackages(string $repo, string $area, array $selected): array
+	{
+		if (!GuidHelper::valid($repo))
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
+		}
+
+		if (($Power = $this->getTargetAreaPower($area)) === null)
+		{
+			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
+		}
+
+		$result = [];
+		try
+		{
+			$class = $this->getPowerClass($Power, "Package.Builder.Get");
+			$entity = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			if (!empty($selected) && $class !== null && $entity !== null)
+			{
+				$table = $entity->getTable();
+				$repo_path = $entity->path($repo);
+				$result = $class->init($table, $selected, $repo_path, true);
+			}
+		}
+		catch (\Exception $e)
+		{
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+
+		if ($this->hasIntResults($result))
+		{
+			return ['success' => true, 'result_log' => $result];
+		}
+
+		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_PULL_FAILED_PLEASE_TRY_AGAIN')];
 	}
 }

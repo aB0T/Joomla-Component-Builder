@@ -27,6 +27,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Phpcustomview;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Ajaxcustomview;
 use VDM\Joomla\Componentbuilder\Compiler\Model\Custombuttons;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
+use VDM\Joomla\Componentbuilder\Package\Builder\Get as Superpower;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Unique;
 use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -35,14 +36,14 @@ use VDM\Joomla\Utilities\GuidHelper;
 
 
 /**
- * Admin Custom View Data Class
+ * Admin Custom/Site View Data Class
  * 
  * @since 3.2.0
  */
 class Data
 {
 	/**
-	 * Admin views
+	 * Custom Views
 	 *
 	 * @var    array
 	 * @since  3.2.0
@@ -56,6 +57,14 @@ class Data
 	 * @since  5.0.4
 	 */
 	protected array $index = [];
+
+	/**
+	 * The state of retry to loaded entities
+	 *
+	 * @var    array
+	 * @since  5.1.4
+	 **/
+	protected array $retry = [];
 
 	/**
 	 * The Config Class.
@@ -178,6 +187,14 @@ class Data
 	protected DatabaseInterface $db;
 
 	/**
+	 * The Super Class.
+	 *
+	 * @var   Superpower
+	 * @since 5.1.4
+	 */
+	protected Superpower $superpower;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config                 $config                 The Config Class.
@@ -195,6 +212,7 @@ class Data
 	 * @param Custombuttons          $custombuttons          The Custombuttons Class.
 	 * @param Counter                $counter                The Counter Class.
 	 * @param DatabaseInterface      $db                     The Joomla Database Class.
+	 * @param Superpower             $superpower             A Superpower Class.
 	 *
 	 * @since 3.2.0
 	 */
@@ -207,7 +225,7 @@ class Data
 		Phpcustomview $phpcustomview,
 		Ajaxcustomview $ajaxcustomview,
 		Custombuttons $custombuttons, Counter $counter,
-		DatabaseInterface $db)
+		DatabaseInterface $db, Superpower $superpower)
 	{
 		$this->config = $config;
 		$this->event = $event;
@@ -224,6 +242,7 @@ class Data
 		$this->custombuttons = $custombuttons;
 		$this->counter = $counter;
 		$this->db = $db;
+		$this->superpower = $superpower;
 	}
 
 	/**
@@ -235,7 +254,7 @@ class Data
 	 * @return  object|null The custom/site view data
 	 * @since   3.2.0
 	 */
-	public function get($view, string $table = 'site_view'): ?object
+	public function get(mixed $view, string $table = 'site_view'): ?object
 	{
 		$key = $view . $table;
 		if (isset($this->index[$key]))
@@ -266,7 +285,7 @@ class Data
 	 * @return  void
 	 * @since   5.0.4
 	 */
-	private function set($view, string $table): void
+	private function set(mixed $view, string $table): void
 	{
 		if (GuidHelper::valid($view))
 		{
@@ -297,7 +316,45 @@ class Data
 			{
 				$this->counter->customAdminView++;
 			}
+
+			return;
 		}
+
+		// try loading it from remote source
+		if ($this->attemptRemoteFetch($view, $table))
+		{
+			$this->set($view, $table);
+		}
+	}
+
+	/**
+	 * Attempt a one-time remote fetch via Superpower.
+	 *
+	 * @param   mixed  $guid
+	 * @param   string  $area
+	 *
+	 * @return  bool
+	 * @since   5.1.4
+	 */
+	private function attemptRemoteFetch(mixed $guid, string $area): bool
+	{
+		if (!GuidHelper::valid($guid) || empty($area))
+		{
+			return false;
+		}
+
+		$key = $guid . $area;
+
+		if (!empty($this->retry[$key]))
+		{
+			return false;
+		}
+
+		$this->retry[$key] = true;
+
+		$result = $this->superpower->get($area, [$guid]);
+
+		return !empty($result['added'][$guid]);
 	}
 
 	/**
@@ -310,7 +367,7 @@ class Data
 	 * @return  string  The custom/site view data query
 	 * @since   5.0.4
 	 */
-	private function getQuery($value, string $table, string $key = 'id')
+	private function getQuery(mixed $value, string $table, string $key = 'id')
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);
@@ -342,111 +399,111 @@ class Data
 		$this->db->setQuery($query);
 		$this->db->execute();
 
-		if ($this->db->getNumRows())
+		if (!$this->db->getNumRows())
 		{
-			$item = $this->db->loadObject();
-			$id = $item->id;
-
-			// fix alias to use in code
-			$item->code = Unique::code(
-				StringHelper::safe($item->codename), $this->config->build_target
-			);
-			$item->Code = StringHelper::safe($item->code, 'F');
-			$item->CODE = StringHelper::safe($item->code, 'U');
-
-			// Trigger Event: jcb_ce_onBeforeModelCustomViewData
-			$this->event->trigger(
-				'jcb_ce_onBeforeModelCustomViewData', [&$item, &$id, &$table]
-			);
-
-			// Make sure the icon is only an icon path
-			if (isset($item->icon) && strpos($item->icon, '#') !== false)
-			{
-				$item->icon = strstr($item->icon, '#', true);
-			}
-
-			// set GUI mapper
-			$guiMapper = [
-				'table' => $table,
-				'id' => (int) $id,
-				'field' => 'default',
-				'type' => 'html'
-				];
-
-			// set the default data
-			$item->default = $this->gui->set(
-				$this->customcode->update(base64_decode((string) $item->default)),
-				$guiMapper
-			);
-
-			// load context if not set
-			if (!isset($item->context)
-				|| !StringHelper::check(
-					$item->context
-				))
-			{
-				$item->context = $item->code;
-			}
-			else
-			{
-				// always make sure context is a safe string
-				$item->context = StringHelper::safe($item->context);
-			}
-
-			// set the libraries
-			$this->libraries->set($item->code, $item);
-
-			// setup template and layout data
-			$this->templatelayout->set($item->default, $item->code);
-
-			// set uikit version 2
-			$this->loader->uikit($item->code, $item->default);
-
-			// auto loaders
-			$this->loader->set($item->code, $item->default);
-
-			// set the main get data
-			$main_get = $this->dynamic->get(
-				array($item->main_get), $item->code, $item->context
-			);
-			$item->main_get = ArrayHelper::check($main_get) ? $main_get[0] : null;
-
-			// set the custom_get data
-			$item->custom_get = (isset($item->custom_get) && JsonHelper::check($item->custom_get))
-				? json_decode((string) $item->custom_get, true)
-				: null;
-
-			if (ArrayHelper::check($item->custom_get))
-			{
-				$item->custom_get = $this->dynamic->get(
-					$item->custom_get, $item->code, $item->context
-				);
-			}
-
-			// set php scripts
-			$this->php->set($item, $table);
-
-			// set javascript scripts
-			$this->javascript->set($item, $table);
-
-			// set css scripts
-			$this->css->set($item);
-
-			// set Ajax for this view
-			$this->ajax->set($item, $table);
-
-			// set the custom buttons
-			$this->custombuttons->set($item, $table);
-
-			// Trigger Event: jcb_ce_onAfterModelCustomViewData
-			$this->event->trigger(
-				'jcb_ce_onAfterModelCustomViewData', [&$item]
-			);
-
-			return $item;
+			return null;
 		}
 
-		return null;
+		$item = $this->db->loadObject();
+		$id = $item->id;
+
+		// fix alias to use in code
+		$item->code = Unique::code(
+			StringHelper::safe($item->codename), $this->config->build_target
+		);
+		$item->Code = StringHelper::safe($item->code, 'F');
+		$item->CODE = StringHelper::safe($item->code, 'U');
+
+		// Trigger Event: jcb_ce_onBeforeModelCustomViewData
+		$this->event->trigger(
+			'jcb_ce_onBeforeModelCustomViewData', [&$item, &$id, &$table]
+		);
+
+		// Make sure the icon is only an icon path
+		if (isset($item->icon) && strpos($item->icon, '#') !== false)
+		{
+			$item->icon = strstr($item->icon, '#', true);
+		}
+
+		// set GUI mapper
+		$guiMapper = [
+			'table' => $table,
+			'id' => (int) $id,
+			'field' => 'default',
+			'type' => 'html'
+		];
+
+		// set the default data
+		$item->default = $this->gui->set(
+			$this->customcode->update(base64_decode((string) $item->default)),
+			$guiMapper
+		);
+
+		// load context if not set
+		if (!isset($item->context)
+			|| !StringHelper::check(
+				$item->context
+			))
+		{
+			$item->context = $item->code;
+		}
+		else
+		{
+			// always make sure context is a safe string
+			$item->context = StringHelper::safe($item->context);
+		}
+
+		// set the libraries
+		$this->libraries->set($item->code, $item);
+
+		// setup template and layout data
+		$this->templatelayout->set($item->default, $item->code);
+
+		// set uikit version 2
+		$this->loader->uikit($item->code, $item->default);
+
+		// auto loaders
+		$this->loader->set($item->code, $item->default);
+
+		// set the main get data
+		$main_get = $this->dynamic->get(
+			[$item->main_get], $item->code, $item->context
+		);
+		$item->main_get = ArrayHelper::check($main_get) ? $main_get[0] : null;
+
+		// set the custom_get data
+		$item->custom_get = (isset($item->custom_get) && JsonHelper::check($item->custom_get))
+			? json_decode((string) $item->custom_get, true)
+			: null;
+
+		if (ArrayHelper::check($item->custom_get))
+		{
+			$item->custom_get = $this->dynamic->get(
+				$item->custom_get, $item->code, $item->context
+			);
+		}
+
+		// set php scripts
+		$this->php->set($item, $table);
+
+		// set javascript scripts
+		$this->javascript->set($item, $table);
+
+		// set css scripts
+		$this->css->set($item);
+
+		// set Ajax for this view
+		$this->ajax->set($item, $table);
+
+		// set the custom buttons
+		$this->custombuttons->set($item, $table);
+
+		// Trigger Event: jcb_ce_onAfterModelCustomViewData
+		$this->event->trigger(
+			'jcb_ce_onAfterModelCustomViewData', [&$item]
+		);
+
+		return $item;
 	}
 }
 

@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\History;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Language;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Placeholder;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Customcode;
+use VDM\Joomla\Componentbuilder\Compiler\Service\Package;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Power;
 use VDM\Joomla\Componentbuilder\Compiler\Service\JoomlaPower;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Component;
@@ -64,6 +65,19 @@ use VDM\Joomla\Gitea\Service\Issue as GiteaIssue;
 use VDM\Joomla\Gitea\Service\Notifications as GiteNotifi;
 use VDM\Joomla\Gitea\Service\Miscellaneous as GiteaMisc;
 use VDM\Joomla\Gitea\Service\Admin as GiteaAdmin;
+use VDM\Joomla\Componentbuilder\Package\Service\ComponentGet;
+use VDM\Joomla\Componentbuilder\Package\Service\JoomlaPluginGet;
+use VDM\Joomla\Componentbuilder\Package\Service\JoomlaModuleGet;
+use VDM\Joomla\Componentbuilder\Package\Service\AdminViewGet;
+use VDM\Joomla\Componentbuilder\Package\Service\CustomAdminViewGet;
+use VDM\Joomla\Componentbuilder\Package\Service\SiteViewGet;
+use VDM\Joomla\Componentbuilder\Package\Service\TemplateGet;
+use VDM\Joomla\Componentbuilder\Package\Service\LayoutGet;
+use VDM\Joomla\Componentbuilder\Package\Service\DynamicGet;
+use VDM\Joomla\Componentbuilder\Package\Service\CustomCodeGet;
+use VDM\Joomla\Componentbuilder\Package\Service\LibraryGet;
+use VDM\Joomla\Componentbuilder\Package\Service\FieldGet;
+use VDM\Joomla\Componentbuilder\Package\Service\DependenciesGet;
 use VDM\Joomla\Interfaces\FactoryInterface;
 use VDM\Joomla\Abstraction\Factory as ExtendingFactory;
 
@@ -144,6 +158,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new Language())
 			->registerServiceProvider(new Placeholder())
 			->registerServiceProvider(new Customcode())
+			->registerServiceProvider(new Package())
 			->registerServiceProvider(new Power())
 			->registerServiceProvider(new JoomlaPower())
 			->registerServiceProvider(new Component())
@@ -179,7 +194,20 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new GiteaIssue())
 			->registerServiceProvider(new GiteNotifi())
 			->registerServiceProvider(new GiteaMisc())
-			->registerServiceProvider(new GiteaAdmin());
+			->registerServiceProvider(new GiteaAdmin())
+			->registerServiceProvider(new ComponentGet())
+			->registerServiceProvider(new JoomlaPluginGet())
+			->registerServiceProvider(new JoomlaModuleGet())
+			->registerServiceProvider(new AdminViewGet())
+			->registerServiceProvider(new CustomAdminViewGet())
+			->registerServiceProvider(new SiteViewGet())
+			->registerServiceProvider(new TemplateGet())
+			->registerServiceProvider(new LayoutGet())
+			->registerServiceProvider(new DynamicGet())
+			->registerServiceProvider(new CustomCodeGet())
+			->registerServiceProvider(new LibraryGet())
+			->registerServiceProvider(new FieldGet())
+			->registerServiceProvider(new DependenciesGet());
 	}
 }
 

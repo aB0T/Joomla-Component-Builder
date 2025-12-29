@@ -136,7 +136,7 @@ class SnippetController extends FormController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = SnippetFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = SnippetFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -247,7 +247,7 @@ class SnippetController extends FormController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = SnippetFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = SnippetFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);

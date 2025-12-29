@@ -270,7 +270,7 @@ class PowerController extends FormController
 
 					foreach ($message_bus as $message_key)
 					{
-						if (($messages = PowerFactory::_('Power.Message')->get($message_key, null)) !== null)
+						if (($messages = PowerFactory::_('Package.Message')->get($message_key, null)) !== null)
 						{
 							$message_bucket[$message_key] = $messages;
 						}

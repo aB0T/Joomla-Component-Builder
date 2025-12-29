@@ -93,6 +93,8 @@ class AjaxController extends BaseController
 		$this->registerTask('getRepoIndex', 'ajax');
 		$this->registerTask('initSelectedPowers', 'ajax');
 		$this->registerTask('initSelectedPackages', 'ajax');
+		$this->registerTask('pullSelectedPowers', 'ajax');
+		$this->registerTask('pullSelectedPackages', 'ajax');
 	}
 
     /**
@@ -2295,6 +2297,108 @@ class AjaxController extends BaseController
 							if ($ajaxModule)
 							{
 								$result = $ajaxModule->initSelectedPackages($repoValue, $areaValue, $selectedValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'pullSelectedPowers':
+					try
+					{
+						$repoValue = $jinput->get('repo', NULL, 'STRING');
+						$areaValue = $jinput->get('area', NULL, 'STRING');
+						$selectedValue = $jinput->get('selected', NULL, 'ARRAY');
+						if($repoValue && $user->id != 0 && $areaValue && $selectedValue)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->pullSelectedPowers($repoValue, $areaValue, $selectedValue);
+							}
+							else
+							{
+								$result = ['error' => 'There was an error! [149]'];
+							}
+						}
+						else
+						{
+							$result = ['error' => 'There was an error! [149]'];
+						}
+						if($callback)
+						{
+							echo $callback . "(".json_encode($result).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($result);
+						}
+						else
+						{
+							echo "(".json_encode($result).");";
+						}
+					}
+					catch(\Exception $e)
+					{
+						if($callback)
+						{
+							echo $callback."(".json_encode($e).");";
+						}
+						elseif($returnRaw)
+						{
+							echo json_encode($e);
+						}
+						else
+						{
+							echo "(".json_encode($e).");";
+						}
+					}
+				break;
+				case 'pullSelectedPackages':
+					try
+					{
+						$repoValue = $jinput->get('repo', NULL, 'STRING');
+						$areaValue = $jinput->get('area', NULL, 'STRING');
+						$selectedValue = $jinput->get('selected', NULL, 'ARRAY');
+						if($repoValue && $user->id != 0 && $areaValue && $selectedValue)
+						{
+							$ajaxModule = $this->getModel('ajax', 'Administrator');
+							if ($ajaxModule)
+							{
+								$result = $ajaxModule->pullSelectedPackages($repoValue, $areaValue, $selectedValue);
 							}
 							else
 							{

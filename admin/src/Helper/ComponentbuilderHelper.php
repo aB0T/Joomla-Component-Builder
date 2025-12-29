@@ -5579,8 +5579,8 @@ abstract class ComponentbuilderHelper
 		$user = Factory::getApplication()->getIdentity();
 		// load the submenus to sidebar
 		Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_DASHBOARD'), 'index.php?option=com_componentbuilder&view=componentbuilder', $submenu === 'componentbuilder');
-		// Access control (compiler.submenu).
-		if ($user->authorise('compiler.submenu', 'com_componentbuilder'))
+		// Access control (compiler.access && compiler.submenu).
+		if ($user->authorise('compiler.access', 'com_componentbuilder') && $user->authorise('compiler.submenu', 'com_componentbuilder'))
 		{
 			Sidebar::addEntry(Text::_('COM_COMPONENTBUILDER_SUBMENU_COMPILER'), 'index.php?option=com_componentbuilder&view=compiler', $submenu === 'compiler');
 		}

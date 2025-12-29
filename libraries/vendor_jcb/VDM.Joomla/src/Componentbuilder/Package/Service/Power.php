@@ -17,7 +17,6 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Power\Table;
 use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
 use VDM\Joomla\Componentbuilder\Package\MessageBus;
-use VDM\Joomla\Componentbuilder\Utilities\Normalize;
 
 
 /**
@@ -40,14 +39,11 @@ class Power implements ServiceProviderInterface
 		$container->alias(Table::class, 'Power.Table')->alias('Table', 'Power.Table')
 			->share('Power.Table', [$this, 'getPowerTable'], true);
 
-		$container->alias(Tracker::class, 'Power.Tracker')
-			->share('Power.Tracker', [$this, 'getPowerTracker'], true);
+		$container->alias(Tracker::class, 'Package.Tracker')
+			->share('Package.Tracker', [$this, 'getTracker'], true);
 
-		$container->alias(MessageBus::class, 'Power.Message')
-			->share('Power.Message', [$this, 'getMessageBus'], true);
-
-		$container->alias(Normalize::class, 'Utilities.Normalize')
-			->share('Utilities.Normalize', [$this, 'getNormalize'], true);
+		$container->alias(MessageBus::class, 'Package.Message')
+			->share('Package.Message', [$this, 'getMessageBus'], true);
 	}
 
 	/**
@@ -71,7 +67,7 @@ class Power implements ServiceProviderInterface
 	 * @return  Tracker
 	 * @since 5.1.1
 	 */
-	public function getPowerTracker(Container $container): Tracker
+	public function getTracker(Container $container): Tracker
 	{
 		return new Tracker();
 	}
@@ -87,19 +83,6 @@ class Power implements ServiceProviderInterface
 	public function getMessageBus(Container $container): MessageBus
 	{
 		return new MessageBus();
-	}
-
-	/**
-	 * Get The Normalize Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Normalize
-	 * @since   5.1.1
-	 */
-	public function getNormalize(Container $container): Normalize
-	{
-		return new Normalize();
 	}
 }
 

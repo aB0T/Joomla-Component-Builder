@@ -244,7 +244,7 @@ class FieldtypesController extends AdminController
 
 					foreach ($message_bus as $message_key)
 					{
-						if (($messages = FieldtypeFactory::_('Power.Message')->get($message_key, null)) !== null)
+						if (($messages = FieldtypeFactory::_('Package.Message')->get($message_key, null)) !== null)
 						{
 							$message_bucket[$message_key] = $messages;
 						}
@@ -292,6 +292,47 @@ class FieldtypesController extends AdminController
 		// set redirect
 		$redirect_url = Route::_('index.php?option=com_componentbuilder&view=fieldtypes', false);
 		$this->setRedirect($redirect_url);
+		return $success;
+	}
+
+	/**
+	 * Redirect the request to the pull selection page.
+	 *
+	 * @return bool True on successful pull, false on failure.
+	 * @since  5.1.1
+	 */
+	public function pullPowers()
+	{
+		// Check for request forgeries
+		Session::checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+		// check if user has the right
+		$user = $this->app->getIdentity();
+
+		// set default error message
+		$message = '<h1>' . Text::_('COM_COMPONENTBUILDER_PERMISSION_DENIED') . '</h1>';
+		$message .= '<p>' . Text::_('COM_COMPONENTBUILDER_YOU_DO_NOT_HAVE_PERMISSION_TO_PULL_JOOMLA_FIELD_TYPES') . '</p>';
+		$status = 'error';
+		$success = false;
+
+		if($user->authorise('fieldtype.pull', 'com_componentbuilder'))
+		{
+			// set success message
+			$message = null;
+
+			$status = null;
+			$success = true;
+
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=pull_selection&power=Joomla.Fieldtype&target=Joomla Field Types', false);
+		}
+		else
+		{
+			// set redirect
+			$redirect_url = Route::_('index.php?option=com_componentbuilder&view=fieldtypes', false);
+		}
+		$this->setRedirect($redirect_url, $message, $status);
+
 		return $success;
 	}
 }

@@ -377,6 +377,7 @@ class Initialization_selectionModel extends ItemModel
 		'CustomCode' => 'PackageFactory',
 		'DynamicGet' => 'PackageFactory',
 		'Field' => 'PackageFactory',
+		'ValidationRule' => 'PackageFactory',
 		'Joomla.Fieldtype' => 'FieldtypeFactory',
 		'Joomla.Power' => 'JoomlaPowerFactory',
 		'Layout' => 'PackageFactory',
@@ -395,23 +396,23 @@ class Initialization_selectionModel extends ItemModel
 	];
 
 	/**
-	 * Method to get the power get class
+	 * Method to get the power class
 	 *
 	 * @param   string  $factoryName  The factory name
-	 * @param   string  $getClass          The remote power class name
+	 * @param   string  $class        The power class name
 	 *
 	 * @return  mixed
 	 * @since   5.1.1
 	 */
-	protected function getPowerClass(string $factoryName, string $getClass)
+	protected function getPowerClass(string $factoryName, string $class)
 	{
 		return match ($factoryName) {
-			'PowerFactory' => PowerFactory::_($getClass),
-			'JoomlaPowerFactory' => JoomlaPowerFactory::_($getClass),
-			'FieldtypeFactory' => FieldtypeFactory::_($getClass),
-			'SnippetFactory' => SnippetFactory::_($getClass),
-			'PackageFactory' => PackageFactory::_($getClass),
-			'RepositoryFactory' => RepositoryFactory::_($getClass),
+			'PowerFactory' => PowerFactory::_($class),
+			'JoomlaPowerFactory' => JoomlaPowerFactory::_($class),
+			'FieldtypeFactory' => FieldtypeFactory::_($class),
+			'SnippetFactory' => SnippetFactory::_($class),
+			'PackageFactory' => PackageFactory::_($class),
+			'RepositoryFactory' => RepositoryFactory::_($class),
 			default => null,
 		};
 	}

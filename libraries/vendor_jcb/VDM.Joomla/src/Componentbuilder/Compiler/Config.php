@@ -106,18 +106,6 @@ class Config extends ComponentConfig
 		// some defaults repos we need by JCB
 		$repos = [];
 
-		// get the users own power repo (can overwrite all)
-		// users can now just add the personal repos in the repositories area
-		// none of this tricks are still needed, so we are removing this
-		//if ($this->gitea_username !== null)
-		//{
-		//	$repos[$this->gitea_username . '.super-powers'] = (object) [
-		//		'organisation' => $this->gitea_username,
-		//		'repository' => 'super-powers',
-		//		'read_branch' => 'master'
-		//	];
-		//}
-
 		$repos[$this->super_powers_core_organisation . '.super-powers'] = (object) [
 			'base' => 'https://codeberg.org',
 			'organisation' => $this->super_powers_core_organisation,
@@ -866,18 +854,6 @@ class Config extends ComponentConfig
 		// some defaults repos we need by JCB
 		$repos = [];
 
-		// get the users own power repo (can overwrite all)
-		// users can now just add the personal repos in the repositories area
-		// none of this tricks are still needed, so we are removing this
-		//if ($this->gitea_username !== null)
-		//{
-		//	$repos[$this->gitea_username . '.joomla-powers'] = (object) [
-		//		'organisation' => $this->gitea_username,
-		//		'repository' => 'joomla-powers',
-		//		'read_branch' => 'master'
-		//	];
-		//}
-
 		$repos[$this->joomla_powers_core_organisation . '.joomla-powers'] = (object) [
 			'base' => 'https://codeberg.org',
 			'organisation' => $this->joomla_powers_core_organisation,
@@ -913,6 +889,71 @@ class Config extends ComponentConfig
 		$approved = $this->joomla_powers_init_repos;
 
 		$paths = RepoHelper::get(2); // Joomla Power = 2
+
+		if ($paths !== null)
+		{
+			foreach ($paths as $path)
+			{
+				$owner = $path->organisation ?? null;
+				$repo = $path->repository ?? null;
+				if ($owner !== null && $repo !== null)
+				{
+					// we make sure to get only the objects
+					$approved = ["{$owner}.{$repo}" => $path] + $approved;
+				}
+			}
+		}
+
+		return array_values($approved);
+	}
+
+	/**
+	 * Get template core organisation
+	 *
+	 * @return  string   The template core organisation
+	 * @since   5.1.4
+	 */
+	protected function getPackagecoreorganisation(): string
+	{
+		// the VDM default organisation is [joomla]
+		$organisation = 'joomla';
+
+		return $this->params->get('package_core_organisation', $organisation);
+	}
+
+	/**
+	 * Get Template init repos
+	 *
+	 * @return  array The init repositories on Gitea
+	 * @since   5.1.4
+	 */
+	protected function getPackageinitrepos(): array
+	{
+		// some defaults repos we need by JCB
+		$repos = [];
+
+		$repos[$this->package_core_organisation . '.packages'] = (object) [
+			'base' => 'https://codeberg.org',
+			'organisation' => $this->package_core_organisation,
+			'repository' => 'packages',
+			'read_branch' => 'master'
+		];
+
+		return $repos;
+	}
+
+	/**
+	 * Get joomla template approved paths
+	 *
+	 * @return  array The approved paths to the repositories on Gitea
+	 * @since   5.1.4
+	 */
+	protected function getApprovedpackagepaths(): array
+	{
+		// some defaults repos we need by JCB
+		$approved = $this->package_init_repos;
+
+		$paths = RepoHelper::get(4); // JCB Packages = 4
 
 		if ($paths !== null)
 		{

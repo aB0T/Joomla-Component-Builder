@@ -1,6 +1,10 @@
-# v6.1.4-beta3
+# v6.1.4-beta4
 
-- Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.
+- Refactor the Item Importer to improve data management, structural clarity, and long-term maintainability of the import process.
+- Add a Pull button to all main JCB entities, allowing a complete reset of a selected entity together with all entities linked to it, from a selected remote repository.
+- Add functionality to the compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.
+- Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.
+- Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.
 
 # v6.1.4-beta
 
@@ -15,6 +19,7 @@
 - Fix and Improve Normalize Class to better handle different files Linked to JCB packages. #1274
 - Remove batch feature from JCB compiler Templates due to lack of use and outdated code.
 - Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.
+- Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.
 
 # v6.1.4-alpha
 

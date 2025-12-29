@@ -49,12 +49,12 @@ class Get
 	protected Container $container;
 
 	/**
-	 * Accumulated categorized results across recursive init calls.
+	 * Accumulated categorized results across recursive calls.
 	 *
 	 * @var array<string, array<string, string>>
 	 * @since 5.1.1
 	 */
-	protected array $initResults = [
+	protected array $results = [
 		'local' => [],
 		'not_found' => [],
 		'added' => [],
@@ -105,7 +105,7 @@ class Get
 	{
 		if (($class = $this->entities->get($entity)) === null)
 		{
-			return $this->initResults;
+			return $this->results;
 		}
 
 		$result = $this->container->get("{$class}.Remote.Get")->init($items, $repo, $force);
@@ -114,7 +114,7 @@ class Get
 		{
 			if (!empty($result[$key]))
 			{
-				$this->initResults[$key] += $result[$key];
+				$this->results[$key] += $result[$key];
 			}
 		}
 
@@ -139,7 +139,87 @@ class Get
 			$this->folder($folders, $repo, $force);
 		}
 
-		return $this->initResults;
+		return $this->results;
+	}
+
+	/**
+	 * Initialize and categorize entity items by validating GUIDs, resolving aliases,
+	 * and synchronizing missing items from remote repositories.
+	 *
+	 * This method performs the following steps:
+	 * - Resolves and validates the provided item identifiers into valid GUIDs
+	 *   (including alias-to-GUID resolution where applicable).
+	 * - Checks each resolved GUID against the local database.
+	 * - Categorizes items as:
+	 *   - 'local'     : Already present locally.
+	 *   - 'not_found' : Not found locally and unavailable remotely.
+	 *   - 'added'     : Retrieved from a remote repository and stored locally.
+	 * - Recursively processes tracked entity dependencies.
+	 * - Processes any queued file and folder retrieval operations.
+	 *
+	 * Invalid, empty, or unresolvable identifiers are silently ignored during
+	 * the GUID resolution phase.
+	 *
+	 * @param  string  $entity  The target entity name.
+	 * @param  array   $items   An array of item identifiers (GUIDs or resolvable values).
+	 *
+	 * @return array{
+	 *     local: array<string, string>,
+	 *     not_found: array<string, string>,
+	 *     added: array<string, string>
+	 * } Aggregated results indexed by resolved GUIDs:
+	 * - 'local'     : Items already present in the local database.
+	 * - 'not_found' : Items not found locally or remotely.
+	 * - 'added'     : Items successfully retrieved from a remote repository and stored.
+	 *
+	 * @since  5.1.4
+	 */
+	public function get(string $entity, array $items): array
+	{
+		if (($class = $this->entities->get($entity)) === null)
+		{
+			return $this->results;
+		}
+
+		$items = $this->container->get("{$class}.Grep")->getValidGuids($items);
+
+		if ($items === [])
+		{
+			return $this->results;
+		}
+
+		$result = $this->container->get("{$class}.Remote.Get")->init($items);
+
+		foreach (['local', 'not_found', 'added'] as $key)
+		{
+			if (!empty($result[$key]))
+			{
+				$this->results[$key] += $result[$key];
+			}
+		}
+
+		while (($dependencies = $this->tracker->get('get')) !== null)
+		{
+			$this->tracker->remove('get');
+			foreach ($dependencies as $next_entity => $next_items)
+			{
+				$this->get($next_entity, $this->getGuids($next_items));
+			}
+		}
+
+		while (($files = $this->tracker->get('file.get')) !== null)
+		{
+			$this->tracker->remove('file.get');
+			$this->file($files);
+		}
+
+		while (($folders = $this->tracker->get('folder.get')) !== null)
+		{
+			$this->tracker->remove('folder.get');
+			$this->folder($folders);
+		}
+
+		return $this->results;
 	}
 
 	/**
@@ -205,7 +285,7 @@ class Get
 		{
 			if (!empty($result[$key]))
 			{
-				$this->initResults[$key] += $result[$key];
+				$this->results[$key] += $result[$key];
 			}
 		}
 	}
@@ -228,7 +308,7 @@ class Get
 		{
 			if (!empty($result[$key]))
 			{
-				$this->initResults[$key] += $result[$key];
+				$this->results[$key] += $result[$key];
 			}
 		}
 	}

@@ -78,7 +78,8 @@ class Templatelayout implements ServiceProviderInterface
 			$container->get('Customcode.Gui'),
 			$container->get('Model.Loader'),
 			$container->get('Model.Libraries'),
-			$container->get('Joomla.Database')
+			$container->get('Joomla.Database'),
+			$container->get('Package.Get')
 		);
 	}
 }

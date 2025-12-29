@@ -283,6 +283,26 @@ class HtmlView extends BaseHtmlView
 				}
 			}
 		}
+		if ($this->user->authorise('validation_rule.init', 'com_componentbuilder'))
+		{
+			// add Init button.
+			ToolbarHelper::custom('validation_rules.initPowers', 'health custom-button-initpowers', '', 'COM_COMPONENTBUILDER_INIT', false);
+		}
+		if ($this->user->authorise('validation_rule.reset', 'com_componentbuilder'))
+		{
+			// add Reset button.
+			ToolbarHelper::custom('validation_rules.resetPowers', 'joomla custom-button-resetpowers', '', 'COM_COMPONENTBUILDER_RESET', false);
+		}
+		if ($this->user->authorise('validation_rule.push', 'com_componentbuilder'))
+		{
+			// add Push button.
+			ToolbarHelper::custom('validation_rules.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
+		}
+		if ($this->user->authorise('validation_rule.pull', 'com_componentbuilder'))
+		{
+			// add Pull button.
+			ToolbarHelper::custom('validation_rules.pullPowers', 'undo custom-button-pullpowers', '', 'COM_COMPONENTBUILDER_PULL', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('validation_rules');

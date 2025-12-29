@@ -298,6 +298,11 @@ class HtmlView extends BaseHtmlView
 			// add Push button.
 			ToolbarHelper::custom('admin_views.pushPowers', 'share custom-button-pushpowers', '', 'COM_COMPONENTBUILDER_PUSH', false);
 		}
+		if ($this->user->authorise('admin_view.pull', 'com_componentbuilder'))
+		{
+			// add Pull button.
+			ToolbarHelper::custom('admin_views.pullPowers', 'undo custom-button-pullpowers', '', 'COM_COMPONENTBUILDER_PULL', false);
+		}
 
 		// set help url for this view if found
 		$this->help_url = ComponentbuilderHelper::getHelpUrl('admin_views');

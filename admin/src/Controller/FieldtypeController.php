@@ -225,7 +225,7 @@ class FieldtypeController extends FormController
 
 					foreach ($message_bus as $message_key)
 					{
-						if (($messages = FieldtypeFactory::_('Power.Message')->get($message_key, null)) !== null)
+						if (($messages = FieldtypeFactory::_('Package.Message')->get($message_key, null)) !== null)
 						{
 							$message_bucket[$message_key] = $messages;
 						}

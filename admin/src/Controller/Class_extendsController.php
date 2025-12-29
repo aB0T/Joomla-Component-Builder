@@ -181,7 +181,7 @@ class Class_extendsController extends FormController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);
@@ -292,7 +292,7 @@ class Class_extendsController extends FormController
 
 				foreach ($message_bus as $message_key)
 				{
-					if (($messages = PackageFactory::_('Power.Message')->get($message_key, null)) !== null)
+					if (($messages = PackageFactory::_('Package.Message')->get($message_key, null)) !== null)
 					{
 						$messages = '<p>' . implode('<br>', $messages) . '</p>';
 						$this->app->enqueueMessage($messages, $message_key);

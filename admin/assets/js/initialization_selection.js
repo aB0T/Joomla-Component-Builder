@@ -148,7 +148,7 @@ class InitializationManager {
 	}
 
 	_bindRepoButtons() {
-		document.querySelectorAll('.select-repo-to-initialize').forEach(button => {
+		document.querySelectorAll('.select-repo-to-load').forEach(button => {
 			button.addEventListener('click', (e) => this._handleRepoClick(e));
 		});
 	}

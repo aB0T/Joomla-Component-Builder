@@ -13,10 +13,11 @@ namespace VDM\Joomla\File;
 
 
 use Joomla\Filesystem\File;
-use VDM\Joomla\Componentbuilder\File\Handler;
+use VDM\Joomla\Interfaces\File\HandlerInterface as Handler;
 use VDM\Joomla\File\Definition;
 use VDM\Joomla\Interfaces\File\TypeDefinitionInterface as Type;
 use VDM\Joomla\Utilities\MimeHelper;
+use VDM\Joomla\Interfaces\File\AgentInterface;
 
 
 /**
@@ -30,7 +31,7 @@ use VDM\Joomla\Utilities\MimeHelper;
  * 
  * @since  5.1.4
  */
-class Agent
+class Agent implements AgentInterface
 {
 	/**
 	 * Upload and validation engine.

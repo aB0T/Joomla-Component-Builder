@@ -27,6 +27,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Model\Libraries;
 use VDM\Joomla\Componentbuilder\Compiler\Dynamicget\Data as Dynamicget;
 use VDM\Joomla\Componentbuilder\Compiler\Templatelayout\Data as Templatelayout;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Counter;
+use VDM\Joomla\Componentbuilder\Package\Builder\Get as Superpower;
 use VDM\Joomla\Utilities\ArrayHelper;
 use VDM\Joomla\Utilities\String\ClassfunctionHelper;
 use VDM\Joomla\Utilities\JsonHelper;
@@ -58,6 +59,14 @@ class Data implements ModuleDataInterface
 	 * @since  5.0.4
 	 */
 	protected array $index = [];
+
+	/**
+	 * The state of retry to loaded plugins
+	 *
+	 * @var    array
+	 * @since  5.1.4
+	 **/
+	protected array $retry = [];
 
 	/**
 	 * The Config Class.
@@ -164,6 +173,14 @@ class Data implements ModuleDataInterface
 	protected DatabaseInterface $db;
 
 	/**
+	 * The Super Class.
+	 *
+	 * @var   Superpower
+	 * @since 5.1.4
+	 */
+	protected Superpower $superpower;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Config             $config           The Config Class.
@@ -179,6 +196,7 @@ class Data implements ModuleDataInterface
 	 * @param Templatelayout     $templatelayout   The Data Class.
 	 * @param Counter            $counter          The Counter Class.
 	 * @param DatabaseInterface  $db               The Joomla Database Class.
+	 * @param Superpower         $superpower       A Superpower Class.
 	 *
 	 * @since 3.2.0
 	 */
@@ -187,7 +205,7 @@ class Data implements ModuleDataInterface
 		Field $field, Fieldname $fieldname,
 		Filesfolders $filesfolders, Libraries $libraries,
 		Dynamicget $dynamicget, Templatelayout $templatelayout,
-		Counter $counter, DatabaseInterface $db)
+		Counter $counter, DatabaseInterface $db, Superpower $superpower)
 	{
 		$this->config = $config;
 		$this->customcode = $customcode;
@@ -202,17 +220,18 @@ class Data implements ModuleDataInterface
 		$this->templatelayout = $templatelayout;
 		$this->counter = $counter;
 		$this->db = $db;
+		$this->superpower = $superpower;
 	}
 
 	/**
 	 * Get the Joomla Module/s
 	 *
-	 * @param   int|string|null   $module   The module id/guid
+	 * @param  mixed   $module   The module id/guid
 	 *
 	 * @return  object|array|null    if ID|GUID found it returns object, if no ID|GUID given it returns all set
 	 * @since 3.2.0
 	 */
-	public function get($module = null)
+	public function get(mixed $module = null)
 	{
 		if ($module === null && $this->exists())
 		{
@@ -230,12 +249,12 @@ class Data implements ModuleDataInterface
 	/**
 	 * Check if the Joomla Module/s exists
 	 *
-	 * @param   int|string|null   $module   The module id|guid
+	 * @param   mixed   $module   The module id|guid
 	 *
 	 * @return  bool    if ID|GUID found it returns true, if no ID|GUID given it returns true if any are set
 	 * @since 3.2.0
 	 */
-	public function exists($module = null): bool
+	public function exists(mixed $module = null): bool
 	{
 		if ($module === null)
 		{
@@ -257,7 +276,7 @@ class Data implements ModuleDataInterface
 	 * @return  bool    true on success
 	 * @since   5.0.4
 	 */
-	public function set($module): bool
+	public function set(mixed $module): bool
 	{
 		if (!GuidHelper::valid($module) && !is_numeric($module))
 		{
@@ -290,7 +309,39 @@ class Data implements ModuleDataInterface
 			return true;
 		}
 
+		if ($this->attemptRemoteFetch($module))
+		{
+			return $this->set($module);
+		}
+
 		return false;
+	}
+
+	/**
+	 * Attempt a one-time remote fetch via Superpower.
+	 *
+	 * @param   mixed  $guid
+	 *
+	 * @return  bool
+	 * @since   5.1.4
+	 */
+	private function attemptRemoteFetch(mixed $guid): bool
+	{
+		if (!GuidHelper::valid($guid))
+		{
+			return false;
+		}
+
+		if (!empty($this->retry[$guid]))
+		{
+			return false;
+		}
+
+		$this->retry[$guid] = true;
+
+		$result = $this->superpower->get('joomla_module', [$guid]);
+
+		return !empty($result['added'][$guid]);
 	}
 
 	/**
@@ -302,7 +353,7 @@ class Data implements ModuleDataInterface
 	 * @return  string  The module data query
 	 * @since   5.0.4
 	 */
-	private function getQuery($value, string $key = 'id')
+	private function getQuery(mixed $value, string $key = 'id')
 	{
 		// Create a new query object.
 		$query = $this->db->getQuery(true);

@@ -167,14 +167,14 @@
 					filter="RAW"
 					hint="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_TRANSLATION_HINT"
 				/>
-				<!-- Language Field. Type: Lang. (custom) -->
+				<!-- Languages Field. Type: Lang. (custom) -->
 				<field
 					type="lang"
-					name="language"
-					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGE_LABEL"
+					name="languages"
+					label="COM_COMPONENTBUILDER_LANGUAGE_TRANSLATION_LANGUAGES_LABEL"
 					class="list_class"
 					layout="joomla.form.field.list-fancy-select"
-					multiple="false"
+					multiple="true"
 					default="en-GB"
 					required="true"
 					button="false"

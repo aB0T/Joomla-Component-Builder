@@ -63,11 +63,14 @@ class ComponentbuilderModel extends ListModel
 	 * @since 5.1.1
 	 */
 	protected array $viewAccess = [
+		'compiler.access' => 'compiler.access',
 		'compiler.submenu' => 'compiler.submenu',
 		'compiler.dashboard_list' => 'compiler.dashboard_list',
 		'search.access' => 'search.access',
 		'search.submenu' => 'search.submenu',
 		'search.dashboard_list' => 'search.dashboard_list',
+		'initialization_selection.access' => 'initialization_selection.access',
+		'pull_selection.access' => 'pull_selection.access',
 		'joomla_component.create' => 'joomla_component.create',
 		'joomla_components.access' => 'joomla_component.access',
 		'joomla_component.access' => 'joomla_component.access',

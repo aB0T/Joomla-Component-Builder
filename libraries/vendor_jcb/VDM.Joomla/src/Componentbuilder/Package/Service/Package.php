@@ -88,7 +88,7 @@ class Package implements ServiceProviderInterface
 	{
 		return new Set(
 			$container->get('Package.Entities'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container,
 		);
 	}
@@ -105,7 +105,7 @@ class Package implements ServiceProviderInterface
 	{
 		return new Get(
 			$container->get('Package.Entities'),
-			$container->get('Power.Tracker'),
+			$container->get('Package.Tracker'),
 			$container,
 		);
 	}

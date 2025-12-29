@@ -16,6 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper as Html;
 use Joomla\CMS\Component\ComponentHelper;
 use VDM\Component\Componentbuilder\Administrator\Helper\ComponentbuilderHelper;
+use Joomla\Database\DatabaseInterface;
 
 // No direct access to this file
 \defined('_JEXEC') or die;
@@ -42,9 +43,9 @@ class LangField extends ListField
 	 */
 	protected function getOptions()
 	{
-		$db = Factory::getDBO();
+				$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('a.langtag','a.name'),array('langtag','language_name')));
+		$query->select($db->quoteName(array('a.langtag','a.name'),array('langtag','languages_name')));
 		$query->from($db->quoteName('#__componentbuilder_language', 'a'));
 		$query->where($db->quoteName('a.published') . ' >= 1');
 		$query->order('a.langtag ASC');
@@ -61,7 +62,7 @@ class LangField extends ListField
 			foreach($items as $item)
 			{
 				$item->langtag = trim($item->langtag);
-				$options[] = Html::_('select.option', $item->langtag, $item->language_name . ' (' .$item->langtag.')');
+				$options[] = Html::_('select.option', $item->langtag, $item->languages_name . ' (' .$item->langtag.')');
 				if ($main_lang === $item->langtag)
 				{
 					$wasAdded = true;

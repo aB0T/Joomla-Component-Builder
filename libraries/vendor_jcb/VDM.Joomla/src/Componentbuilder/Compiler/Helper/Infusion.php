@@ -39,22 +39,6 @@ class Infusion extends Interpretation
 {
 	public $langFiles = [];
 
-	/**
-	 * Switch to remove site folder
-	 *
-	 * @var     bool
-	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_folder;
-	 */
-	public $removeSiteFolder = false;
-
-	/**
-	 * Switch to remove site edit folder
-	 *
-	 * @var     bool
-	 * @deprecated 3.3 Use CFactory::_('Config')->remove_site_edit_folder;
-	 */
-	public $removeSiteEditFolder = true;
-
 	public $secondRunAdmin;
 
 	/**
@@ -234,7 +218,7 @@ class Infusion extends Interpretation
 
 			// COMP_IMAGE_TYPE
 			CFactory::_('Compiler.Builder.Content.One')->set('COMP_IMAGE_TYPE',
-				$this->setComponentImageType(CFactory::_('Component')->get('image'))
+				CFactory::_('Architecture.Component.ImageType')->set(CFactory::_('Component')->get('image'))
 			);
 
 			// ACCESS_SECTIONS
@@ -346,9 +330,9 @@ class Infusion extends Interpretation
 			);
 
 			// HELP
-			CFactory::_('Compiler.Builder.Content.One')->set('HELP', $this->noHelp());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELP', CFactory::_('Compiler.Creator.Helper')->none());
 			// HELP_SITE
-			CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', $this->noHelp());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELP_SITE', CFactory::_('Compiler.Creator.Helper')->none());
 
 			// build route parse switch
 			CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_PARSE_SWITCH', '');
@@ -356,7 +340,7 @@ class Infusion extends Interpretation
 			CFactory::_('Compiler.Builder.Content.One')->set('ROUTER_BUILD_VIEWS', '');
 
 			// add the helper emailer if set
-			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_EMAIL', $this->addEmailHelper());
+			CFactory::_('Compiler.Builder.Content.One')->set('HELPER_EMAIL', CFactory::_('Compiler.Creator.Email.Helper')->get());
 
 			// load the global placeholders
 			foreach (CFactory::_('Component.Placeholder')->get() as $globalPlaceholder =>
@@ -395,8 +379,10 @@ class Infusion extends Interpretation
 					// insure site view does not get removed
 					CFactory::_('Config')->remove_site_edit_folder = false;
 				}
+
 				// check if help is being loaded
-				$this->checkHelp($nameSingleCode);
+				CFactory::_('Compiler.Creator.Helper')->set($nameSingleCode);
+
 				// set custom admin view list links
 				$this->setCustomAdminViewListLink(
 					$view, $nameListCode
@@ -761,11 +747,12 @@ class Infusion extends Interpretation
 					);
 
 					// set the export/import option
+					$add_custom_import = (int) ($view['settings']->add_custom_import ?? 0);
 					if (isset($view['port']) && $view['port']
-						|| 1 == $view['settings']->add_custom_import)
+						|| 1 === $add_custom_import)
 					{
 						$this->eximportView[$nameListCode] = true;
-						if (1 == $view['settings']->add_custom_import)
+						if (1 === $add_custom_import)
 						{
 							// this view has custom import scripting
 							$this->importCustomScripts[$nameListCode]
@@ -2282,7 +2269,6 @@ class Infusion extends Interpretation
 			// rest globals
 			CFactory::_('Config')->build_target = $_backup_target;
 			CFactory::_('Config')->lang_target = $_backup_lang;
-			$this->langPrefix = $_backup_langPrefix;
 			CFactory::_('Config')->set('lang_prefix', $_backup_langPrefix);
 
 			// Trigger Event: jcb_ce_onAfterBuildFilesContent

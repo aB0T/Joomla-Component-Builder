@@ -13,7 +13,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Power;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use Joomla\CMS\Language\Text;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as Compiler;
 use VDM\Joomla\Componentbuilder\Compiler\Power;

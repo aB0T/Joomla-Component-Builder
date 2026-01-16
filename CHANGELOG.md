@@ -1,10 +1,11 @@
-# v6.1.4-beta4
+# v6.1.4-beta5
 
-- Refactor the Item Importer to improve data management, structural clarity, and long-term maintainability of the import process.
-- Add a Pull button to all main JCB entities, allowing a complete reset of a selected entity together with all entities linked to it, from a selected remote repository.
-- Add functionality to the compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.
-- Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.
-- Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.
+- Refactor the Compiler to remove deprecated code paths and legacy classes that are no longer maintained.
+- Add new Compiler Classes to modernise ancient tech previously embedded in the compiler and replace it with a clean, modern architecture.
+- Add a dedicated CLI plugin to the JCB core, enabling direct interaction with JCB through the Joomla CLI console.
+- Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.
+- Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.
+- Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.
 
 # v6.1.4-beta
 
@@ -20,6 +21,11 @@
 - Remove batch feature from JCB compiler Templates due to lack of use and outdated code.
 - Refactor Utilities/Response classes for Joomla 6+ compatibility and improved version-agnostic behavior.
 - Refactor the File Upload Manager to achieve improved maintainability, greater customization flexibility, and easier extensibility.
+- Refactor the Item Importer to improve data management, structural clarity, and long-term maintainability of the import process.
+- Add a Pull button to all main JCB entities, allowing a complete reset of a selected entity together with all entities linked to it, from a selected remote repository.
+- Add functionality to the compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.
+- Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.
+- Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.
 
 # v6.1.4-alpha
 

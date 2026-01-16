@@ -44,12 +44,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
 use VDM\Joomla\Utilities\FormHelper;
 use VDM\Joomla\Componentbuilder\Utilities\FilterHelper;
 use VDM\Joomla\Data\Factory as DataFactory;
-use VDM\Joomla\Componentbuilder\Package\Factory as PackageFactory;
-use VDM\Joomla\Componentbuilder\Fieldtype\Factory as FieldtypeFactory;
-use VDM\Joomla\Componentbuilder\JoomlaPower\Factory as JoomlaPowerFactory;
-use VDM\Joomla\Componentbuilder\Power\Factory as PowerFactory;
-use VDM\Joomla\Componentbuilder\Snippet\Factory as SnippetFactory;
-use VDM\Joomla\Componentbuilder\Repository\Factory as RepositoryFactory;
+use VDM\Joomla\Componentbuilder\Factory as ComponentbuilderFactory;
 use Joomla\CMS\Form\FormHelper as FormFormHelper;
 
 // No direct access to this file
@@ -5482,18 +5477,6 @@ class AjaxModel extends ListModel
 
 	// Used in initialization_selection
 	/**
-	 * Method to get the target power
-	 *
-	 * @return  string|null
-	 *
-	 * @since   5.1.1
-	 */
-	protected function getTargetAreaPower($power): ?string
-	{
-		return $this->powers[$power] ?? null;
-	}
-
-	/**
 	 * Method to get the power get class
 	 *
 	 * @param   string  $repo  The repo to list index
@@ -5509,14 +5492,14 @@ class AjaxModel extends ListModel
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
 		}
 
-		if (($Power = $this->getTargetAreaPower($area)) === null)
+		if (($entity = ComponentbuilderFactory::getEntity($area)) === null)
 		{
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
 		}
 
 		try
 		{
-			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
+			$class = ComponentbuilderFactory::_($entity, "{$area}.Remote.Get");
 			if ($class !== null)
 			{
 				$result = $class->list($repo);
@@ -5545,51 +5528,6 @@ class AjaxModel extends ListModel
 	}
 
 	/**
-	 * Method to initialize the selected powers
-	 *
-	 * @param   string  $repo      The repo to list index
-	 * @param   string  $area      The target area
-	 * @param   array   $selected  The selected powers
-	 *
-	 * @return  array
-	 * @since   5.1.1
-	 */
-	public function initSelectedPowers(string $repo, string $area, array $selected): array
-	{
-		if (!GuidHelper::valid($repo))
-		{
-			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
-		}
-
-		if (($Power = $this->getTargetAreaPower($area)) === null)
-		{
-			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
-		}
-
-		$result = [];
-		try
-		{
-			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
-			if ($class !== null)
-			{
-				$repo_path = $class->path($repo);
-				$result = $class->init($selected, $repo_path);
-			}
-		}
-		catch (\Exception $e)
-		{
-			return ['success' => false, 'message' => $e->getMessage()];
-		}
-
-		if ($result !== [])
-		{
-			return ['success' => true, 'result_log' => $result];
-		}
-
-		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_REPO_INDEX_FAILED_TO_LOAD_PLEASE_TRY_AGAIN')];
-	}
-
-	/**
 	 * Method to initialize the selected packages
 	 *
 	 * @param   string  $repo      The repo to list index
@@ -5606,7 +5544,7 @@ class AjaxModel extends ListModel
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
 		}
 
-		if (($Power = $this->getTargetAreaPower($area)) === null)
+		if (($entity = ComponentbuilderFactory::getEntity($area)) === null)
 		{
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
 		}
@@ -5614,13 +5552,12 @@ class AjaxModel extends ListModel
 		$result = [];
 		try
 		{
-			$class = $this->getPowerClass($Power, "Package.Builder.Get");
-			$entity = $this->getPowerClass($Power, "{$area}.Remote.Get");
-			if (!empty($selected) && $class !== null && $entity !== null)
+			$class = ComponentbuilderFactory::_($entity, "Package.Builder.Get");
+			$prep = ComponentbuilderFactory::_($entity, "{$area}.Remote.Get");
+			if (!empty($selected) && $class !== null && $prep !== null)
 			{
-				$table = $entity->getTable();
-				$repo_path = $entity->path($repo);
-				$result = $class->init($table, $selected, $repo_path);
+				$repo_path = $prep->path($repo);
+				$result = $class->init($entity, $selected, $repo_path);
 			}
 		}
 		catch (\Exception $e)
@@ -5649,105 +5586,7 @@ class AjaxModel extends ListModel
 		return (bool) array_filter($data);
 	}
 
-	/**
-	 * The powers that we can initialize
-	 *
-	 * @var    array
-	 * @since  5.1.1
-	 */
-	protected array $powers = [
-		'AdminView' => 'PackageFactory',
-		'Component' => 'PackageFactory',
-		'CustomAdminView' => 'PackageFactory',
-		'CustomCode' => 'PackageFactory',
-		'DynamicGet' => 'PackageFactory',
-		'Field' => 'PackageFactory',
-		'ValidationRule' => 'PackageFactory',
-		'Joomla.Fieldtype' => 'FieldtypeFactory',
-		'Joomla.Power' => 'JoomlaPowerFactory',
-		'Layout' => 'PackageFactory',
-		'Library' => 'PackageFactory',
-		'JoomlaModule' => 'PackageFactory',
-		'JoomlaPlugin' => 'PackageFactory',
-		'Power' => 'PowerFactory',
-		'SiteView' => 'PackageFactory',
-		'Snippet' => 'SnippetFactory',
-		'Template' => 'PackageFactory',
-		'ClassExtends' => 'PackageFactory',
-		'ClassProperty' => 'PackageFactory',
-		'ClassMethod' => 'PackageFactory',
-		'Placeholder' => 'PackageFactory',
-		'Repository' => 'RepositoryFactory'
-	];
-
-	/**
-	 * Method to get the power class
-	 *
-	 * @param   string  $factoryName  The factory name
-	 * @param   string  $class        The power class name
-	 *
-	 * @return  mixed
-	 * @since   5.1.1
-	 */
-	protected function getPowerClass(string $factoryName, string $class)
-	{
-		return match ($factoryName) {
-			'PowerFactory' => PowerFactory::_($class),
-			'JoomlaPowerFactory' => JoomlaPowerFactory::_($class),
-			'FieldtypeFactory' => FieldtypeFactory::_($class),
-			'SnippetFactory' => SnippetFactory::_($class),
-			'PackageFactory' => PackageFactory::_($class),
-			'RepositoryFactory' => RepositoryFactory::_($class),
-			default => null,
-		};
-	}
-
 	// Used in pull_selection
-	/**
-	 * Method to pull the selected powers
-	 *
-	 * @param   string  $repo      The repo to list index
-	 * @param   string  $area      The target area
-	 * @param   array   $selected  The selected powers
-	 *
-	 * @return  array
-	 * @since   5.1.4
-	 */
-	public function pullSelectedPowers(string $repo, string $area, array $selected): array
-	{
-		if (!GuidHelper::valid($repo))
-		{
-			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
-		}
-
-		if (($Power = $this->getTargetAreaPower($area)) === null)
-		{
-			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
-		}
-
-		$result = [];
-		try
-		{
-			$class = $this->getPowerClass($Power, "{$area}.Remote.Get");
-			if ($class !== null)
-			{
-				$repo_path = $class->path($repo);
-				$result = $class->init($selected, $repo_path, true);
-			}
-		}
-		catch (\Exception $e)
-		{
-			return ['success' => false, 'message' => $e->getMessage()];
-		}
-
-		if ($result !== [])
-		{
-			return ['success' => true, 'result_log' => $result];
-		}
-
-		return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_THE_REPO_INDEX_FAILED_TO_LOAD_PLEASE_TRY_AGAIN')];
-	}
-
 	/**
 	 * Method to pull the selected packages
 	 *
@@ -5765,7 +5604,7 @@ class AjaxModel extends ListModel
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_REPO_SELECTED')];
 		}
 
-		if (($Power = $this->getTargetAreaPower($area)) === null)
+		if (($entity = ComponentbuilderFactory::getEntity($area)) === null)
 		{
 			return ['success' => false, 'message' => Text::_('COM_COMPONENTBUILDER_INVALID_AREA_SELECTED')];
 		}
@@ -5773,13 +5612,12 @@ class AjaxModel extends ListModel
 		$result = [];
 		try
 		{
-			$class = $this->getPowerClass($Power, "Package.Builder.Get");
-			$entity = $this->getPowerClass($Power, "{$area}.Remote.Get");
-			if (!empty($selected) && $class !== null && $entity !== null)
+			$class = ComponentbuilderFactory::_($entity, "Package.Builder.Get");
+			$prep = ComponentbuilderFactory::_($entity, "{$area}.Remote.Get");
+			if (!empty($selected) && $class !== null && $prep !== null)
 			{
-				$table = $entity->getTable();
-				$repo_path = $entity->path($repo);
-				$result = $class->init($table, $selected, $repo_path, true);
+				$repo_path = $prep->path($repo);
+				$result = $class->init($entity, $selected, $repo_path, true);
 			}
 		}
 		catch (\Exception $e)

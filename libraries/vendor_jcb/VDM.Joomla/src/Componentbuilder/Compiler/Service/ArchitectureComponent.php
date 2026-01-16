@@ -19,6 +19,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaSix\ComHelperClass\C
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFive\ComHelperClass\CreateUser as J5CreateUser;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaFour\ComHelperClass\CreateUser as J4CreateUser;
 use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\ComHelperClass\CreateUser as J3CreateUser;
+use VDM\Joomla\Componentbuilder\Compiler\Architecture\Component\ImageType;
 
 
 /**
@@ -26,7 +27,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Architecture\JoomlaThree\ComHelperClass
  * 
  * @since 5.0.2
  */
-class ArchitectureComHelperClass implements ServiceProviderInterface
+class ArchitectureComponent implements ServiceProviderInterface
 {
 	/**
 	 * Current Joomla Version Being Build
@@ -60,6 +61,9 @@ class ArchitectureComHelperClass implements ServiceProviderInterface
 
 		$container->alias(J3CreateUser::class, 'Architecture.ComHelperClass.J3.CreateUser')
 			->share('Architecture.ComHelperClass.J3.CreateUser', [$this, 'getJ3CreateUser'], true);
+
+		$container->alias(ImageType::class, 'Architecture.Component.ImageType')
+			->share('Architecture.Component.ImageType', [$this, 'getImageType'], true);
 	}
 
 	/**
@@ -130,6 +134,22 @@ class ArchitectureComHelperClass implements ServiceProviderInterface
 	public function getJ3CreateUser(Container $container): J3CreateUser
 	{
 		return new J3CreateUser();
+	}
+
+	/**
+	 * Get The ImageType Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  ImageType
+	 * @since   5.1.4
+	 */
+	public function getImageType(Container $container): ImageType
+	{
+		return new ImageType(
+			$container->get('Utilities.Paths'),
+			$container->get('Utilities.Image')
+		);
 	}
 }
 

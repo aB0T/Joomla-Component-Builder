@@ -45,7 +45,7 @@ use VDM\Joomla\Componentbuilder\Compiler\Service\Utilities;
 use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderAJ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\BuilderLZ;
 use VDM\Joomla\Componentbuilder\Compiler\Service\Creator;
-use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComHelperClass;
+use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureComponent;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureModel;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureView;
 use VDM\Joomla\Componentbuilder\Compiler\Service\ArchitectureController;
@@ -98,12 +98,15 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	protected static ?Container $container = null;
 
 	/**
-	 * Current Joomla Version Being Build
+	 * Unset the container (for a fresh start)
 	 *
-	 * @var     int
-	 * @since 3.2.0
-	 **/
-	protected static int $JoomlaVersion;
+	 * @return  void
+	 * @since  5.1.5
+	 */
+	public static function unset(): void
+	{
+		self::$container = null;
+	}
 
 	/**
 	 * Get array of all keys in container
@@ -117,24 +120,6 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	}
 
 	/**
-	 * Get version specific class from the compiler container
-	 *
-	 * @param   string  $key  The container class key
-	 *
-	 * @return  mixed
-	 * @since 3.2.0
-	 */
-	public static function _J($key)
-	{
-		if (empty(self::$JoomlaVersion))
-		{
-			self::$JoomlaVersion = self::getContainer()->get('Config')->joomla_version;
-		}
-
-		return self::getContainer()->get('J' . self::$JoomlaVersion . '.' . $key);
-	}
-
-	/**
 	 * Create a container object
 	 *
 	 * @return  Container
@@ -142,6 +127,22 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 	 */
 	protected static function createContainer(): Container
 	{
+		/**
+		 * Ensure JPATH_COMPONENT_ADMINISTRATOR is defined. (YES I WILL)
+		 *
+		 * This constant is not guaranteed to exist in CLI or certain bootstrap paths.
+		 * We safely derive it using JPATH_ADMINISTRATOR, which is always defined in Joomla.
+		 *
+		 * @since  5.1.4
+		 */
+		if (!defined('JPATH_COMPONENT_ADMINISTRATOR'))
+		{
+			define(
+				'JPATH_COMPONENT_ADMINISTRATOR',
+				JPATH_ADMINISTRATOR . '/components/com_componentbuilder'
+			);
+		}
+
 		return (new Container())
 			->registerServiceProvider(new Crypt())
 			->registerServiceProvider(new Server())
@@ -175,7 +176,7 @@ abstract class Factory extends ExtendingFactory implements FactoryInterface
 			->registerServiceProvider(new BuilderAJ())
 			->registerServiceProvider(new BuilderLZ())
 			->registerServiceProvider(new Creator())
-			->registerServiceProvider(new ArchitectureComHelperClass())
+			->registerServiceProvider(new ArchitectureComponent())
 			->registerServiceProvider(new ArchitectureModel())
 			->registerServiceProvider(new ArchitectureView())
 			->registerServiceProvider(new ArchitectureController())

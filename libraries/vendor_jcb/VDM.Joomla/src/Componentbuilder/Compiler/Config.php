@@ -60,6 +60,17 @@ class Config extends ComponentConfig
 	}
 
 	/**
+	 * get git folder path
+	 *
+	 * @return  string  The git folder path
+	 * @since   5.1.4
+	 */
+	protected function getGitfolderpath(): ?string
+	{
+		return $this->params->get('git_folder_path');
+	}
+
+	/**
 	 * get Gitea Username
 	 *
 	 * @return  string  the access token
@@ -327,6 +338,28 @@ class Config extends ComponentConfig
 		{
 			return ucfirst($this->component_codename) . 'InstallerPowerloader.php';
 		}
+	}
+
+	/**
+	 * get add menu prefix
+	 *
+	 * @return int     The add menu prefix switch
+	 * @since  5.1.4
+	 */
+	protected function getAddmenuprefix(): int
+	{
+		return $this->params->get('add_menu_prefix', 1);
+	}
+
+	/**
+	 * get menu prefix
+	 *
+	 * @return string   The menu prefix
+	 * @since  5.1.4
+	 */
+	protected function getMenuprefix(): string
+	{
+		return (string) $this->params->get('menu_prefix', '&#187;');
 	}
 
 	/**

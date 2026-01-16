@@ -13,9 +13,8 @@ namespace VDM\Joomla\Abstraction;
 
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\CMSApplicationInterface as CMSApplication;
 use VDM\Joomla\Interfaces\Remote\ConfigInterface as Config;
 use VDM\Joomla\Interfaces\Git\Repository\ContentsInterface as Contents;
 use VDM\Joomla\Componentbuilder\Network\Resolve;
@@ -194,6 +193,66 @@ abstract class Grep implements GrepInterface
 		}
 
 		return $this->searchAllRepos($guid, $order);
+	}
+
+	/**
+	 * Validate any repository
+	 *
+	 * @param object      $repository    The target repository object.
+	 * @param string|null $networkTarget The network target name
+	 *
+	 * @return bool    True if valid path
+	 * @since  5.1.4
+	 */
+	public function validRepo(object &$repository, ?string $networkTarget = null): bool
+	{
+		if (($repository->grep_validated ?? false))
+		{
+			return true;
+		}
+
+		$repository->organisation = trim($repository->organisation ?? '');
+		$repository->repository = trim($repository->repository ?? '');
+
+		if (empty($repository->organisation) || empty($repository->repository))
+		{
+			return false;
+		}
+
+		$networkTarget ??= $this->getNetworkTarget();
+
+		$target = trim($repository->target ?? 'gitea');
+
+		// resolve API if a gitea (core) endpoint
+		if (!empty($repository->base) && $target === 'gitea')
+		{
+			$this->resolve->api($networkTarget ?? $repository->repository, $repository->base, $repository->organisation, $repository->repository);
+		}
+
+		// build the path
+		$repository->path = $repository->organisation . '/' . $repository->repository;
+
+		// get the branch field name
+		$branch_field = $this->getBranchField();
+
+		// get the branch name
+		$branch = $this->getBranchName($repository);
+
+		if ($branch === 'default' || empty($branch))
+		{
+			// will allow us to target the default branch as set by the git system
+			$repository->{$branch_field} = null;
+		}
+
+		// set local path
+		if ($this->path && is_dir($this->path . '/' . $repository->path))
+		{
+			$repository->full_path = $this->path . '/' . $repository->path;
+		}
+
+		$repository->grep_validated = true;
+
+		return true;
 	}
 
 	/**
@@ -634,8 +693,8 @@ abstract class Grep implements GrepInterface
 	/**
 	 * Search all repositories for an item
 	 *
-	 * @param string       $guid  The unique identifier for the item.
-	 * @param object      $repo  The repository object to check against.
+	 * @param string  $guid  The unique identifier for the item.
+	 * @param array  $order The order of the targets to check.
 	 *
 	 * @return object|null
 	 * @since  3.2.2
@@ -1033,7 +1092,7 @@ abstract class Grep implements GrepInterface
 	}
 
 	/**
-	 * Set path details
+	 * Update all path details and ensure they are valid
 	 *
 	 * @return void
 	 * @since  3.2.0
@@ -1045,38 +1104,7 @@ abstract class Grep implements GrepInterface
 			$network_target = $this->getNetworkTarget();
 			foreach ($this->paths as $n => &$path)
 			{
-				if (isset($path->organisation) && strlen($path->organisation) > 1 &&
-						isset($path->repository) && strlen($path->repository) > 1)
-				{
-					$target = $path->target ?? 'gitea';
-
-					// resolve API if a gitea (core) endpoint
-					if (!empty($path->base) && $target === 'gitea')
-					{
-						$this->resolve->api($network_target ?? $path->repository, $path->base, $path->organisation, $path->repository);
-					}
-
-					// build the path
-					$path->path = trim($path->organisation) . '/' . trim($path->repository);
-
-					// get the branch field name
-					$branch_field = $this->getBranchField();
-					// get the branch name
-					$branch = $this->getBranchName($path);
-
-					if ($branch === 'default' || empty($branch))
-					{
-						// will allow us to target the default branch as set by the git system
-						$path->{$branch_field} = null;
-					}
-
-					// set local path
-					if ($this->path && is_dir($this->path . '/' . $path->path))
-					{
-						$path->full_path = $this->path . '/' . $path->path;
-					}
-				}
-				else
+				if (!$this->validRepo($path, $network_target))
 				{
 					unset($this->paths[$n]);
 				}
@@ -1104,7 +1132,7 @@ abstract class Grep implements GrepInterface
 		catch (\Exception $e)
 		{
 			$this->app->enqueueMessage(
-				Text::sprintf('COM_COMPONENTBUILDER_PFILE_AT_BSSSSB_GAVE_THE_FOLLOWING_ERRORBR_SP', $this->contents->api(), $organisation, $repository, $path, $e->getMessage()),
+				sprintf('<p>File at <b>%s/%s/%s/%s</b> gave the following error!<br />%s</p>', $this->contents->api(), $organisation, $repository, $path, $e->getMessage()),
 				'Error'
 			);
 

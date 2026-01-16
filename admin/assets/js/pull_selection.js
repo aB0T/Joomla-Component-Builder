@@ -162,17 +162,6 @@ class PullManager {
 		}
 	}
 
-	_getPullFunctionName(area) {
-		const powers = [
-			'Joomla.Fieldtype',
-			'Joomla.Power',
-			'Repository',
-			'Power'
-		];
-
-		return powers.includes(area) ? 'pullSelectedPowers' : 'pullSelectedPackages';
-	}
-
 	async _handleRepoClick(event) {
 		const button = event.currentTarget;
 		const repo = button?.dataset?.repo;
@@ -244,7 +233,7 @@ class PullManager {
 		const area = this.currentArea || 'error';
 		const repo = this.currentRepo || 'error';
 
-		const func = this._getPullFunctionName(area);
+		const func = 'pullSelectedPackages';
 
 		try {
 			// Convert selected items to form data

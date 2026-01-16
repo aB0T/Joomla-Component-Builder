@@ -162,17 +162,6 @@ class InitializationManager {
 		}
 	}
 
-	_getInitFunctionName(area) {
-		const powers = [
-			'Joomla.Fieldtype',
-			'Joomla.Power',
-			'Repository',
-			'Power'
-		];
-
-		return powers.includes(area) ? 'initSelectedPowers' : 'initSelectedPackages';
-	}
-
 	async _handleRepoClick(event) {
 		const button = event.currentTarget;
 		const repo = button?.dataset?.repo;
@@ -244,7 +233,7 @@ class InitializationManager {
 		const area = this.currentArea || 'error';
 		const repo = this.currentRepo || 'error';
 
-		const func = this._getInitFunctionName(area);
+		const func = 'initSelectedPackages';
 
 		try {
 			// Convert selected items to form data

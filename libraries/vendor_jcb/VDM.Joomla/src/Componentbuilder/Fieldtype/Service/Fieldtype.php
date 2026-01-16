@@ -150,7 +150,7 @@ class Fieldtype implements ServiceProviderInterface
 			$container->get('Joomla.Fieldtype.Grep'),
 			$container->get('Data.Item'),
 			$container->get('Package.Tracker'),
-			$container->get('Package.Tracker')
+			$container->get('Package.Message')
 		);
 	}
 
@@ -172,7 +172,7 @@ class Fieldtype implements ServiceProviderInterface
 			$container->get('Joomla.Fieldtype.Readme.Main'),
 			$container->get('Git.Repository.Contents'),
 			$container->get('Package.Tracker'),
-			$container->get('Package.Tracker'),
+			$container->get('Package.Message'),
 			$container->get('Joomla.Fieldtype.Config')->approved_joomla_paths
 		);
 	}

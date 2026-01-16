@@ -17,6 +17,8 @@ use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Power\Table;
 use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
 use VDM\Joomla\Componentbuilder\Package\MessageBus;
+use VDM\Joomla\Componentbuilder\Package\Builder\Get;
+use VDM\Joomla\Componentbuilder\Package\Builder\Set;
 
 
 /**
@@ -44,6 +46,12 @@ class Power implements ServiceProviderInterface
 
 		$container->alias(MessageBus::class, 'Package.Message')
 			->share('Package.Message', [$this, 'getMessageBus'], true);
+
+		$container->alias(Set::class, 'Package.Builder.Set')
+			->share('Package.Builder.Set', [$this, 'getBuilderSet'], true);
+
+		$container->alias(Get::class, 'Package.Builder.Get')
+			->share('Package.Builder.Get', [$this, 'getBuilderGet'], true);
 	}
 
 	/**
@@ -83,6 +91,38 @@ class Power implements ServiceProviderInterface
 	public function getMessageBus(Container $container): MessageBus
 	{
 		return new MessageBus();
+	}
+
+	/**
+	 * Get The Builder Set Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Set
+	 * @since   5.1.1
+	 */
+	public function getBuilderSet(Container $container): Set
+	{
+		return new Set(
+			$container->get('Package.Tracker'),
+			$container,
+		);
+	}
+
+	/**
+	 * Get The Builder Get Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Get
+	 * @since   5.1.1
+	 */
+	public function getBuilderGet(Container $container): Get
+	{
+		return new Get(
+			$container->get('Package.Tracker'),
+			$container,
+		);
 	}
 }
 

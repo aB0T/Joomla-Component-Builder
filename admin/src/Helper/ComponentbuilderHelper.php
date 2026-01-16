@@ -5501,7 +5501,7 @@ abstract class ComponentbuilderHelper
 	/**
 	 *	Load the Component Help URLs.
 	 **/
-	public static function getHelpUrl($view)
+	public static function getHelpUrl(string $view)
 	{
 		$user	= Factory::getApplication()->getIdentity();
 		$groups = $user->get('groups');
@@ -5526,26 +5526,18 @@ abstract class ComponentbuilderHelper
 						$targetgroups = json_decode($help->groups, true);
 						if (!array_intersect($targetgroups, $groups))
 						{
-							// if user not in those target groups then remove the item
 							unset($helps[$nr]);
 							continue;
 						}
 					}
-					// set the return type
 					switch ($help->type)
 					{
-						// set joomla article
 						case 1:
 							return self::loadArticleLink($help->article);
-							break;
-						// set help text
 						case 2:
 							return self::loadHelpTextLink($help->id);
-							break;
-						// set Link
 						case 3:
 							return $help->url;
-							break;
 					}
 				}
 			}

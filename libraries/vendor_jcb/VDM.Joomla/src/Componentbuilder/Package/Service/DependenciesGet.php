@@ -25,7 +25,6 @@ use VDM\Joomla\Componentbuilder\Package\Remote\GetFile;
 use VDM\Joomla\Componentbuilder\Package\File\Remote\Config as File;
 use VDM\Joomla\Componentbuilder\Package\Remote\GetFolder;
 use VDM\Joomla\Componentbuilder\Package\Folder\Remote\Config as Folder;
-use VDM\Joomla\Componentbuilder\Utilities\Normalize;
 
 
 /**
@@ -68,8 +67,6 @@ class DependenciesGet implements ServiceProviderInterface
 		$container->share('Folder.Grep', [$this, 'getFolderGrep'], true);
 		$container->share('Folder.Remote.Config', [$this, 'getFolderRemoteConfig'], true);
 		$container->share('Folder.Remote.Get', [$this, 'getFolderRemoteGet'], true);
-
-		$container->share('Utilities.Normalize', [$this, 'getNormalize'], true);
 	}
 
 	/**
@@ -390,19 +387,6 @@ class DependenciesGet implements ServiceProviderInterface
 		return new Folder(
 			$container->get('Power.Table')
 		);
-	}
-
-	/**
-	 * Get The Normalize Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Normalize
-	 * @since   5.1.1
-	 */
-	public function getNormalize(Container $container): Normalize
-	{
-		return new Normalize();
 	}
 }
 

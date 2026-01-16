@@ -13,27 +13,34 @@ namespace VDM\Joomla\Componentbuilder\Package\Builder;
 
 
 use Joomla\DI\Container;
-use VDM\Joomla\Interfaces\Registryinterface as Entities;
 use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
+use VDM\Joomla\Componentbuilder\Factory;
 
 
 /**
- * Package Builder Get
+ * Get Remote entity orchestration and synchronization manager.
+ * 
+ * This class coordinates the retrieval, validation, categorization,
+ *    dependency resolution, and optional synchronization of entities,
+ *    files, and folders from remote repositories.
+ * 
+ * It acts as a **non-failing orchestration layer**:
+ * - All remote handlers are optional.
+ * - Missing services are silently ignored.
+ * - The DI container is treated as a capability registry, not a hard dependency.
+ * 
+ * At no point will this class throw due to missing container services.
+ * If a capability is unavailable, the operation is skipped and execution continues.
  * 
  * @since 5.1.1
  */
 class Get
 {
 	/**
-	 * The Entities Class.
+	 * The dependency tracker.
 	 *
-	 * @var   Entities
-	 * @since 5.1.1
-	 */
-	protected Entities $entities;
-
-	/**
-	 * The Tracker Class.
+	 * Tracks deferred entity, file, and folder dependencies
+	 * discovered during remote retrieval operations.
 	 *
 	 * @var   Tracker
 	 * @since 5.1.1
@@ -41,7 +48,10 @@ class Get
 	protected Tracker $tracker;
 
 	/**
-	 * The DI Container Class.
+	 * The Joomla dependency injection container.
+	 *
+	 * Used as a **capability lookup mechanism**.
+	 * All access is guarded with `has()` checks to prevent failures.
 	 *
 	 * @var   Container
 	 * @since 5.1.1
@@ -51,79 +61,89 @@ class Get
 	/**
 	 * Accumulated categorized results across recursive calls.
 	 *
+	 * Results are merged incrementally and preserved across:
+	 * - entity recursion
+	 * - dependency traversal
+	 * - file and folder resolution
+	 *
+	 * Structure:
+	 * - local     : Items already present locally
+	 * - not_found : Items unavailable locally and remotely
+	 * - added     : Items successfully retrieved and stored
+	 *
 	 * @var array<string, array<string, string>>
 	 * @since 5.1.1
 	 */
 	protected array $results = [
-		'local' => [],
+		'local'     => [],
 		'not_found' => [],
-		'added' => [],
+		'added'     => [],
 	];
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Entities   $entities   The Entities Class.
-	 * @param Tracker    $tracker    The Tracker Class.
-	 * @param Container  $container  The container Class.
+	 * @param Tracker    $tracker    The dependency tracker.
+	 * @param Container  $container  The Joomla DI container.
 	 *
 	 * @since 5.1.1
 	 */
-	public function __construct(Entities $entities, Tracker $tracker, Container $container)
+	public function __construct(Tracker $tracker, Container $container)
 	{
-		$this->entities = $entities;
-		$this->tracker = $tracker;
+		$this->tracker   = $tracker;
 		$this->container = $container;
 	}
 
 	/**
-	 * Initializes and categorizes items by checking their existence in the local database
-	 * and optionally retrieving them from a remote repository if not found locally.
+	 * Initializes and categorizes entity items by checking their existence
+	 * in the local database and optionally retrieving them from remote repositories.
 	 *
-	 * This method processes an array of unique identifiers (`$items`) and checks each item:
-	 * - If found in the local database: categorized under 'local'.
-	 * - If not found locally and not available remotely: categorized under 'not_found'.
-	 * - If retrieved from the remote repository: categorized under 'added' and stored locally.
+	 * This method performs the following steps:
+	 * - Resolves the entity area.
+	 * - Executes the entity-specific remote handler if available.
+	 * - Merges returned results.
+	 * - Recursively processes tracked entity dependencies.
+	 * - Processes queued file and folder retrievals.
 	 *
-	 * @param string       $entity  The target entity
-	 * @param array        $items   An array of item identifiers (GUIDs) to initialize and validate.
-	 * @param object|null  $repo    The repository object to search. If null, all repos will be searched.
-	 * @param bool         $force   Force a local update (if item exist locally).
+	 * If the entity has no registered remote handler,
+	 * this method becomes a no-op and simply returns the current results.
+	 *
+	 * @param string       $entity  The target entity.
+	 * @param array        $items   An array of item identifiers (GUIDs).
+	 * @param object|null  $repo    The repository object (optional).
+	 * @param bool         $force   Force a local update if items exist.
 	 *
 	 * @return array{
 	 *     local: array<string, string>,
 	 *     not_found: array<string, string>,
 	 *     added: array<string, string>
-	 * } Associative arrays indexed by GUIDs indicating the status of each item:
-	 * - 'local': Items already present in the local database.
-	 * - 'not_found': Items not found locally or remotely.
-	 * - 'added': Items successfully retrieved from the remote repository and stored.
+	 * }
 	 *
-	 * @since  5.1.1
+	 * @since 5.1.1
 	 */
 	public function init(string $entity, array $items, ?object $repo = null, bool $force = false): array
 	{
-		if (($class = $this->entities->get($entity)) === null)
+		if ($items === [] || ($area = Factory::getArea($entity)) === null)
 		{
 			return $this->results;
 		}
 
-		$result = $this->container->get("{$class}.Remote.Get")->init($items, $repo, $force);
+		$service = "{$area}.Remote.Get";
 
-		foreach (['local', 'not_found', 'added'] as $key)
+		if ($this->container->has($service))
 		{
-			if (!empty($result[$key]))
-			{
-				$this->results[$key] += $result[$key];
-			}
+			$this->mergeResults(
+				$this->container->get($service)->init($items, $repo, $force)
+			);
 		}
 
 		while (($dependencies = $this->tracker->get('get')) !== null)
 		{
 			$this->tracker->remove('get');
-			foreach ($dependencies as $next_entity => $next_items)
+
+			foreach ($dependencies as $nextEntity => $nextItems)
 			{
-				$this->init($next_entity, $this->getGuids($next_items), $repo, $force);
+				$this->init($nextEntity, $this->getGuids($nextItems), $repo, $force);
 			}
 		}
 
@@ -143,67 +163,108 @@ class Get
 	}
 
 	/**
-	 * Initialize and categorize entity items by validating GUIDs, resolving aliases,
-	 * and synchronizing missing items from remote repositories.
+	 * Validate any repository
 	 *
-	 * This method performs the following steps:
-	 * - Resolves and validates the provided item identifiers into valid GUIDs
-	 *   (including alias-to-GUID resolution where applicable).
-	 * - Checks each resolved GUID against the local database.
-	 * - Categorizes items as:
-	 *   - 'local'     : Already present locally.
-	 *   - 'not_found' : Not found locally and unavailable remotely.
-	 *   - 'added'     : Retrieved from a remote repository and stored locally.
-	 * - Recursively processes tracked entity dependencies.
-	 * - Processes any queued file and folder retrieval operations.
+	 * @param string  $entity       The target entity.
+	 * @param object  $repository   The target repository object.
 	 *
-	 * Invalid, empty, or unresolvable identifiers are silently ignored during
-	 * the GUID resolution phase.
+	 * @return bool   True if valid path
 	 *
-	 * @param  string  $entity  The target entity name.
-	 * @param  array   $items   An array of item identifiers (GUIDs or resolvable values).
+	 * @since 5.1.4
+	 */
+	public function validRepo(string $entity, object $repository): bool
+	{
+		if (($area = Factory::getArea($entity)) === null)
+		{
+			return false;
+		}
+
+		$service = "{$area}.Grep";
+
+		if (!$this->container->has($service))
+		{
+			return false;
+		}
+
+		return $this->container->get($service)->validRepo($repository);
+	}
+
+	/**
+	 * Resolve and normalize entity identifiers into valid GUIDs.
+	 *
+	 * Delegates identifier resolution to the entity-specific Grep service.
+	 *
+	 * If the Grep service is not available for the entity,
+	 * an empty array is returned and no resolution occurs.
+	 *
+	 * @param string  $entity  The target entity.
+	 * @param array   $items   Raw item identifiers.
+	 *
+	 * @return array<string>  Valid resolved identifiers.
+	 *
+	 * @since 5.1.4
+	 */
+	public function getValidGuids(string $entity, array $items): array
+	{
+		if ($items === [] || ($area = Factory::getArea($entity)) === null)
+		{
+			return [];
+		}
+
+		$service = "{$area}.Grep";
+
+		if (!$this->container->has($service))
+		{
+			return [];
+		}
+
+		return $this->container->get($service)->getValidGuids($items);
+	}
+
+	/**
+	 * Retrieve entities without repository or force options.
+	 *
+	 * This is a simplified retrieval pathway that:
+	 * - Resolves valid GUIDs
+	 * - Executes the remote handler if available
+	 * - Recursively processes dependencies
+	 *
+	 * @param string  $entity  The target entity.
+	 * @param array   $items   Item identifiers.
 	 *
 	 * @return array{
 	 *     local: array<string, string>,
 	 *     not_found: array<string, string>,
 	 *     added: array<string, string>
-	 * } Aggregated results indexed by resolved GUIDs:
-	 * - 'local'     : Items already present in the local database.
-	 * - 'not_found' : Items not found locally or remotely.
-	 * - 'added'     : Items successfully retrieved from a remote repository and stored.
+	 * }
 	 *
-	 * @since  5.1.4
+	 * @since 5.1.4
 	 */
 	public function get(string $entity, array $items): array
 	{
-		if (($class = $this->entities->get($entity)) === null)
+		$items = $this->getValidGuids($entity, $items);
+
+		if ($items === [] || ($area = Factory::getArea($entity)) === null)
 		{
 			return $this->results;
 		}
 
-		$items = $this->container->get("{$class}.Grep")->getValidGuids($items);
+		$service = "{$area}.Remote.Get";
 
-		if ($items === [])
+		if ($this->container->has($service))
 		{
-			return $this->results;
-		}
-
-		$result = $this->container->get("{$class}.Remote.Get")->init($items);
-
-		foreach (['local', 'not_found', 'added'] as $key)
-		{
-			if (!empty($result[$key]))
-			{
-				$this->results[$key] += $result[$key];
-			}
+			$this->mergeResults(
+				$this->container->get($service)->init($items)
+			);
 		}
 
 		while (($dependencies = $this->tracker->get('get')) !== null)
 		{
 			$this->tracker->remove('get');
-			foreach ($dependencies as $next_entity => $next_items)
+
+			foreach ($dependencies as $nextEntity => $nextItems)
 			{
-				$this->get($next_entity, $this->getGuids($next_items));
+				$this->get($nextEntity, $this->getGuids($nextItems));
 			}
 		}
 
@@ -223,87 +284,142 @@ class Get
 	}
 
 	/**
-	 * Reset the items
+	 * Reset entities and their direct dependencies.
 	 *
-	 * @param string  $entity   The target entity
-	 * @param array   $items    The global unique ids of the items
+	 * Only direct child entities are reset.
+	 * File and folder resets are executed if the respective services exist.
+	 *
+	 * @param string  $entity  The target entity.
+	 * @param array   $items   Entity GUIDs.
 	 *
 	 * @return void
-	 * @since  5.1.1
+	 * @since 5.1.1
 	 */
 	public function reset(string $entity, array $items): void
 	{
-		if (($class = $this->entities->get($entity)) === null)
+		if ($items === [] || ($area = Factory::getArea($entity)) === null)
 		{
 			return;
 		}
 
-		$this->container->get("{$class}.Remote.Get")->reset($items);
+		$service = "{$area}.Remote.Get";
+
+		if ($this->container->has($service))
+		{
+			$this->container->get($service)->reset($items);
+		}
 
 		while (($dependencies = $this->tracker->get('get')) !== null)
 		{
 			$this->tracker->remove('get');
-			foreach ($dependencies as $next_entity => $next_items)
+
+			foreach ($dependencies as $nextEntity => $nextItems)
 			{
-				// we only reset direct children entities (in reset)
-				$active = $this->getDirectChildrenGuids($next_items);
+				$active = $this->getDirectChildrenGuids($nextItems);
+
 				if ($active !== [])
 				{
-					$this->reset($next_entity, $active);
+					$this->reset($nextEntity, $active);
 				}
 			}
 		}
 
-		while (($files = $this->tracker->get('file.get')) !== null)
-		{
-			$this->tracker->remove('file.get');
-			$this->container->get("File.Remote.Get")->reset($files);
-		}
-
-		while (($folders = $this->tracker->get('folder.get')) !== null)
-		{
-			$this->tracker->remove('folder.get');
-			$this->container->get("Folder.Remote.Get")->reset($folders);
-		}
+		$this->resetAssets('File.Remote.Get', 'file.get');
+		$this->resetAssets('Folder.Remote.Get', 'folder.get');
 	}
 
 	/**
-	 * Fetch the files from the remote system.
+	 * Fetch files from remote repositories.
 	 *
-	 * @param array        $files   The files.
-	 * @param object|null  $repo    The repository object to search. If null, all repos will be searched.
-	 * @param bool         $force   Force a local update (if item exist locally).
+	 * If the file handler is not registered,
+	 * the method silently returns without side effects.
+	 *
+	 * @param array        $files
+	 * @param object|null  $repo
+	 * @param bool         $force
 	 *
 	 * @return void
-	 * @since  5.1.1
+	 * @since 5.1.1
 	 */
 	protected function file(array $files, ?object $repo = null, bool $force = false): void
 	{
-		$result = $this->container->get("File.Remote.Get")->init($files, $repo, $force);
-
-		foreach (['local', 'not_found', 'added'] as $key)
-		{
-			if (!empty($result[$key]))
-			{
-				$this->results[$key] += $result[$key];
-			}
-		}
+		$this->fetchAssets('File.Remote.Get', $files, $repo, $force);
 	}
 
 	/**
-	 * Fetch the folders from the remote system.
+	 * Fetch folders from remote repositories.
 	 *
-	 * @param array        $folders The folders.
-	 * @param object|null  $repo    The repository object to search. If null, all repos will be searched.
-	 * @param bool         $force   Force a local update (if item exist locally).
+	 * If the folder handler is not registered,
+	 * the method silently returns without side effects.
+	 *
+	 * @param array        $folders
+	 * @param object|null  $repo
+	 * @param bool         $force
 	 *
 	 * @return void
-	 * @since  5.1.1
+	 * @since 5.1.1
 	 */
 	protected function folder(array $folders, ?object $repo = null, bool $force = false): void
 	{
-		$result = $this->container->get("Folder.Remote.Get")->init($folders, $repo, $force);
+		$this->fetchAssets('Folder.Remote.Get', $folders, $repo, $force);
+	}
 
+	/**
+	 * Shared asset fetch implementation for files and folders.
+	 *
+	 * @param string       $service
+	 * @param array        $items
+	 * @param object|null  $repo
+	 * @param bool         $force
+	 *
+	 * @return void
+	 * @since  5.1.4
+	 */
+	private function fetchAssets(string $service, array $items, ?object $repo, bool $force): void
+	{
+		if (!$this->container->has($service))
+		{
+			return;
+		}
+
+		$this->mergeResults(
+			$this->container->get($service)->init($items, $repo, $force)
+		);
+	}
+
+	/**
+	 * Reset asset handlers (files or folders).
+	 *
+	 * @param string  $service
+	 * @param string  $trackerKey
+	 *
+	 * @return void
+	 * @since  5.1.4
+	 */
+	private function resetAssets(string $service, string $trackerKey): void
+	{
+		if (!$this->container->has($service))
+		{
+			return;
+		}
+
+		while (($items = $this->tracker->get($trackerKey)) !== null)
+		{
+			$this->tracker->remove($trackerKey);
+			$this->container->get($service)->reset($items);
+		}
+	}
+
+	/**
+	 * Merge categorized results into the internal result set.
+	 *
+	 * @param array  $result
+	 *
+	 * @return void
+	 * @since  5.1.4
+	 */
+	private function mergeResults(array $result): void
+	{
 		foreach (['local', 'not_found', 'added'] as $key)
 		{
 			if (!empty($result[$key]))
@@ -314,15 +430,12 @@ class Get
 	}
 
 	/**
-	 * Extract only the `value` property from an array of arrays or objects.
+	 * Extract inbound (child) GUIDs from dependency metadata.
 	 *
-	 * This method supports mixed input types (arrays or objects)
-	 * and will extract the `value` from each entity as long as it is not empty.
+	 * @param array  $entities
 	 *
-	 * @param array $entities  The entities keyed by GUID.
-	 *
-	 * @return array  An indexed array of extracted `value` strings.
-	 * @since 5.1.1
+	 * @return array
+	 * @since  5.1.1
 	 */
 	protected function getDirectChildrenGuids(array $entities): array
 	{
@@ -351,15 +464,12 @@ class Get
 	}
 
 	/**
-	 * Extract only the `value` property from an array of arrays or objects.
+	 * Extract GUID values from mixed entity structures.
 	 *
-	 * This method supports mixed input types (arrays or objects)
-	 * and will extract the `value` from each entity as long as it is not empty.
+	 * @param array  $entities
 	 *
-	 * @param array $entities  The entities keyed by GUID.
-	 *
-	 * @return array  An indexed array of extracted `value` strings.
-	 * @since 5.1.1
+	 * @return array
+	 * @since  5.1.1
 	 */
 	protected function getGuids(array $entities): array
 	{

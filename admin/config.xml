@@ -254,12 +254,12 @@
 		</field>
 		<!-- Spacer_hr_3 Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_3" hr="true" class="spacer_hr_3" />
-		<!-- Api Field. Type: User. (joomla) -->
+		<!-- Cli_user Field. Type: User. (joomla) -->
 		<field
 			type="user"
-			name="api"
-			label="COM_COMPONENTBUILDER_CONFIG_API_LABEL"
-			description="COM_COMPONENTBUILDER_CONFIG_API_DESCRIPTION"
+			name="cli_user"
+			label="COM_COMPONENTBUILDER_CONFIG_CLI_USER_LABEL"
+			description="COM_COMPONENTBUILDER_CONFIG_CLI_USER_DESCRIPTION"
 		/>
 		<!-- Spacer_hr_4 Field. Type: Spacer. A None Database Field. (joomla) -->
 		<field type="spacer" name="spacer_hr_4" hr="true" class="spacer_hr_4" />

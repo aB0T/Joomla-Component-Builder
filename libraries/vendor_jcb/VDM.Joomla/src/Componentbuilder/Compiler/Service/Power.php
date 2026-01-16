@@ -28,6 +28,7 @@ use VDM\Joomla\Componentbuilder\Power\Readme\Item as ItemReadme;
 use VDM\Joomla\Componentbuilder\Power\Readme\Main as MainReadme;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Extractor;
 use VDM\Joomla\Componentbuilder\Compiler\Power\Injector;
+use VDM\Joomla\Componentbuilder\Compiler\Joomla\Path;
 
 
 /**
@@ -88,6 +89,9 @@ class Power implements ServiceProviderInterface
 
 		$container->alias(Injector::class, 'Power.Injector')
 			->share('Power.Injector', [$this, 'getInjector'], true);
+
+		$container->alias(Path::class, 'Joomla.Path')
+			->share('Joomla.Path', [$this, 'getJoomlaPath'], true);
 	}
 
 	/**
@@ -105,6 +109,8 @@ class Power implements ServiceProviderInterface
 			$container->get('Placeholder'),
 			$container->get('Customcode'),
 			$container->get('Customcode.Gui'),
+			$container->get('Joomla.Path'),
+			$container->get('Joomla.Database'),
 			$container->get('Power.Remote.Get')
 		);
 	}
@@ -322,6 +328,21 @@ class Power implements ServiceProviderInterface
 			$container->get('Power'),
 			$container->get('Power.Extractor'),
 			$container->get('Power.Parser'),
+			$container->get('Placeholder')
+		);
+	}
+
+	/**
+	 * Get The Joomla Path Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return Path
+	 * @since  5.1.4
+	 */
+	public function getJoomlaPath(Container $container): Path
+	{
+		return new Path(
 			$container->get('Placeholder')
 		);
 	}

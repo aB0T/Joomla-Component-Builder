@@ -14,7 +14,6 @@ namespace VDM\Joomla\Componentbuilder\Compiler\Service;
 
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use VDM\Joomla\Componentbuilder\Compiler\Config;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\Folder;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\File;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FileInjector;
@@ -31,6 +30,8 @@ use VDM\Joomla\Componentbuilder\Utilities\Constantpaths;
 use VDM\Joomla\Componentbuilder\Utilities\Uri;
 use VDM\Joomla\Componentbuilder\Utilities\Http;
 use VDM\Joomla\Componentbuilder\Utilities\Response;
+use VDM\Joomla\Componentbuilder\File\Image;
+use VDM\Joomla\Componentbuilder\Utilities\Normalize;
 
 
 /**
@@ -97,6 +98,12 @@ class Utilities implements ServiceProviderInterface
 
 		$container->alias(Response::class, 'Utilities.Response')
 			->share('Utilities.Response', [$this, 'getResponse'], true);
+
+		$container->alias(Image::class, 'Utilities.Image')
+			->share('Utilities.Image', [$this, 'getImage'], true);
+
+		$container->alias(Normalize::class, 'Utilities.Normalize')
+			->share('Utilities.Normalize', [$this, 'getNormalize'], true);
 	}
 
 	/**
@@ -336,6 +343,32 @@ class Utilities implements ServiceProviderInterface
 	public function getResponse(Container $container): Response
 	{
 		return new Response();
+	}
+
+	/**
+	 * Get The Image Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Image
+	 * @since   5.1.4
+	 */
+	public function getImage(Container $container): Image
+	{
+		return new Image();
+	}
+
+	/**
+	 * Get The Normalize Class.
+	 *
+	 * @param   Container  $container  The DI container.
+	 *
+	 * @return  Normalize
+	 * @since   5.1.1
+	 */
+	public function getNormalize(Container $container): Normalize
+	{
+		return new Normalize();
 	}
 }
 

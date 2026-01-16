@@ -16,7 +16,6 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use VDM\Joomla\Componentbuilder\Package\Dependency\Tracker;
 use VDM\Joomla\Componentbuilder\Package\MessageBus;
-use VDM\Joomla\Componentbuilder\Package\Builder\Entities;
 use VDM\Joomla\Componentbuilder\Package\Builder\Get;
 
 
@@ -42,9 +41,6 @@ class Package implements ServiceProviderInterface
 
 		$container->alias(MessageBus::class, 'Package.Message')
 			->share('Package.Message', [$this, 'getMessageBus'], true);
-
-		$container->alias(Entities::class, 'Package.Entities')
-			->share('Package.Entities', [$this, 'getEntities'], true);
 
 		$container->alias(Get::class, 'Package.Get')
 			->share('Package.Get', [$this, 'getPackageGet'], true);
@@ -87,23 +83,9 @@ class Package implements ServiceProviderInterface
 	public function getPackageGet(Container $container): Get
 	{
 		return new Get(
-			$container->get('Package.Entities'),
 			$container->get('Package.Tracker'),
 			$container
 		);
-	}
-
-	/**
-	 * Get The Entities Class.
-	 *
-	 * @param   Container  $container  The DI container.
-	 *
-	 * @return  Entities
-	 * @since   5.1.4
-	 */
-	public function getEntities(Container $container): Entities
-	{
-		return new Entities();
 	}
 }
 

@@ -60,11 +60,10 @@ abstract class Set extends Package
 	 * Get the main super power SET class
 	 *
 	 * @return Superpower
+	 * @since  5.1.4
 	 *
 	 * @throws \InvalidArgumentException  If the entity is missing or its factory cannot be resolved.
 	 * @throws \RuntimeException          If required services cannot be created from the factory.
-	 *
-	 * @since  5.1.4
 	 */
 	protected function set(): Superpower
 	{

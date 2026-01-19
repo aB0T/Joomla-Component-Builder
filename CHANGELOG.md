@@ -1,11 +1,8 @@
-# v6.1.4-beta5
+# v6.1.4-beta6
 
-- Refactor the Compiler to remove deprecated code paths and legacy classes that are no longer maintained.
-- Add new Compiler Classes to modernise ancient tech previously embedded in the compiler and replace it with a clean, modern architecture.
-- Add a dedicated CLI plugin to the JCB core, enabling direct interaction with JCB through the Joomla CLI console.
-- Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.
-- Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.
-- Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.
+- Add functionality to the CLI compiler to directly install compiled components and apply compiler options used during compilation.
+- Add functionality to the compiler to automatically pull a missing component from a remote repository when a compilation is triggered and the component is not locally available.
+- Add functionality to add and replace classes in module and plugin src folders that are linked to a component, when using correct namespace resolution.
 
 # v6.1.4-beta
 
@@ -26,6 +23,12 @@
 - Add functionality to the compiler to automatically pull missing entities from a remote repository when they are referenced by a component but not present locally in JCB.
 - Refactor the Packaging Engine into separate set and get classes to improve separation of concerns, readability, and overall maintainability.
 - Refactor and restructure the demo console item import plugin to improve usability, maintainability, and reusability across other areas of JCB.
+- Refactor the Compiler to remove deprecated code paths and legacy classes that are no longer maintained.
+- Add new Compiler Classes to modernise ancient tech previously embedded in the compiler and replace it with a clean, modern architecture.
+- Add a dedicated CLI plugin to the JCB core, enabling direct interaction with JCB through the Joomla CLI console.
+- Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.
+- Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.
+- Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.
 
 # v6.1.4-alpha
 

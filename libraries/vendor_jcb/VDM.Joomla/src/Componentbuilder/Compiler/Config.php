@@ -14,6 +14,7 @@ namespace VDM\Joomla\Componentbuilder\Compiler;
 
 use Joomla\Registry\Registry as JoomlaRegistry;
 use Joomla\CMS\Factory as JoomlaFactory;
+use Joomla\CMS\Version;
 use Joomla\Input\Input;
 use VDM\Joomla\Utilities\GetHelper;
 use VDM\Joomla\Utilities\StringHelper;
@@ -406,7 +407,7 @@ class Config extends ComponentConfig
 	 */
 	protected function getJoomlaversion(): int
 	{
-		return $this->input->post->get('joomla_version', 5, 'INT');
+		return $this->input->post->get('joomla_version', Version::MAJOR_VERSION, 'INT');
 	}
 
 	/**

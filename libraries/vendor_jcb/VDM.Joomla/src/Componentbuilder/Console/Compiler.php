@@ -14,11 +14,15 @@ namespace VDM\Joomla\Componentbuilder\Console;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Installer\InstallerHelper;
+use Joomla\CMS\Version;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use VDM\Joomla\Componentbuilder\Compiler\Factory as JCB;
+use VDM\Joomla\Interfaces\Data\ItemInterface as Item;
 use VDM\Joomla\Utilities\Component\Helper;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Abstraction\Console;
@@ -46,7 +50,7 @@ final class Compiler extends Console
 	 * @var   string
 	 * @since 5.1.4
 	 */
-	protected const COMPONENT_OPTION = 'com_componentbuilder';
+	private const COMPONENT_OPTION = 'com_componentbuilder';
 
 	/**
 	 * Environment variable for a single component GUID.
@@ -54,7 +58,7 @@ final class Compiler extends Console
 	 * @var   string
 	 * @since 5.1.4
 	 */
-	protected const ENV_COMPONENT = 'JCB_COMPILE_COMPONENT';
+	private const ENV_COMPONENT = 'JCB_COMPILE_COMPONENT';
 
 	/**
 	 * Environment variable for components list (CSV/newlines/JSON).
@@ -62,7 +66,7 @@ final class Compiler extends Console
 	 * @var   string
 	 * @since 5.1.4
 	 */
-	protected const ENV_COMPONENTS = 'JCB_COMPILE_COMPONENTS';
+	private const ENV_COMPONENTS = 'JCB_COMPILE_COMPONENTS';
 
 	/**
 	 * Environment variable for components file path.
@@ -70,7 +74,7 @@ final class Compiler extends Console
 	 * @var   string
 	 * @since 5.1.4
 	 */
-	protected const ENV_COMPONENTS_FILE = 'JCB_COMPILE_COMPONENTS_FILE';
+	private const ENV_COMPONENTS_FILE = 'JCB_COMPILE_COMPONENTS_FILE';
 
 	/**
 	 * Environment variable for options bundle (JSON or @file).
@@ -78,7 +82,15 @@ final class Compiler extends Console
 	 * @var   string
 	 * @since 5.1.4
 	 */
-	protected const ENV_OPTIONS = 'JCB_COMPILER_OPTIONS';
+	private const ENV_OPTIONS = 'JCB_COMPILER_OPTIONS';
+
+	/**
+	 * Environment variable to trigger auto install of compiled extentions.
+	 *
+	 * @var   string
+	 * @since 5.1.4
+	 */
+	private const ENV_INSTALL = 'JCB_COMPILE_INSTALL';
 
 	/**
 	 * Per-option environment prefix (e.g. JCB_BACKUP=1).
@@ -86,7 +98,7 @@ final class Compiler extends Console
 	 * @var   string
 	 * @since 5.1.4
 	 */
-	protected const ENV_PREFIX = 'JCB_';
+	private const ENV_PREFIX = 'JCB_';
 
 	/**
 	 * The SymfonyStyle IO helper (HUMAN OUTPUT -> STDERR).
@@ -94,15 +106,22 @@ final class Compiler extends Console
 	 * @var   SymfonyStyle
 	 * @since 5.1.4
 	 */
-	protected SymfonyStyle $io;
+	private SymfonyStyle $ioStyle;
 
+	/**
+	 * Stores the Input Object
+	 * @var InputInterface
+	 * @since 4.0.0
+	 */
+	private $cliInput;
+    
 	/**
 	 * STDOUT stream (MACHINE OUTPUT).
 	 *
 	 * @var   OutputInterface
 	 * @since 5.1.4
 	 */
-	protected OutputInterface $stdout;
+	private OutputInterface $stdout;
 
 	/**
 	 * STDERR stream (HUMAN OUTPUT).
@@ -110,7 +129,7 @@ final class Compiler extends Console
 	 * @var   OutputInterface
 	 * @since 5.1.4
 	 */
-	protected OutputInterface $stderr;
+	private OutputInterface $stderr;
 
 	/**
 	 * The messages.
@@ -118,7 +137,7 @@ final class Compiler extends Console
 	 * @var   array<int, string>
 	 * @since 5.1.4
 	 */
-	protected array $messages = [];
+	private array $messages = [];
 
 	/**
 	 * Collected machine-output paths.
@@ -126,16 +145,33 @@ final class Compiler extends Console
 	 * @var   array<int, string>
 	 * @since 5.1.4
 	 */
-	protected array $outputPaths = [];
+	private array $outputPaths = [];
+
+	/**
+	 * Auto install switch
+	 *
+	 * @var     bool
+	 * @since 5.1.4
+	 */
+	private bool $autoInstall;
+
+	/**
+	 * The Item class
+	 *
+	 * @var     Item
+	 * @since 5.1.4
+	 */
+	private Item $item;
 
 	/**
 	 * Command constructor.
 	 *
 	 * @param  string  $name  The full command name (e.g. component:compile)
+	 * @param  Item    $item  The power item that can get and set items locally and remotely.
 	 *
 	 * @since  5.1.4
 	 */
-	public function __construct(string $name)
+	public function __construct(string $name, Item $item)
 	{
 		if ($name === '')
 		{
@@ -148,6 +184,9 @@ final class Compiler extends Console
 		// Load administrator language file for backend
 		$lang = Factory::getApplication()->getLanguage();
 		$lang->load(static::COMPONENT_OPTION, JPATH_ADMINISTRATOR);
+
+		// load the item class
+		$this->item = $item;
 
 		parent::__construct($name);
 
@@ -172,9 +211,10 @@ final class Compiler extends Console
 	{
 		$this->stdout ??= $output;
 		$this->stderr ??= $output->getErrorOutput();
+		$this->cliInput = $input;
 
 		// SymfonyStyle must NEVER write to STDOUT
-		$this->io ??= new SymfonyStyle($input, $this->stderr);
+		$this->ioStyle ??= new SymfonyStyle($input, $this->stderr);
 	}
 
 	/**
@@ -209,6 +249,7 @@ Environment fallbacks:
   JCB_COMPILE_COMPONENTS
   JCB_COMPILE_COMPONENTS_FILE
   JCB_COMPILER_OPTIONS
+  JCB_COMPILE_INSTALL
 
 Per-option environment variables:
   JCB_BACKUP
@@ -218,7 +259,6 @@ Per-option environment variables:
   JCB_MINIFY
   JCB_POWERS
   JCB_JOOMLA_VERSION
-  JCB_SHOW_ADVANCED_OPTIONS
   JCB_POWERS_REPOSITORY
   JCB_INDENTATION_VALUE
   JCB_ADD_BUILD_DATE
@@ -265,52 +305,81 @@ EOF
 	 */
 	protected function addSharedOptions(): void
 	{
-		$this->addOption('backup', null, InputOption::VALUE_OPTIONAL,
-			'Add compiled package to backup and sales server. Values: 1=yes, 0=no.'
+		$this->addOption(
+			'backup',
+			'b',
+			InputOption::VALUE_NONE,
+			'Add compiled package to backup and sales server. ENV fallback: JCB_BACKUP'
 		);
 
-		$this->addOption('repository', null, InputOption::VALUE_OPTIONAL,
-			'Move compiled component to local repository folder. Values: 1=yes, 0=no.'
+		$this->addOption(
+			'repository',
+			'r',
+			InputOption::VALUE_NONE,
+			'Move compiled component to local repository folder. ENV fallback: JCB_REPOSITORY'
 		);
 
-		$this->addOption('add-placeholders', null, InputOption::VALUE_OPTIONAL,
-			'Insert custom code placeholders. Values: 2=global, 1=yes, 0=no.'
+		$this->addOption(
+			'add-placeholders',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'Insert custom code placeholders. Values: 2=global, 1=yes, 0=no. ENV fallback: JCB_ADD_PLACEHOLDERS'
 		);
 
-		$this->addOption('debug-line-nr', null, InputOption::VALUE_OPTIONAL,
-			'Add compiler debug line numbers. Values: 2=global, 1=yes, 0=no.'
+		$this->addOption(
+			'debug-line-nr',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'Add compiler debug line numbers. Values: 2=global, 1=yes, 0=no. ENV fallback: JCB_DEBUG_LINE_NR'
 		);
 
-		$this->addOption('minify', null, InputOption::VALUE_OPTIONAL,
-			'Minify JavaScript output. Values: 2=global, 1=yes, 0=no.'
+		$this->addOption(
+			'minify',
+			'm',
+			InputOption::VALUE_OPTIONAL,
+			'Minify JavaScript output. Values: 2=global, 1=yes, 0=no. ENV fallback: JCB_MINIFY'
 		);
 
-		$this->addOption('powers', null, InputOption::VALUE_OPTIONAL,
-			'Add powers linked to the component. Values: 2=global, 1=yes, 0=no.'
+		$this->addOption(
+			'powers',
+			'p',
+			InputOption::VALUE_OPTIONAL,
+			'Add powers linked to the component. Values: 2=global, 1=yes, 0=no. ENV fallback: JCB_POWERS'
 		);
 
-		$this->addOption('joomla-version', null, InputOption::VALUE_OPTIONAL,
-			'Target Joomla version. Allowed: 3, 4, 5, 6.'
+		$this->addOption(
+			'joomla-version',
+			'j',
+			InputOption::VALUE_OPTIONAL,
+			'Target Joomla version. Allowed: 3, 4, 5, 6 (default: ' . Version::MAJOR_VERSION . '). ENV fallback: JCB_JOOMLA_VERSION'
 		);
 
-		$this->addOption('show-advanced-options', null, InputOption::VALUE_OPTIONAL,
-			'Enable advanced compiler options. Values: 1=yes, 0=no.'
+		$this->addOption(
+			'powers-repository',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'Activate Super Powers repository sync. Values: 2=global, 1=yes, 0=no. ENV fallback: JCB_POWERS_REPOSITORY'
 		);
 
-		$this->addOption('powers-repository', null, InputOption::VALUE_OPTIONAL,
-			'Activate Super Powers repository sync. Values: 2=global, 1=yes, 0=no.'
+		$this->addOption(
+			'indentation-value',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'Indentation style. Values: 1=tab, 2=two spaces, 4=four spaces. ENV fallback: JCB_INDENTATION_VALUE'
 		);
 
-		$this->addOption('indentation-value', null, InputOption::VALUE_OPTIONAL,
-			'Indentation style. Values: 1=tab, 2=two spaces, 4=four spaces.'
+		$this->addOption(
+			'add-build-date',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'Build date mode. Values: 1=default, 2=manual, 3=component. ENV fallback: JCB_ADD_BUILD_DATE'
 		);
 
-		$this->addOption('add-build-date', null, InputOption::VALUE_OPTIONAL,
-			'Build date mode. Values: 1=default, 2=manual, 3=component.'
-		);
-
-		$this->addOption('build-date', null, InputOption::VALUE_OPTIONAL,
-			'Manual build date (YYYY-MM-DD). Used when --add-build-date=2.'
+		$this->addOption(
+			'build-date',
+			'd',
+			InputOption::VALUE_OPTIONAL,
+			'Manual build date (YYYY-MM-DD). ENV fallback: JCB_BUILD_DATE'
 		);
 
 		// Options bundle (JSON or @file)
@@ -319,6 +388,14 @@ EOF
 			'o',
 			InputOption::VALUE_OPTIONAL,
 			'Compiler options as JSON or @/path/to/file (merged; explicit CLI flags override). ENV fallback: ' . static::ENV_OPTIONS
+		);
+
+		// Options auto install
+		$this->addOption(
+			'install',
+			'i',
+			InputOption::VALUE_NONE,
+			'Auto install the extension that are compiled. ENV fallback: ' . static::ENV_INSTALL
 		);
 	}
 
@@ -336,33 +413,32 @@ EOF
 		try
 		{
 			$this->initialize($input, $output);
-			$status = (int) $this->doExecuteAction($input);
+			$status = (int) $this->doExecuteAction();
 		}
 		catch (\InvalidArgumentException $e)
 		{
-			$this->io->error($e->getMessage());
+			$this->ioStyle->error($e->getMessage());
 			return 1;
 		}
 		catch (\Throwable $e)
 		{
-			$this->io->error('An unexpected error occurred.');
-			$this->io->writeln($e->getMessage());
+			$this->ioStyle->error('An unexpected error occurred.');
+			$this->ioStyle->writeln($e->getMessage());
 			return 2;
 		}
 
 		// Flush human messages
-		$appOut = $this->renderApplicationMessages();
 		$busOut = $this->renderMessageBus();
 
-		if (!$busOut && !$appOut && $status === 0)
+		if (!$busOut && $status === 0)
 		{
-			$this->io->success('Task completed with no additional messages.');
+			$this->ioStyle->success('Task completed with no additional messages.');
 		}
 
-		// Emit MACHINE output LAST (STDOUT)
+		// Install if compiler was without errors
 		if ($status === 0)
 		{
-			// $this->emitMachineOutput();
+			return $this->installExtensions();
 		}
 
 		return (int) $status;
@@ -371,14 +447,12 @@ EOF
 	/**
 	 * Action-specific compiler logic.
 	 *
-	 * @param   InputInterface   $input
-	 *
 	 * @return  int
 	 * @since   5.1.4
 	 */
-	protected function doExecuteAction(InputInterface $input): int
+	protected function doExecuteAction(): int
 	{
-		$components = $this->resolveComponents($input);
+		$components = $this->resolveComponents();
 
 		if ($components === [])
 		{
@@ -390,7 +464,7 @@ EOF
 		LayoutHelper::$defaultBasePath =
 			JPATH_ADMINISTRATOR . '/components/com_componentbuilder/layouts';
 
-		$this->normalizeCompilerOptions($input);
+		$this->normalizeCompilerOptions();
 
 		$appInput = $this->getApplication()->getInput();
 		$status   = 0;
@@ -399,23 +473,23 @@ EOF
 		{
 			$component = is_numeric($componentGuid)
 				? $componentGuid
-				: JCB::_('Data.Item')->table('joomla_component')->value($componentGuid);
+				: $this->item->table('joomla_component')->value($componentGuid);
 
 			if (!is_numeric($component))
 			{
-				$this->io->error('Component GUID "' . $componentGuid . '" not found.');
+				$this->ioStyle->error('Component GUID "' . $componentGuid . '" not found.');
 				$status = 1;
 				continue;
 			}
 
 			$appInput->post->set('component_id', $component);
 
-			$this->io->section('Compile Request');
-			$this->io->definitionList(['Component' => $componentGuid]);
+			$this->ioStyle->section('Compile Request');
+			$this->ioStyle->definitionList(['Component' => $componentGuid]);
 
 			if (!JCB::_('Compiler')->run())
 			{
-				$this->io->error('Compiler failed');
+				$this->ioStyle->error('Compiler failed');
 				$status = 1;
 				JCB::unset();
 				continue;
@@ -423,8 +497,7 @@ EOF
 
 			$message = LayoutHelper::render('jcbbuildersuccessmessagecli');
 			$message = JCB::_('Placeholder')->update(
-				$message,
-				JCB::_('Compiler.Builder.Content.One')->allActive()
+				$message, JCB::_('Compiler.Builder.Content.One')->allActive()
 			);
 
 			$this->messages[] = $message;
@@ -472,27 +545,64 @@ EOF
 	}
 
 	/**
-	 * Emit machine-readable output to STDOUT.
+	 * Install the compiled extensions 
 	 *
-	 * Default format:
-	 * - One path per line (Unix-native)
-	 *
-	 * @return  void
+	 * @return  int
 	 * @since   5.1.4
 	 */
-	protected function emitMachineOutput(): void
+	protected function installExtensions(): int
 	{
-		if ($this->outputPaths === [])
+		if (!$this->autoInstall || $this->outputPaths === [])
 		{
-			return;
+			return 0;
 		}
 
 		$paths = array_values(array_unique($this->outputPaths));
+		$tmpPath  = $this->getApplication()->get('tmp_path');
 
 		foreach ($paths as $path)
 		{
-			$this->stdout->writeln($path);
+			if (!$this->processPathInstallation($path, $tmpPath))
+			{
+				return 2;
+			}
 		}
+
+		return 0;
+	}
+
+	/**
+	 * Used for installing extension from a path
+	 *
+	 * @param   string  $path     Path to the extension zip file
+	 * @param   string  $tmpPath  Temp Path of Joomla
+	 *
+	 * @return boolean
+	 * @since  5.1.4
+	 * @throws \Exception
+	 */
+	protected function processPathInstallation(string $path, string $tmpPath): bool
+	{
+		if (!file_exists($path))
+		{
+			$this->ioStyle->warning("The extension file path:[{$path}] specified does not exist.");
+			return false;
+		}
+
+		$package  = InstallerHelper::unpack($path, true);
+
+		if ($package['type'] === false)
+		{
+			return false;
+		}
+
+		$tmp = $tmpPath . '/' . basename($path);
+
+		$jInstaller = Installer::getInstance();
+		$result	 = $jInstaller->install($package['extractdir']);
+		InstallerHelper::cleanupInstall($tmp, $package['extractdir']);
+
+		return $result;
 	}
 
 	/**
@@ -505,26 +615,24 @@ EOF
 	 * - --components-file /path/to/file
 	 * - ENV fallbacks
 	 *
-	 * @param   InputInterface  $input
-	 *
 	 * @return  array<int, string>
 	 * @since   5.1.4
 	 */
-	protected function resolveComponents(InputInterface $input): array
+	protected function resolveComponents(): array
 	{
-		$single = (string) ($input->getOption('component') ?? '');
+		$single = (string) ($this->cliInput->getOption('component') ?? '');
 		if ($single === '')
 		{
 			$single = (string) getenv(static::ENV_COMPONENT);
 		}
 
-		$list = (string) ($input->getOption('components') ?? '');
+		$list = (string) ($this->cliInput->getOption('components') ?? '');
 		if ($list === '')
 		{
 			$list = (string) getenv(static::ENV_COMPONENTS);
 		}
 
-		$file = (string) ($input->getOption('components-file') ?? '');
+		$file = (string) ($this->cliInput->getOption('components-file') ?? '');
 		if ($file === '')
 		{
 			$file = (string) getenv(static::ENV_COMPONENTS_FILE);
@@ -569,28 +677,35 @@ EOF
 	 * GLOBAL semantics:
 	 * - If a value is not resolved, it is NOT set.
 	 *
-	 * @param   InputInterface  $input
-	 *
 	 * @return  void
 	 * @since   5.1.4
 	 */
-	protected function normalizeCompilerOptions(InputInterface $input): void
+	protected function normalizeCompilerOptions(): void
 	{
 		$appInput = $this->getApplication()->getInput();
 
+		$this->autoInstall = false;
+
 		$allowed = [
-			'backup'                => ['0', '1'],
-			'repository'            => ['0', '1'],
+			'backup'                => 1, // if set then true
+			'repository'            => 1, // if set then true
+			'install'               => 1, // if set then true
 			'add_placeholders'      => ['0', '1', '2'],
 			'debug_line_nr'         => ['0', '1', '2'],
 			'minify'                => ['0', '1', '2'],
 			'powers'                => ['0', '1', '2'],
 			'joomla_version'        => ['3', '4', '5', '6'],
-			'show_advanced_options' => ['0', '1'],
 			'powers_repository'     => ['0', '1', '2'],
 			'indentation_value'     => ['1', '2', '4'],
 			'add_build_date'        => ['1', '2', '3'],
 			'build_date'            => null, // string date; downstream decides
+		];
+
+		$advance = [
+			'powers_repository' => true,
+			'indentation_value' => true,
+			'add_build_date'    => true,
+			'build_date'        => true,
 		];
 
 		$resolved = [];
@@ -603,7 +718,7 @@ EOF
 				$envName = static::ENV_PREFIX . strtoupper($uKey);
 				$envVal  = getenv($envName);
 
-				if ($envVal !== false && $envVal !== '')
+				if (!empty($envVal))
 				{
 					$resolved[$uKey] = (string) $envVal;
 				}
@@ -611,7 +726,7 @@ EOF
 		}
 
 		// 2) Bundle JSON (string or @file)
-		$bundle = (string) ($input->getOption('options') ?? '');
+		$bundle = (string) ($this->cliInput->getOption('options') ?? '');
 		if ($bundle === '')
 		{
 			$bundle = (string) getenv(static::ENV_OPTIONS);
@@ -634,7 +749,7 @@ EOF
 			foreach ($data as $key => $value)
 			{
 				$key = $this->normalizeOptionKey((string) $key);
-				if (array_key_exists($key, $allowed))
+				if (array_key_exists($key, $allowed) && !empty($value))
 				{
 					$resolved[$key] = (string) $value;
 				}
@@ -645,9 +760,9 @@ EOF
 		foreach ($allowed as $uKey => $_)
 		{
 			$cliKey = str_replace('_', '-', $uKey);
-			$val = $input->getOption($cliKey);
+			$val = $this->cliInput->getOption($cliKey);
 
-			if ($val !== null)
+			if (!empty($val))
 			{
 				$resolved[$uKey] = (string) $val;
 			}
@@ -658,6 +773,17 @@ EOF
 		{
 			$permitted = $allowed[$uKey];
 
+			if (is_numeric($permitted))
+			{
+				if ($uKey === 'install')
+				{
+					$this->autoInstall = true;
+					continue;
+				}
+				$appInput->post->set($uKey, (string) $permitted);
+				continue;
+			}
+
 			if (is_array($permitted) && !in_array($val, $permitted, true))
 			{
 				throw new \InvalidArgumentException(
@@ -665,9 +791,20 @@ EOF
 				);
 			}
 
+			if (isset($advance[$uKey]))
+			{
+				$appInput->post->set('show_advanced_options', '1');
+
+				if ($uKey === 'build_date')
+				{
+					$appInput->post->set('add_build_date', '2');
+				}
+			}
+
 			$appInput->post->set($uKey, $val);
 		}
 	}
+
 
 	/**
 	 * Render local message queue to CLI output.
@@ -684,44 +821,7 @@ EOF
 
 		foreach ($this->messages as $message)
 		{
-			$this->io->success($message);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Render Joomla application message queue to CLI output.
-	 *
-	 * @return bool
-	 * @since  5.1.4
-	 */
-	protected function renderApplicationMessages(): bool
-	{
-		$queue = $this->getApplication()->getMessageQueue();
-
-		if (!$queue)
-		{
-			return false;
-		}
-
-		foreach ($queue as $message)
-		{
-			$type = $message['type'] ?? 'info';
-			$text = $message['message'] ?? '';
-
-			if ($type === 'error')
-			{
-				$this->io->error($text);
-			}
-			elseif ($type === 'warning')
-			{
-				$this->io->warning($text);
-			}
-			else
-			{
-				$this->io->writeln($text);
-			}
+			$this->ioStyle->success($message);
 		}
 
 		return true;

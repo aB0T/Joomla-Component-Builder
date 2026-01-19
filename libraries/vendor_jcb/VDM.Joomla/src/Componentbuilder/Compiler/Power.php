@@ -568,12 +568,19 @@ class Power implements PowerInterface
 			);
 		}
 
+		$this->active[$guid]->path_root = 'component';
+
 		if (($target_area = $this->joomlapath->core($this->active[$guid]->_namespace)) !== null)
 		{
 			// now we set the paths to move this power into the Joomla core :)
 			$this->active[$guid]->path_jcb    = $target_area;
 			$this->active[$guid]->path_parent = $target_area;
-			$this->active[$guid]->path        = $this->active[$guid]->path_parent . '/src' . $sub_folder;
+			$this->active[$guid]->path        = $target_area . '/src' . $sub_folder;
+
+			if ($target_area !== 'site' && $target_area !== 'admin')
+			{
+				$this->active[$guid]->path_root = $this->config->get('compiler_path', JPATH_COMPONENT_ADMINISTRATOR . '/compiler');
+			}
 
 			// we don't use the autoloader for this class
 			// since its part of the core Joomla classes of this extension

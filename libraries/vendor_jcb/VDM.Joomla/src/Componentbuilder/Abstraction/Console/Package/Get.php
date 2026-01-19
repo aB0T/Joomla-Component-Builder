@@ -263,7 +263,6 @@ abstract class Get extends Package
 	 * @param   string  $raw  Raw repo value.
 	 *
 	 * @return  object|null
-	 *
 	 * @since   5.1.4
 	 */
 	protected function resolveRepoValue(string $raw): ?object
@@ -311,7 +310,6 @@ abstract class Get extends Package
 	 * @param   object|null   $repository  The repository to validate.
 	 *
 	 * @return bool True if valid repository
-	 *
 	 * @since   5.1.4
 	 */
 	protected function validRepo(?object &$repository): bool
@@ -368,7 +366,6 @@ abstract class Get extends Package
 	 * @return  object|string
 	 *
 	 * @throws \InvalidArgumentException   If raw string is empty or melformed.
-	 *
 	 * @since   5.1.4
 	 */
 	protected function decodeRepoJson(string $raw)
@@ -404,7 +401,6 @@ abstract class Get extends Package
 
 		return $decoded;
 	}
-
 
 	/**
 	 * Resolve the "force" flag from CLI or env.

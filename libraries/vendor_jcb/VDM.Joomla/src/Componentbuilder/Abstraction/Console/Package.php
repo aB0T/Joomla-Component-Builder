@@ -42,8 +42,6 @@ abstract class Package extends Console
 {
 	/**
 	 * The factory trait methods
-	 *
-	 * @var   FactoryTrait
 	 * @since 5.1.4
 	 */
 	use FactoryTrait;
@@ -198,7 +196,7 @@ abstract class Package extends Console
 	 */
 	final protected function doExecute(InputInterface $input, OutputInterface $output): int
 	{
-		$this->io  ??= new SymfonyStyle($input, $output); // just in-case
+		$this->initialize($input, $output); // just in-case
 
 		try
 		{

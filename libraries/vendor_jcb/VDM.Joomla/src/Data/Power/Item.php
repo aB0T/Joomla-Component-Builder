@@ -27,8 +27,6 @@ final class Item implements Data
 {
 	/**
 	 * The factory trait methods
-	 *
-	 * @var   FactoryTrait
 	 * @since 5.1.4
 	 */
 	use FactoryTrait;

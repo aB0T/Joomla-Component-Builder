@@ -218,7 +218,7 @@ class Infusion extends Interpretation
 
 			// COMP_IMAGE_TYPE
 			CFactory::_('Compiler.Builder.Content.One')->set('COMP_IMAGE_TYPE',
-				CFactory::_('Architecture.Component.ImageType')->set(CFactory::_('Component')->get('image'))
+				CFactory::_('Architecture.Component.ImageType')->set(CFactory::_('Component')->get('image') ?? '')
 			);
 
 			// ACCESS_SECTIONS

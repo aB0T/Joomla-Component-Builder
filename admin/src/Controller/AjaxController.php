@@ -50,7 +50,7 @@ class AjaxController extends BaseController
 		$this->app->setHeader('Access-Control-Allow-Origin', '*');
 		// load the tasks
 		$this->registerTask('getComponentDetails', 'ajax');
-		$this->registerTask('getWiki', 'ajax');
+		$this->registerTask('getJcbDocGitHubMd', 'ajax');
 		$this->registerTask('getVersion', 'ajax');
 		$this->registerTask('getJCBpackageInfo', 'ajax');
 		$this->registerTask('getModuleCode', 'ajax');
@@ -168,16 +168,16 @@ class AjaxController extends BaseController
 						}
 					}
 				break;
-				case 'getWiki':
+				case 'getJcbDocGitHubMd':
 					try
 					{
-						$nameValue = $jinput->get('name', NULL, 'WORD');
-						if($nameValue && $user->id != 0)
+						$pathValue = $jinput->get('path', NULL, 'STRING');
+						if($pathValue && $user->id != 0)
 						{
 							$ajaxModule = $this->getModel('ajax', 'Administrator');
 							if ($ajaxModule)
 							{
-								$result = $ajaxModule->getWiki($nameValue);
+								$result = $ajaxModule->getJcbDocGitHubMd($pathValue);
 							}
 							else
 							{

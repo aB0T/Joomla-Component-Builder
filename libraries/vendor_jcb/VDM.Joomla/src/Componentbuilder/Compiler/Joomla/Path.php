@@ -88,7 +88,7 @@ final class Path
 	 * array allocations for identical namespace strings.
 	 *
 	 * NOTE: This cache grows with the number of distinct namespaces processed
-	 * in a single run. That’s typically acceptable for compilation workloads.
+	 * in a single run. That's typically acceptable for compilation workloads.
 	 *
 	 * @var   array<string, array<int, string>>
 	 * @since 5.1.4

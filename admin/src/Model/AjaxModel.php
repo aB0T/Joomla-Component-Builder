@@ -34,10 +34,9 @@ use VDM\Joomla\Utilities\StringHelper;
 use VDM\Joomla\Componentbuilder\Search\Factory as SearchFactory;
 use VDM\Joomla\Utilities\GuidHelper;
 use VDM\Joomla\Componentbuilder\Remote\Version;
-use VDM\Joomla\Github\Factory as GithubFactory;
+use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\ArrayHelper as UtilitiesArrayHelper;
 use VDM\Joomla\Utilities\GetHelper;
-use VDM\Joomla\Utilities\SessionHelper;
 use VDM\Joomla\Utilities\Base64Helper;
 use VDM\Joomla\Componentbuilder\Table\Search;
 use VDM\Joomla\Componentbuilder\Compiler\Utilities\FieldHelper;
@@ -215,27 +214,162 @@ class AjaxModel extends ListModel
 	}
 
 	/**
-	 * Get the content of a GitHub wiki page.
+	 * Get the content of a GitHub markdown page.
 	 *
-	 * @param   string  $name  The name of the wiki page (default: 'Home').
+	 * @param   string  $path  The path to the markdown page
 	 *
 	 * @return  array  Associative array with 'page' or 'error' key.
 	 * @since   2.3.0
 	 */
-	public function getWiki(string $name = 'Home'): array
+	public function getJcbDocGitHubMd(string $path): array
 	{
 		try {
-			$wiki = GithubFactory::_('Github.Repository.Wiki')
-				->get('joomengine', 'Joomla-Component-Builder', $name);
+			$githubUrl = $this->toRawJcbDocGithubMarkdownUrl($path);
+			if (($page = SessionHelper::get($githubUrl, 'not_found')) === 'not_found')
+			{
+				$page = FileHelper::getContent($githubUrl);
+				if (!empty($page))
+				{
+					$page = $this->rewriteJcbDocRelativeMarkdownLinks($page, $githubUrl);
+				}
 
-			if (!empty($wiki->content)) {
-				return ['page' => base64_decode($wiki->content)];
+				SessionHelper::set($githubUrl, $page);
+			}
+
+			if (!empty($page))
+			{
+				return ['page' => $page];
 			}
 		} catch (\Throwable $e) {
 			return ['error' => $e->getMessage()];
 		}
 
-		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_WIKI_CAN_ONLY_BE_LOADED_WHEN_YOUR_JCB_SYSTEM_HAS_INTERNET_CONNECTION')];
+		return ['error' => Text::_('COM_COMPONENTBUILDER_THE_PAGE_CAN_ONLY_BE_LOADED_WHEN_YOUR_SYSTEM_HAS_INTERNET_CONNECTION')];
+	}
+
+	/**
+	 * Convert a dot-notated GitHub repository path into a raw.githubusercontent.com URL
+	 * with strict structural and safety validation.
+	 *
+	 * Validation rules:
+	 * - The path must contain at least two dots (minimum three segments)
+	 * - No empty segments are allowed
+	 * - Each segment must be URL-safe (RFC 3986 unreserved characters only)
+	 *
+	 * @param  string  $path  Dot-notated repository path
+	 *
+	 * @return string  Fully-qualified raw GitHub Markdown URL
+	 *
+	 * @throws \InvalidArgumentException If the path is invalid or unsafe
+	 * @since  5.1.4
+	 */
+	protected function toRawJcbDocGithubMarkdownUrl(string $path): string
+	{
+		$path = trim($path);
+
+		// Must contain at least two dots (minimum three segments)
+		if (substr_count($path, '.') < 2)
+		{
+			throw new \InvalidArgumentException(
+				'Invalid path: must contain at least three dot-separated segments.'
+			);
+		}
+
+		$segments = explode('.', $path);
+
+		foreach ($segments as $segment)
+		{
+			// Reject empty segments (e.g. "..", ".foo", "foo.")
+			if ($segment === '')
+			{
+				throw new \InvalidArgumentException(
+					'Invalid path: empty segment detected.'
+				);
+			}
+
+			// RFC 3986 unreserved characters only: ALPHA / DIGIT / "-" / "." / "_" / "~"
+			// Fast ASCII-safe validation
+			if (!preg_match('/^[A-Za-z0-9._~-]+$/', $segment))
+			{
+				throw new \InvalidArgumentException(
+					'Invalid path segment detected: ' . $segment
+				);
+			}
+		}
+
+		return 'https://raw.githubusercontent.com/'
+			. str_replace('.', '/', $path)
+			. '.md';
+	}
+
+	/**
+	 * Rewrite relative Markdown links (./file.md) to absolute GitHub blob URLs.
+	 *
+	 * This method scans a Markdown document and replaces only links that:
+	 * - Use Markdown link syntax: [text](./path)
+	 * - Start with "./"
+	 *
+	 * It leaves untouched:
+	 * - Absolute URLs (http/https)
+	 * - Anchors (#section)
+	 * - Non-Markdown content
+	 *
+	 * The GitHub base URL is derived from a raw.githubusercontent.com URL.
+	 *
+	 * @param  string  $page       The full Markdown page content
+	 * @param  string  $rawPathUrl A raw.githubusercontent.com URL pointing to the same repo/path
+	 *
+	 * @return string  The Markdown page with corrected GitHub links
+	 *
+	 * @throws \InvalidArgumentException If the raw path URL is invalid
+	 * @since  5.1.4
+	 */
+	protected function rewriteJcbDocRelativeMarkdownLinks(string $page, string $rawPathUrl): string
+	{
+		// Validate raw GitHub URL structure
+		if (
+			!str_starts_with($rawPathUrl, 'https://raw.githubusercontent.com/')
+			|| !str_contains($rawPathUrl, '/refs/heads/')
+		)
+		{
+			throw new \InvalidArgumentException(
+				'Invalid raw GitHub URL provided.'
+			);
+		}
+
+		/*
+		 * Convert:
+		 * https://raw.githubusercontent.com/org/repo/refs/heads/branch/path/file.md
+		 * -->
+		 * https://github.com/org/repo/blob/branch/path/
+		 */
+		$githubBase = str_replace(
+			[
+				'https://raw.githubusercontent.com/',
+				'/refs/heads/'
+			],
+			[
+				'https://github.com/',
+				'/blob/'
+			],
+			$rawPathUrl
+		);
+
+		// Strip the filename (keep trailing slash)
+		$githubBase = substr($githubBase, 0, strrpos($githubBase, '/') + 1);
+
+		/*
+		 * Replace only Markdown links that start with "./"
+		 * Pattern matches: [label](./path)
+		 */
+		return preg_replace_callback(
+			'/\[(.*?)\]\(\.\/([^)]+)\)/',
+			static function (array $matches) use ($githubBase): string
+			{
+				return '[' . $matches[1] . '](' . $githubBase . $matches[2] . ')';
+			},
+			$page
+		);
 	}
 
 	// Used in joomla_module

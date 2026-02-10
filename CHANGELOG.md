@@ -1,8 +1,8 @@
-# v6.1.4-beta6
+# v6.1.4-rc1
 
-- Add functionality to the CLI compiler to directly install compiled components and apply compiler options used during compilation.
-- Add functionality to the compiler to automatically pull a missing component from a remote repository when a compilation is triggered and the component is not locally available.
-- Add functionality to add and replace classes in module and plugin src folders that are linked to a component, when using correct namespace resolution.
+- Add a Documentation tab to the Joomla Component Builder dashboard.
+- Fix an issue with the JCB version notice on Joomla 5.
+- Fix an issue where components without a component image failed to compile successfully. #1282
 
 # v6.1.4-beta
 
@@ -29,6 +29,9 @@
 - Add structured CLI commands and options to Init, Reset, Push, and Pull JCB entities via the Joomla CLI.
 - Add full support for compiling Components directly via the CLI, enabling automated and headless build workflows.
 - Add functionality to place Super Power classes into the component src folder for both Admin and Site areas, using the correct namespaced structure.
+- Add functionality to the CLI compiler to directly install compiled components and apply compiler options used during compilation.
+- Add functionality to the compiler to automatically pull a missing component from a remote repository when a compilation is triggered and the component is not locally available.
+- Add functionality to add and replace classes in module and plugin src folders that are linked to a component, when using correct namespace resolution.
 
 # v6.1.4-alpha
 

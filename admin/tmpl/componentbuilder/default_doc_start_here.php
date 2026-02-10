@@ -18,4 +18,4 @@ use Joomla\CMS\HTML\HTMLHelper as Html;
 defined('_JEXEC') or die;
 
 ?>
-<?php echo $this->wiki; ?>
+<?php echo $this->jcbdocgithubmd; ?>
